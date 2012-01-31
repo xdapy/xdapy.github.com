@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Errors &mdash; xdapy 0.9.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="xdapy 0.9.0 documentation" href="../index.html" />
+    <link rel="up" title="API" href="index.html" />
+    <link rel="next" title="I/O" href="io.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="io.html" title="I/O"
+             accesskey="N">next</a> |</li>
+        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-xdapy.errors">
+<span id="errors"></span><h1>Errors<a class="headerlink" href="#module-xdapy.errors" title="Permalink to this headline">¶</a></h1>
+<p>Provides exceptions used in this module.</p>
+<p>Created on Jun 23, 2009</p>
+<blockquote>
+<div>Error:         Base class for exceptions in this module.
+AmbiguousObjectError: A list is returned instead of single object.</div></blockquote>
+<dl class="exception">
+<dt id="xdapy.errors.AmbiguousObjectError">
+<em class="property">exception </em><tt class="descclassname">xdapy.errors.</tt><tt class="descname">AmbiguousObjectError</tt><a class="reference internal" href="../_modules/xdapy/errors.html#AmbiguousObjectError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.errors.AmbiguousObjectError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when an operation attempts to load a list of objects when only a
+single object is allowed.</p>
+<dl class="attribute">
+<dt id="xdapy.errors.AmbiguousObjectError.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.errors'</em><a class="headerlink" href="#xdapy.errors.AmbiguousObjectError.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.errors.AmbiguousObjectError.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#xdapy.errors.AmbiguousObjectError.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xdapy.errors.RequestObjectError">
+<em class="property">exception </em><tt class="descclassname">xdapy.errors.</tt><tt class="descname">RequestObjectError</tt><a class="reference internal" href="../_modules/xdapy/errors.html#RequestObjectError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.errors.RequestObjectError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when an operation attempts to load an object that does not exist
+in the database.</p>
+<dl class="attribute">
+<dt id="xdapy.errors.RequestObjectError.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.errors'</em><a class="headerlink" href="#xdapy.errors.RequestObjectError.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.errors.RequestObjectError.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#xdapy.errors.RequestObjectError.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xdapy.errors.SelectionError">
+<em class="property">exception </em><tt class="descclassname">xdapy.errors.</tt><tt class="descname">SelectionError</tt><a class="reference internal" href="../_modules/xdapy/errors.html#SelectionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.errors.SelectionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when the loading of an object from the database is erroneous.</p>
+<dl class="attribute">
+<dt id="xdapy.errors.SelectionError.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.errors'</em><a class="headerlink" href="#xdapy.errors.SelectionError.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.errors.SelectionError.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#xdapy.errors.SelectionError.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xdapy.errors.InsertionError">
+<em class="property">exception </em><tt class="descclassname">xdapy.errors.</tt><tt class="descname">InsertionError</tt><a class="reference internal" href="../_modules/xdapy/errors.html#InsertionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.errors.InsertionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when the storage of an object in the database can not be completed.</p>
+<dl class="attribute">
+<dt id="xdapy.errors.InsertionError.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.errors'</em><a class="headerlink" href="#xdapy.errors.InsertionError.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.errors.InsertionError.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#xdapy.errors.InsertionError.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xdapy.errors.MissingSessionError">
+<em class="property">exception </em><tt class="descclassname">xdapy.errors.</tt><tt class="descname">MissingSessionError</tt><a class="reference internal" href="../_modules/xdapy/errors.html#MissingSessionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.errors.MissingSessionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when an object is not in a session.</p>
+<dl class="attribute">
+<dt id="xdapy.errors.MissingSessionError.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.errors'</em><a class="headerlink" href="#xdapy.errors.MissingSessionError.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.errors.MissingSessionError.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#xdapy.errors.MissingSessionError.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xdapy.errors.StringConversionError">
+<em class="property">exception </em><tt class="descclassname">xdapy.errors.</tt><tt class="descname">StringConversionError</tt><a class="reference internal" href="../_modules/xdapy/errors.html#StringConversionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.errors.StringConversionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when a value can’t be generated from string.</p>
+<dl class="attribute">
+<dt id="xdapy.errors.StringConversionError.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.errors'</em><a class="headerlink" href="#xdapy.errors.StringConversionError.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.errors.StringConversionError.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#xdapy.errors.StringConversionError.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xdapy.errors.EntityDefinitionError">
+<em class="property">exception </em><tt class="descclassname">xdapy.errors.</tt><tt class="descname">EntityDefinitionError</tt><a class="reference internal" href="../_modules/xdapy/errors.html#EntityDefinitionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.errors.EntityDefinitionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when an Entity class has a non-conforming definition.</p>
+<dl class="attribute">
+<dt id="xdapy.errors.EntityDefinitionError.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.errors'</em><a class="headerlink" href="#xdapy.errors.EntityDefinitionError.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.errors.EntityDefinitionError.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#xdapy.errors.EntityDefinitionError.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xdapy.errors.DataInconsistencyError">
+<em class="property">exception </em><tt class="descclassname">xdapy.errors.</tt><tt class="descname">DataInconsistencyError</tt><a class="reference internal" href="../_modules/xdapy/errors.html#DataInconsistencyError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.errors.DataInconsistencyError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised whenever something is fatal with the data.</p>
+<dl class="attribute">
+<dt id="xdapy.errors.DataInconsistencyError.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.errors'</em><a class="headerlink" href="#xdapy.errors.DataInconsistencyError.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.errors.DataInconsistencyError.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#xdapy.errors.DataInconsistencyError.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xdapy.errors.InvalidXMLError">
+<em class="property">exception </em><tt class="descclassname">xdapy.errors.</tt><tt class="descname">InvalidXMLError</tt><a class="reference internal" href="../_modules/xdapy/errors.html#InvalidXMLError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.errors.InvalidXMLError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when XML is malformed.</p>
+<dl class="attribute">
+<dt id="xdapy.errors.InvalidXMLError.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.errors'</em><a class="headerlink" href="#xdapy.errors.InvalidXMLError.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.errors.InvalidXMLError.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#xdapy.errors.InvalidXMLError.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xdapy.errors.ConfigurationError">
+<em class="property">exception </em><tt class="descclassname">xdapy.errors.</tt><tt class="descname">ConfigurationError</tt><a class="reference internal" href="../_modules/xdapy/errors.html#ConfigurationError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.errors.ConfigurationError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when there is something wrong with the configuration.</p>
+<dl class="attribute">
+<dt id="xdapy.errors.ConfigurationError.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.errors'</em><a class="headerlink" href="#xdapy.errors.ConfigurationError.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.errors.ConfigurationError.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#xdapy.errors.ConfigurationError.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xdapy.errors.FilterError">
+<em class="property">exception </em><tt class="descclassname">xdapy.errors.</tt><tt class="descname">FilterError</tt><a class="reference internal" href="../_modules/xdapy/errors.html#FilterError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.errors.FilterError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Something is wrong with the filter.</p>
+<dl class="attribute">
+<dt id="xdapy.errors.FilterError.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.errors'</em><a class="headerlink" href="#xdapy.errors.FilterError.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.errors.FilterError.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#xdapy.errors.FilterError.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="xdapy.errors.SearchError">
+<em class="property">exception </em><tt class="descclassname">xdapy.errors.</tt><tt class="descname">SearchError</tt><a class="reference internal" href="../_modules/xdapy/errors.html#SearchError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.errors.SearchError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when a search is not well defined or malformed.</p>
+<dl class="attribute">
+<dt id="xdapy.errors.SearchError.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.errors'</em><a class="headerlink" href="#xdapy.errors.SearchError.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.errors.SearchError.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#xdapy.errors.SearchError.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Next topic</h4>
+  <p class="topless"><a href="io.html"
+                        title="next chapter">I/O</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/api/errors.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="io.html" title="I/O"
+             >next</a> |</li>
+        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" >API</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,431 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>xdapy.io &mdash; xdapy 0.9.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.9.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="xdapy 0.9.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for xdapy.io</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">This module wrapes the input and output functionality.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext&quot;</span>
+
+<span class="n">__authors__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&quot;Rike-Benjamin Schuppner&quot; &lt;rikebs@debilski.de&gt;&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="UnregisteredTypesError"><a class="viewcode-back" href="../../api/io.html#xdapy.io.UnregisteredTypesError">[docs]</a><span class="k">class</span> <span class="nc">UnregisteredTypesError</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Raised when there are types in the XML file which have not been imported / registered with mapper&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="UnregisteredTypesError.__init__"><a class="viewcode-back" href="../../api/io.html#xdapy.io.UnregisteredTypesError.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">types</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">types</span> <span class="o">=</span> <span class="n">types</span>
+
+</div></div>
+<span class="kn">from</span> <span class="nn">xml.etree</span> <span class="kn">import</span> <span class="n">ElementTree</span> <span class="k">as</span> <span class="n">ET</span>
+
+<span class="kn">from</span> <span class="nn">xdapy.structures</span> <span class="kn">import</span> <span class="n">Context</span><span class="p">,</span> <span class="n">Data</span><span class="p">,</span> <span class="n">calculate_polymorphic_name</span>
+<span class="kn">from</span> <span class="nn">xdapy.errors</span> <span class="kn">import</span> <span class="n">AmbiguousObjectError</span><span class="p">,</span> <span class="n">InvalidXMLError</span>
+
+
+<div class="viewcode-block" id="BinaryEncoder"><a class="viewcode-back" href="../../api/io.html#xdapy.io.BinaryEncoder">[docs]</a><span class="k">class</span> <span class="nc">BinaryEncoder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="BinaryEncoder.__init__"><a class="viewcode-back" href="../../api/io.html#xdapy.io.BinaryEncoder.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoder</span><span class="p">,</span> <span class="n">decoder</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">encoder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">decoder</span>
+</div>
+<div class="viewcode-block" id="BinaryEncoder.encode"><a class="viewcode-back" href="../../api/io.html#xdapy.io.BinaryEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="BinaryEncoder.decode"><a class="viewcode-back" href="../../api/io.html#xdapy.io.BinaryEncoder.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+
+</div></div>
+<span class="n">recode</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="n">recode</span><span class="p">[</span><span class="s">&quot;base64&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">BinaryEncoder</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">,</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">)</span>
+<span class="n">recode</span><span class="p">[</span><span class="s">&quot;plain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">BinaryEncoder</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">strip</span><span class="p">,</span> <span class="nb">str</span><span class="o">.</span><span class="n">strip</span><span class="p">)</span>
+<span class="n">recode</span><span class="p">[</span><span class="s">&quot;ascii&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">recode</span><span class="p">[</span><span class="s">&quot;plain&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="gen_keys"><a class="viewcode-back" href="../../api/io.html#xdapy.io.gen_keys">[docs]</a><span class="k">def</span> <span class="nf">gen_keys</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns a list of keys for an entity.&quot;&quot;&quot;</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gen_uuid_key</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gen_id_key</span><span class="p">(</span><span class="n">entity</span><span class="p">))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gen_rnd_key</span><span class="p">())</span>
+
+</div>
+<div class="viewcode-block" id="gen_uuid_key"><a class="viewcode-back" href="../../api/io.html#xdapy.io.gen_uuid_key">[docs]</a><span class="k">def</span> <span class="nf">gen_uuid_key</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&quot;uuid:&quot;</span> <span class="o">+</span> <span class="n">entity</span><span class="o">.</span><span class="n">uuid</span>
+</div>
+<div class="viewcode-block" id="gen_id_key"><a class="viewcode-back" href="../../api/io.html#xdapy.io.gen_id_key">[docs]</a><span class="k">def</span> <span class="nf">gen_id_key</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&quot;id:&quot;</span> <span class="o">+</span> <span class="n">entity</span><span class="o">.</span><span class="n">id</span>
+</div>
+<span class="kn">import</span> <span class="nn">random</span>
+<div class="viewcode-block" id="gen_rnd_key"><a class="viewcode-back" href="../../api/io.html#xdapy.io.gen_rnd_key">[docs]</a><span class="k">def</span> <span class="nf">gen_rnd_key</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&quot;ref:&quot;</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10000000</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="IO"><a class="viewcode-back" href="../../api/io.html#xdapy.io.IO">[docs]</a><span class="k">class</span> <span class="nc">IO</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="JsonIO"><a class="viewcode-back" href="../../api/io.html#xdapy.io.JsonIO">[docs]</a><span class="k">class</span> <span class="nc">JsonIO</span><span class="p">(</span><span class="n">IO</span><span class="p">):</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="XmlIO"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO">[docs]</a><span class="k">class</span> <span class="nc">XmlIO</span><span class="p">(</span><span class="n">IO</span><span class="p">):</span>
+<div class="viewcode-block" id="XmlIO.__init__"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapper</span><span class="p">,</span> <span class="n">known_objects</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;If known_objects is None (or left empty), it defaults to mapper.registered_objects.</span>
+<span class="sd">        This is most likely the right thing and supplying other objects might lead to inconsistencies.</span>
+
+<span class="sd">        An empty dict means there are no known_objects.</span>
+
+<span class="sd">        For debugging reasons, it could be useful, though.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span> <span class="o">=</span> <span class="n">mapper</span>
+
+        <span class="k">if</span> <span class="n">known_objects</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_known_objects</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">known_objects</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">known_objects</span><span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_known_objects</span> <span class="o">=</span> <span class="bp">None</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="XmlIO.known_objects"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.known_objects">[docs]</a>    <span class="k">def</span> <span class="nf">known_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_known_objects</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">((</span><span class="n">obj</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">registered_objects</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_known_objects</span>
+</div>
+<div class="viewcode-block" id="XmlIO.read"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml</span><span class="p">):</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">xml</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="XmlIO.read_file"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.read_file">[docs]</a>    <span class="k">def</span> <span class="nf">read_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="XmlIO.filter"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.filter">[docs]</a>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">root</span><span class="o">.</span><span class="n">tag</span> <span class="o">!=</span> <span class="s">&quot;xdapy&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidXMLError</span><span class="p">(</span><span class="s">&quot;Tag {0} does not belong here&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">root</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&quot;types&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">filter_types</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="c"># The filter_types is currently only for validation</span>
+
+        <span class="n">references</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">root</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&quot;values&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">filter_values</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">references</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">root</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&quot;relations&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">filter_relations</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">references</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="XmlIO.filter_relations"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.filter_relations">[docs]</a>    <span class="k">def</span> <span class="nf">filter_relations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">references</span><span class="p">):</span>
+        <span class="c"># TODO: Make relations work with uuids</span>
+        <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">from_id</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;from&quot;</span><span class="p">]</span>
+            <span class="n">to_id</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;to&quot;</span><span class="p">]</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span>
+            <span class="n">references</span><span class="p">[</span><span class="n">from_id</span><span class="p">]</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">references</span><span class="p">[</span><span class="n">to_id</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="XmlIO.filter_types"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.filter_types">[docs]</a>    <span class="k">def</span> <span class="nf">filter_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">not_found</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">entity</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&quot;entity&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidXMLError</span><span class="p">(</span><span class="s">&quot;Tag {0} does not belong here&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">type</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_entity_type</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="n">types</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">types</span><span class="p">[</span><span class="nb">type</span><span class="p">][</span><span class="s">&quot;key&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">AmbiguousObjectError</span><span class="p">(</span><span class="s">&quot;Type with name {0} has already been declared&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">types</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span> <span class="s">&quot;params&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">}</span>
+            <span class="k">except</span> <span class="n">UnregisteredTypesError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">not_found</span> <span class="o">+=</span> <span class="n">err</span><span class="o">.</span><span class="n">types</span>
+
+        <span class="k">if</span> <span class="n">not_found</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;&quot;&quot;The following objects were declared in the XML file but never imported:&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">nf</span> <span class="ow">in</span> <span class="n">not_found</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;&quot;&quot;class {name}(EntityObject):</span>
+<span class="s">    parameter_types = {types!r}</span>
+<span class="s">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">nf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">types</span><span class="o">=</span><span class="n">nf</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">not_found</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnregisteredTypesError</span><span class="p">(</span><span class="s">&quot;Types in XML not defined&quot;</span><span class="p">,</span> <span class="n">not_found</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="XmlIO.parse_entity_type"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.parse_entity_type">[docs]</a>    <span class="k">def</span> <span class="nf">parse_entity_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">entity</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sub</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&quot;parameter&quot;</span><span class="p">:</span>
+                <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_parameter_type</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>
+                <span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="n">polymorphic_name</span> <span class="o">=</span> <span class="n">calculate_polymorphic_name</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">polymorphic_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">known_objects</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">type</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">polymorphic_name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnregisteredTypesError</span><span class="p">(</span><span class="s">&quot;Object not found&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="XmlIO.parse_parameter_type"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.parse_parameter_type">[docs]</a>    <span class="k">def</span> <span class="nf">parse_parameter_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;type&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="nb">type</span>
+
+</div>
+<div class="viewcode-block" id="XmlIO.filter_values"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.filter_values">[docs]</a>    <span class="k">def</span> <span class="nf">filter_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">ref_ids</span><span class="p">):</span>
+        <span class="n">root_entities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">entity</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&quot;entity&quot;</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="n">root_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parse_entity</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">ref_ids</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">root_entities</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="XmlIO.parse_entity"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.parse_entity">[docs]</a>    <span class="k">def</span> <span class="nf">parse_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">ref_ids</span><span class="p">):</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;type&quot;</span><span class="p">]</span>
+
+        <span class="n">uuid</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;uuid&quot;</span><span class="p">)</span> <span class="c"># _uuid defaults to None</span>
+        <span class="n">new_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_by_name</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">_uuid</span><span class="o">=</span><span class="n">uuid</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">new_entity</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">new_entity</span>
+
+        <span class="k">if</span> <span class="s">&quot;parent&quot;</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+            <span class="n">parent_id</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;parent&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">parent_id</span> <span class="ow">in</span> <span class="n">ref_ids</span><span class="p">:</span>
+                <span class="n">new_entity</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">ref_ids</span><span class="p">[</span><span class="n">parent_id</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidXMLError</span><span class="p">(</span><span class="s">&quot;Parent {0} undefined for entity {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parent_id</span><span class="p">,</span> <span class="n">new_entity</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="s">&quot;id&quot;</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+            <span class="c"># add id attribute to ref_ids</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="s">&quot;id:&quot;</span> <span class="o">+</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;id&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ref_ids</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidXMLError</span><span class="p">(</span><span class="s">&quot;Ambiguous declaration of {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+            <span class="n">ref_ids</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_entity</span>
+
+        <span class="k">if</span> <span class="s">&quot;uuid&quot;</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+            <span class="c"># add id attribute to ref_ids</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="s">&quot;uuid:&quot;</span> <span class="o">+</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;uuid&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ref_ids</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidXMLError</span><span class="p">(</span><span class="s">&quot;Ambiguous declaration of {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+            <span class="n">ref_ids</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_entity</span>
+
+        <span class="c"># We need to assiciate the entity with a session. Otherwise, we cannot add data.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">new_entity</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">entity</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sub</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&quot;parameter&quot;</span><span class="p">:</span>
+                <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_parameter</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">new_entity</span><span class="o">.</span><span class="n">str_params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">if</span> <span class="n">sub</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&quot;entity&quot;</span><span class="p">:</span>
+                <span class="n">child</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_entity</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">ref_ids</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">parent</span> <span class="ow">and</span> <span class="n">child</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">new_entity</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">InvalidXMLError</span><span class="p">(</span><span class="s">&quot;Trying to mix nesting with explicit parent specification for {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">child</span><span class="p">))</span>
+
+                <span class="n">new_entity</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sub</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&quot;data&quot;</span><span class="p">:</span>
+                <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_data</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>
+                <span class="n">new_entity</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s">&quot;data&quot;</span><span class="p">])</span>
+                <span class="n">new_entity</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s">&quot;mimetype&quot;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">new_entity</span>
+</div>
+<div class="viewcode-block" id="XmlIO.parse_parameter"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.parse_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">parse_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">&quot;value&quot;</span> <span class="ow">in</span> <span class="n">parameter</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;value&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">text</span> <span class="ow">and</span> <span class="n">parameter</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="n">InvalidXMLError</span><span class="p">(</span><span class="s">&quot;Value and text given for parameter {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parameter</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">text</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span>
+</div>
+<div class="viewcode-block" id="XmlIO.parse_data"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.parse_data">[docs]</a>    <span class="k">def</span> <span class="nf">parse_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span>
+        <span class="n">mimetype</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;mimetype&quot;</span><span class="p">)</span> <span class="c"># it is not bad, if mimetype is not given</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">encoding</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;encoding&quot;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">encoding</span> <span class="o">=</span> <span class="s">&quot;plain&quot;</span>
+        <span class="k">if</span> <span class="n">encoding</span> <span class="o">==</span> <span class="s">&quot;ascii&quot;</span> <span class="ow">and</span> <span class="n">mimetype</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">mimetype</span> <span class="o">=</span> <span class="n">encoding</span>
+        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">recode</span><span class="p">[</span><span class="n">encoding</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">new_data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;data&quot;</span><span class="p">:</span> <span class="n">raw_data</span><span class="p">,</span> <span class="s">&quot;mimetype&quot;</span><span class="p">:</span> <span class="n">mimetype</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="n">new_data</span>
+</div>
+<div class="viewcode-block" id="XmlIO.entity_by_name"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.entity_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">entity_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">entity_by_name</span><span class="p">(</span><span class="n">entity</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="XmlIO.write"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s">&quot;xdapy&quot;</span><span class="p">)</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s">&quot;types&quot;</span><span class="p">)</span>
+        <span class="n">entities</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s">&quot;objects&quot;</span><span class="p">)</span>
+        <span class="n">relations</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s">&quot;relations&quot;</span><span class="p">)</span>
+
+        <span class="n">used_objects</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">find_roots</span><span class="p">():</span>
+            <span class="n">entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">write_entity</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">used_objects</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="nb">object</span> <span class="ow">in</span> <span class="n">used_objects</span><span class="p">:</span>
+            <span class="n">types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">write_types</span><span class="p">(</span><span class="nb">object</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">rel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Context</span><span class="p">):</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s">&quot;context&quot;</span><span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;from&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;id:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">back_referenced</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;to&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;id:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">connected</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rel</span><span class="o">.</span><span class="n">connection_type</span>
+            <span class="n">relations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="n">root</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">types</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">relations</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">root</span>
+</div>
+<div class="viewcode-block" id="XmlIO.write_types"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.write_types">[docs]</a>    <span class="k">def</span> <span class="nf">write_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+        <span class="n">obj_entity</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s">&quot;entity&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="nb">type</span> <span class="ow">in</span> <span class="nb">object</span><span class="o">.</span><span class="n">parameter_types</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">parameter</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s">&quot;parameter&quot;</span><span class="p">)</span>
+            <span class="n">parameter</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="n">parameter</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span>
+            <span class="n">obj_entity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">obj_entity</span>
+
+</div>
+<div class="viewcode-block" id="XmlIO.write_entity"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.write_entity">[docs]</a>    <span class="k">def</span> <span class="nf">write_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">types</span><span class="p">):</span>
+        <span class="n">entity</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s">&quot;entity&quot;</span><span class="p">)</span>
+        <span class="n">types</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">__class__</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">elem</span><span class="o">.</span><span class="n">_attributes</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">elem</span><span class="o">.</span><span class="n">str_params</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">parameter</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s">&quot;parameter&quot;</span><span class="p">)</span>
+            <span class="n">parameter</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="n">parameter</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">entity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">elem</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="n">entity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">write_entity</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">types</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">elem</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s">&quot;data&quot;</span><span class="p">)</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">mimetype</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;mimetype&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">mimetype</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">mimetype</span> <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">==</span> <span class="s">&quot;ascii&quot;</span><span class="p">:</span>
+                <span class="n">encoding</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">mimetype</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">encoding</span> <span class="o">=</span> <span class="s">&quot;base64&quot;</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">recode</span><span class="p">[</span><span class="n">encoding</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">get_string</span><span class="p">())</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;encoding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">encoding</span>
+            <span class="n">entity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">entity</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

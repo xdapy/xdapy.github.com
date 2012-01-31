@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>I/O formats &mdash; xdapy 0.9.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.9.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="xdapy 0.9.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">xdapy 0.9.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="i-o-formats">
+<h1>I/O formats<a class="headerlink" href="#i-o-formats" title="Permalink to this headline">¶</a></h1>
+<p>xdapy can read and write data in both XML and JSON formats. A specification of these formats is given here.</p>
+<div class="section" id="xml">
+<h2>XML<a class="headerlink" href="#xml" title="Permalink to this headline">¶</a></h2>
+<p>For XML output to work, we first have to initialise the XML serialiser. We supply our current
+object mapper as a parameter:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">xdapy.io</span> <span class="kn">import</span> <span class="n">XmlIO</span>
+<span class="n">xmlio</span> <span class="o">=</span> <span class="n">XmlIO</span><span class="p">(</span><span class="n">mapper</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will automatically register all known object mappings.</p>
+<p>If we have data stored inside our database, we can now access the XML DOM tree through:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">xmltree</span> <span class="o">=</span> <span class="n">xmlio</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>And print it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">xml.etree</span> <span class="kn">import</span> <span class="n">ElementTree</span> <span class="k">as</span> <span class="n">ET</span>
+<span class="n">ET</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">xmltree</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This may give us something like the following:</p>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;xdapy&gt;</span>
+    <span class="nt">&lt;types&gt;</span>
+        <span class="nt">&lt;entity</span> <span class="na">type=</span><span class="s">&quot;Trial&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;rt&quot;</span> <span class="na">type=</span><span class="s">&quot;string&quot;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;valid&quot;</span> <span class="na">type=</span><span class="s">&quot;boolean&quot;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;response&quot;</span> <span class="na">type=</span><span class="s">&quot;string&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/entity&gt;</span>
+        <span class="nt">&lt;entity</span> <span class="na">type=</span><span class="s">&quot;Experiment&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;project&quot;</span> <span class="na">type=</span><span class="s">&quot;string&quot;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;experimenter&quot;</span> <span class="na">type=</span><span class="s">&quot;string&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/entity&gt;</span>
+        <span class="nt">&lt;entity</span> <span class="na">type=</span><span class="s">&quot;Session&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;date&quot;</span> <span class="na">type=</span><span class="s">&quot;date&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/entity&gt;</span>
+        <span class="nt">&lt;entity</span> <span class="na">type=</span><span class="s">&quot;Observer&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;age&quot;</span> <span class="na">type=</span><span class="s">&quot;integer&quot;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;handedness&quot;</span> <span class="na">type=</span><span class="s">&quot;string&quot;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;name&quot;</span> <span class="na">type=</span><span class="s">&quot;string&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/entity&gt;</span>
+    <span class="nt">&lt;/types&gt;</span>
+    <span class="nt">&lt;objects&gt;</span>
+        <span class="nt">&lt;entity</span> <span class="na">id=</span><span class="s">&quot;1&quot;</span> <span class="na">type=</span><span class="s">&quot;Observer&quot;</span> <span class="na">uuid=</span><span class="s">&quot;e4a7918b-8317-427d-800e-1a221df38db2&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;age&quot;</span> <span class="na">value=</span><span class="s">&quot;200&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/entity&gt;</span>
+        <span class="nt">&lt;entity</span> <span class="na">id=</span><span class="s">&quot;2&quot;</span> <span class="na">type=</span><span class="s">&quot;Experiment&quot;</span> <span class="na">uuid=</span><span class="s">&quot;663076b4-f35d-40f2-8cc9-b06b2fb27e48&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;entity</span> <span class="na">id=</span><span class="s">&quot;3&quot;</span> <span class="na">type=</span><span class="s">&quot;Session&quot;</span> <span class="na">uuid=</span><span class="s">&quot;115bc5fe-da2c-458a-85d9-c8786762801f&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;entity</span> <span class="na">id=</span><span class="s">&quot;4&quot;</span> <span class="na">type=</span><span class="s">&quot;Trial&quot;</span> <span class="na">uuid=</span><span class="s">&quot;c26ebe68-c6d2-4a9a-bb73-2d783737b992&quot;</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;valid&quot;</span> <span class="na">value=</span><span class="s">&quot;FALSE&quot;</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/entity&gt;</span>
+                <span class="nt">&lt;entity</span> <span class="na">id=</span><span class="s">&quot;5&quot;</span> <span class="na">type=</span><span class="s">&quot;Trial&quot;</span> <span class="na">uuid=</span><span class="s">&quot;57019f27-8f43-445a-b41e-bfebe644f9d8&quot;</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;valid&quot;</span> <span class="na">value=</span><span class="s">&quot;TRUE&quot;</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/entity&gt;</span>
+            <span class="nt">&lt;/entity&gt;</span>
+        <span class="nt">&lt;/entity&gt;</span>
+    <span class="nt">&lt;/objects&gt;</span>
+    <span class="nt">&lt;relations&gt;</span>
+        <span class="nt">&lt;context</span> <span class="na">from=</span><span class="s">&quot;id:2&quot;</span> <span class="na">name=</span><span class="s">&quot;observed by&quot;</span> <span class="na">to=</span><span class="s">&quot;id:1&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/relations&gt;</span>
+<span class="nt">&lt;/xdapy&gt;</span>
+</pre></div>
+</div>
+<p>And a more complicated example:</p>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;xdapy&gt;</span>
+    <span class="nt">&lt;types&gt;</span>
+        <span class="nt">&lt;entity</span> <span class="na">type=</span><span class="s">&quot;Observer&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;age&quot;</span> <span class="na">type=</span><span class="s">&quot;integer&quot;</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;handedness&quot;</span> <span class="na">type=</span><span class="s">&quot;string&quot;</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;name&quot;</span> <span class="na">type=</span><span class="s">&quot;string&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/entity&gt;</span>
+    <span class="nt">&lt;/types&gt;</span>
+    <span class="nt">&lt;objects&gt;</span>
+        <span class="nt">&lt;entity</span> <span class="na">id=</span><span class="s">&quot;1&quot;</span> <span class="na">type=</span><span class="s">&quot;Observer&quot;</span> <span class="na">uuid=</span><span class="s">&quot;e4a7918b-8317-427d-800e-1a221df38db2&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;parameter</span> <span class="na">name=</span><span class="s">&quot;age&quot;</span> <span class="na">value=</span><span class="s">&quot;200&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/entity&gt;</span>
+    <span class="nt">&lt;/objects&gt;</span>
+    <span class="nt">&lt;relations</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/xdapy&gt;</span>
+</pre></div>
+</div>
+<p>References between several entity objects are expressed either by using the <tt class="xref py py-obj docutils literal"><span class="pre">id</span></tt> variable or the <tt class="xref py py-obj docutils literal"><span class="pre">uuid</span></tt> identifier. The <tt class="xref py py-obj docutils literal"><span class="pre">id</span></tt> is seen as a local identifier: It is not retained during import or export of objects. Each id is only unique for the medium it is defined in. E.g. for several input files of XML data, there may be several objects with <tt class="docutils literal"><span class="pre">id=&quot;92&quot;</span></tt>. All references with a specifier <tt class="docutils literal"><span class="pre">&quot;id:92&quot;</span></tt> can of course only be resolved inside that file.</p>
+<p>For global references, the object mapper introduces a UUID. This identifier may be used for stable referencing across several files.</p>
+<p>In general, the object mapper will take care of generating these UUID numbers. When creating a XML or JSON file for input, it is sufficient (and advisable) to only use <tt class="xref py py-obj docutils literal"><span class="pre">id</span></tt> references and leave out <tt class="xref py py-obj docutils literal"><span class="pre">uuid</span></tt> values.</p>
+</div>
+<div class="section" id="json">
+<h2>JSON<a class="headerlink" href="#json" title="Permalink to this headline">¶</a></h2>
+<p>Alternatively, there is also a simple JSON-compatible format available.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s2">&quot;objects&quot;</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> 
+            <span class="s2">&quot;parameters&quot;</span><span class="o">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;age&quot;</span><span class="o">:</span> <span class="mi">200</span>
+                <span class="p">}</span>
+            <span class="p">],</span> 
+            <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Observer&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;uuid&quot;</span><span class="o">:</span> <span class="s2">&quot;e4a7918b-8317-427d-800e-1a221df38db2&quot;</span>
+        <span class="p">},</span> 
+        <span class="p">{</span>
+            <span class="s2">&quot;children&quot;</span><span class="o">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;children&quot;</span><span class="o">:</span> <span class="p">[</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span> 
+                            <span class="s2">&quot;parameters&quot;</span><span class="o">:</span> <span class="p">[</span>
+                                <span class="p">{</span>
+                                    <span class="s2">&quot;valid&quot;</span><span class="o">:</span> <span class="kc">false</span>
+                                <span class="p">}</span>
+                            <span class="p">],</span> 
+                            <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Trial&quot;</span><span class="p">,</span> 
+                            <span class="s2">&quot;uuid&quot;</span><span class="o">:</span> <span class="s2">&quot;c26ebe68-c6d2-4a9a-bb73-2d783737b992&quot;</span>
+                        <span class="p">},</span> 
+                        <span class="p">{</span>
+                            <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span> 
+                            <span class="s2">&quot;parameters&quot;</span><span class="o">:</span> <span class="p">[</span>
+                                <span class="p">{</span>
+                                    <span class="s2">&quot;valid&quot;</span><span class="o">:</span> <span class="kc">true</span>
+                                <span class="p">}</span>
+                            <span class="p">],</span> 
+                            <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Trial&quot;</span><span class="p">,</span> 
+                            <span class="s2">&quot;uuid&quot;</span><span class="o">:</span> <span class="s2">&quot;57019f27-8f43-445a-b41e-bfebe644f9d8&quot;</span>
+                        <span class="p">}</span>
+                    <span class="p">],</span> 
+                    <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span> 
+                    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Session&quot;</span><span class="p">,</span> 
+                    <span class="s2">&quot;uuid&quot;</span><span class="o">:</span> <span class="s2">&quot;115bc5fe-da2c-458a-85d9-c8786762801f&quot;</span>
+                <span class="p">}</span>
+            <span class="p">],</span> 
+            <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span> 
+            <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Experiment&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;uuid&quot;</span><span class="o">:</span> <span class="s2">&quot;663076b4-f35d-40f2-8cc9-b06b2fb27e48&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span> 
+    <span class="s2">&quot;relations&quot;</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;from&quot;</span><span class="o">:</span> <span class="s2">&quot;id:2&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;observed by&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;relation&quot;</span><span class="o">:</span> <span class="s2">&quot;context&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;to&quot;</span><span class="o">:</span> <span class="s2">&quot;id:1&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span> 
+    <span class="s2">&quot;types&quot;</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;parameters&quot;</span><span class="o">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;rt&quot;</span><span class="p">,</span> 
+                    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;string&quot;</span>
+                <span class="p">},</span> 
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;valid&quot;</span><span class="p">,</span> 
+                    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;boolean&quot;</span>
+                <span class="p">},</span> 
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;response&quot;</span><span class="p">,</span> 
+                    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;string&quot;</span>
+                <span class="p">}</span>
+            <span class="p">],</span> 
+            <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Trial&quot;</span>
+        <span class="p">},</span> 
+        <span class="p">{</span>
+            <span class="s2">&quot;parameters&quot;</span><span class="o">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;project&quot;</span><span class="p">,</span> 
+                    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;string&quot;</span>
+                <span class="p">},</span> 
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;experimenter&quot;</span><span class="p">,</span> 
+                    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;string&quot;</span>
+                <span class="p">}</span>
+            <span class="p">],</span> 
+            <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Experiment&quot;</span>
+        <span class="p">},</span> 
+        <span class="p">{</span>
+            <span class="s2">&quot;parameters&quot;</span><span class="o">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;date&quot;</span><span class="p">,</span> 
+                    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;date&quot;</span>
+                <span class="p">}</span>
+            <span class="p">],</span> 
+            <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Session&quot;</span>
+        <span class="p">},</span> 
+        <span class="p">{</span>
+            <span class="s2">&quot;parameters&quot;</span><span class="o">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;age&quot;</span><span class="p">,</span> 
+                    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;integer&quot;</span>
+                <span class="p">},</span> 
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;handedness&quot;</span><span class="p">,</span> 
+                    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;string&quot;</span>
+                <span class="p">},</span> 
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> 
+                    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;string&quot;</span>
+                <span class="p">}</span>
+            <span class="p">],</span> 
+            <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Observer&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The JSON representation is compressed in the sense that the <tt class="xref py py-obj docutils literal"><span class="pre">parameters</span></tt> section of an entity is represented by a single dictionary (JSON object). In JSON we also use the directly corresponging representation of simple data types. E.g. we simply use <tt class="docutils literal"><span class="pre">1.0</span></tt> instead of <tt class="docutils literal"><span class="pre">&quot;1.0&quot;</span></tt> for a floating point number.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">I/O formats</a><ul>
+<li><a class="reference internal" href="#xml">XML</a></li>
+<li><a class="reference internal" href="#json">JSON</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/io_formats.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">xdapy 0.9.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

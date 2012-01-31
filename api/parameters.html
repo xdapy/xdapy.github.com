@@ -1,0 +1,1295 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Parameters &mdash; xdapy 0.9.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="xdapy 0.9.0 documentation" href="../index.html" />
+    <link rel="up" title="API" href="index.html" />
+    <link rel="prev" title="Operators" href="operators.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="operators.html" title="Operators"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-xdapy.parameters">
+<span id="parameters"></span><h1>Parameters<a class="headerlink" href="#module-xdapy.parameters" title="Permalink to this headline">¶</a></h1>
+<p>Provide a centralised typed key–value store.</p>
+<dl class="class">
+<dt id="xdapy.parameters.Parameter">
+<em class="property">class </em><tt class="descclassname">xdapy.parameters.</tt><tt class="descname">Parameter</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#Parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.Parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class &#8216;Parameter&#8217; is mapped on the table &#8216;parameters&#8217; and forms the
+superclass of all possible parameter types (e.g. for string, integer...).
+The name assigned to a Parameter must be a string.</p>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.Parameter.create" title="xdapy.parameters.Parameter.create"><tt class="xref py py-obj docutils literal"><span class="pre">create</span></tt></a>(name,&nbsp;value)</td>
+<td>Creates a new parameter instance with the correct type.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.parameters.Parameter.typed_class" title="xdapy.parameters.Parameter.typed_class"><tt class="xref py py-obj docutils literal"><span class="pre">typed_class</span></tt></a>()</td>
+<td>TODO: This class is unused. Is it needed?</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.Parameter.validate_name" title="xdapy.parameters.Parameter.validate_name"><tt class="xref py py-obj docutils literal"><span class="pre">validate_name</span></tt></a>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="xdapy.parameters.Parameter.id">
+<tt class="descname">id</tt><a class="headerlink" href="#xdapy.parameters.Parameter.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The auto-incrementing id column which all parameters share.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.Parameter.entity_id">
+<tt class="descname">entity_id</tt><a class="headerlink" href="#xdapy.parameters.Parameter.entity_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Foreign key reference to the entity.id.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.Parameter.name">
+<tt class="descname">name</tt><a class="headerlink" href="#xdapy.parameters.Parameter.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.Parameter.type">
+<tt class="descname">type</tt><a class="headerlink" href="#xdapy.parameters.Parameter.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The type of the parameter.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.Parameter.typed_class">
+<tt class="descname">typed_class</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#Parameter.typed_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.Parameter.typed_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO: This class is unused. Is it needed?</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.Parameter.__tablename__">
+<tt class="descname">__tablename__</tt><em class="property"> = 'parameters'</em><a class="headerlink" href="#xdapy.parameters.Parameter.__tablename__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.Parameter.__table_args__">
+<tt class="descname">__table_args__</tt><em class="property"> = (UniqueConstraint(Column('entity_id', Integer(), ForeignKey('entities.id'), table=&lt;parameters&gt;, nullable=False), Column('name', String(length=40), table=&lt;parameters&gt;)),)</em><a class="headerlink" href="#xdapy.parameters.Parameter.__table_args__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.Parameter.__mapper_args__">
+<tt class="descname">__mapper_args__</tt><em class="property"> = {'polymorphic_identity': 'parameter', 'polymorphic_on': Column('type', String(length=20), table=&lt;parameters&gt;, nullable=False)}</em><a class="headerlink" href="#xdapy.parameters.Parameter.__mapper_args__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type is the polymorphic parameter.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.Parameter.validate_name">
+<tt class="descname">validate_name</tt><big>(</big><em>key</em>, <em>parameter</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#Parameter.validate_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.Parameter.validate_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.Parameter.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#Parameter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.Parameter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should never be called directly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><strong>Exception</strong> :</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.Parameter.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#Parameter.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.Parameter.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.Parameter.value_string">
+<tt class="descname">value_string</tt><a class="reference internal" href="../_modules/xdapy/parameters.html#Parameter.value_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.Parameter.value_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value as a string.
+This function is preferred over str(self.value) for exporting values.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="xdapy.parameters.Parameter.create">
+<em class="property">static </em><tt class="descname">create</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#Parameter.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.Parameter.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new parameter instance with the correct type.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.Parameter.__mapper__">
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109ef72d0; Parameter&gt;</em><a class="headerlink" href="#xdapy.parameters.Parameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.Parameter.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.parameters'</em><a class="headerlink" href="#xdapy.parameters.Parameter.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.Parameter.__table__">
+<tt class="descname">__table__</tt><em class="property"> = Table('parameters', MetaData(bind=None), Column('id', Integer(), table=&lt;parameters&gt;, primary_key=True, nullable=False, default=Sequence('parameter_id_seq', metadata=MetaData(bind=None))), Column('entity_id', Integer(), ForeignKey('entities.id'), table=&lt;parameters&gt;, nullable=False), Column('name', String(length=40), table=&lt;parameters&gt;), Column('type', String(length=20), table=&lt;parameters&gt;, nullable=False), schema=None)</em><a class="headerlink" href="#xdapy.parameters.Parameter.__table__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.Parameter._sa_class_manager">
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.Parameter'&gt; at 7ffaac1b4a50&gt;</em><a class="headerlink" href="#xdapy.parameters.Parameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xdapy.parameters.StringParameter">
+<em class="property">class </em><tt class="descclassname">xdapy.parameters.</tt><tt class="descname">StringParameter</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#StringParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.StringParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class &#8216;StringParameter&#8217; is mapped on the table &#8216;parameters_string&#8217; and
+is derived from &#8216;Parameter&#8217;. The value assigned to a StringParameter must be
+a string.</p>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.StringParameter.accepts" title="xdapy.parameters.StringParameter.accepts"><tt class="xref py py-obj docutils literal"><span class="pre">accepts</span></tt></a>(value)</td>
+<td>returns true if we accept the value</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">create</span></tt>(name,&nbsp;value)</td>
+<td>Creates a new parameter instance with the correct type.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.StringParameter.from_string" title="xdapy.parameters.StringParameter.from_string"><tt class="xref py py-obj docutils literal"><span class="pre">from_string</span></tt></a>(value)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">typed_class</span></tt>()</td>
+<td>TODO: This class is unused. Is it needed?</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">validate_name</span></tt>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.parameters.StringParameter.validate_value" title="xdapy.parameters.StringParameter.validate_value"><tt class="xref py py-obj docutils literal"><span class="pre">validate_value</span></tt></a>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="xdapy.parameters.StringParameter.id">
+<tt class="descname">id</tt><a class="headerlink" href="#xdapy.parameters.StringParameter.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The auto-incrementing id column which all parameters share.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.StringParameter.__tablename__">
+<tt class="descname">__tablename__</tt><em class="property"> = 'parameters_string'</em><a class="headerlink" href="#xdapy.parameters.StringParameter.__tablename__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.StringParameter.__mapper_args__">
+<tt class="descname">__mapper_args__</tt><em class="property"> = {'inherits': &lt;class 'xdapy.parameters.Parameter'&gt;, 'exclude_properties': set([]), 'polymorphic_identity': 'string'}</em><a class="headerlink" href="#xdapy.parameters.StringParameter.__mapper_args__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="xdapy.parameters.StringParameter.from_string">
+<em class="property">classmethod </em><tt class="descname">from_string</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#StringParameter.from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.StringParameter.from_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.StringParameter.value_string">
+<tt class="descname">value_string</tt><a class="reference internal" href="../_modules/xdapy/parameters.html#StringParameter.value_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.StringParameter.value_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="xdapy.parameters.StringParameter.accepts">
+<em class="property">classmethod </em><tt class="descname">accepts</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#StringParameter.accepts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.StringParameter.accepts" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns true if we accept the value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.StringParameter.validate_value">
+<tt class="descname">validate_value</tt><big>(</big><em>key</em>, <em>parameter</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#StringParameter.validate_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.StringParameter.validate_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.StringParameter.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#StringParameter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.StringParameter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a parameter with the given name and string value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: string</strong> :</p>
+<blockquote>
+<div><p>A one-word-description of the parameter</p>
+</div></blockquote>
+<p><strong>value: string</strong> :</p>
+<blockquote>
+<div><p>The string associated with the name</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><strong>TypeError: Occurs if name is not a string or value is no a string.</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.StringParameter.name">
+<tt class="descname">name</tt><a class="headerlink" href="#xdapy.parameters.StringParameter.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.StringParameter.value">
+<tt class="descname">value</tt><a class="headerlink" href="#xdapy.parameters.StringParameter.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.StringParameter.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#StringParameter.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.StringParameter.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.StringParameter.__mapper__">
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109efc190; StringParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.StringParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.StringParameter.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.parameters'</em><a class="headerlink" href="#xdapy.parameters.StringParameter.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.StringParameter.__table__">
+<tt class="descname">__table__</tt><em class="property"> = Table('parameters_string', MetaData(bind=None), Column('id', Integer(), ForeignKey('parameters.id'), table=&lt;parameters_string&gt;, primary_key=True, nullable=False), Column('value', String(length=40), table=&lt;parameters_string&gt;), schema=None)</em><a class="headerlink" href="#xdapy.parameters.StringParameter.__table__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.StringParameter._sa_class_manager">
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.StringParameter'&gt; at 7ffaac1ccb60&gt;</em><a class="headerlink" href="#xdapy.parameters.StringParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.StringParameter.entity_id">
+<tt class="descname">entity_id</tt><a class="headerlink" href="#xdapy.parameters.StringParameter.entity_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Foreign key reference to the entity.id.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.StringParameter.type">
+<tt class="descname">type</tt><a class="headerlink" href="#xdapy.parameters.StringParameter.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The type of the parameter.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xdapy.parameters.IntegerParameter">
+<em class="property">class </em><tt class="descclassname">xdapy.parameters.</tt><tt class="descname">IntegerParameter</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#IntegerParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.IntegerParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class &#8216;IntegerParameter&#8217; is mapped on the table &#8216;parameters_integer&#8217; and
+is derived from Parameter. The value assigned to an IntegerParameter must be
+an integer.</p>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.IntegerParameter.accepts" title="xdapy.parameters.IntegerParameter.accepts"><tt class="xref py py-obj docutils literal"><span class="pre">accepts</span></tt></a>(value)</td>
+<td>returns true if we accept the value</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">create</span></tt>(name,&nbsp;value)</td>
+<td>Creates a new parameter instance with the correct type.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.IntegerParameter.from_string" title="xdapy.parameters.IntegerParameter.from_string"><tt class="xref py py-obj docutils literal"><span class="pre">from_string</span></tt></a>(value)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">typed_class</span></tt>()</td>
+<td>TODO: This class is unused. Is it needed?</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">validate_name</span></tt>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.parameters.IntegerParameter.validate_value" title="xdapy.parameters.IntegerParameter.validate_value"><tt class="xref py py-obj docutils literal"><span class="pre">validate_value</span></tt></a>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="xdapy.parameters.IntegerParameter.id">
+<tt class="descname">id</tt><a class="headerlink" href="#xdapy.parameters.IntegerParameter.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The auto-incrementing id column which all parameters share.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.IntegerParameter.__tablename__">
+<tt class="descname">__tablename__</tt><em class="property"> = 'parameters_integer'</em><a class="headerlink" href="#xdapy.parameters.IntegerParameter.__tablename__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.IntegerParameter.__mapper_args__">
+<tt class="descname">__mapper_args__</tt><em class="property"> = {'inherits': &lt;class 'xdapy.parameters.Parameter'&gt;, 'exclude_properties': set([]), 'polymorphic_identity': 'integer'}</em><a class="headerlink" href="#xdapy.parameters.IntegerParameter.__mapper_args__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="xdapy.parameters.IntegerParameter.from_string">
+<em class="property">classmethod </em><tt class="descname">from_string</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#IntegerParameter.from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.IntegerParameter.from_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="xdapy.parameters.IntegerParameter.accepts">
+<em class="property">classmethod </em><tt class="descname">accepts</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#IntegerParameter.accepts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.IntegerParameter.accepts" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns true if we accept the value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.IntegerParameter.validate_value">
+<tt class="descname">validate_value</tt><big>(</big><em>key</em>, <em>parameter</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#IntegerParameter.validate_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.IntegerParameter.validate_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.IntegerParameter.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#IntegerParameter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.IntegerParameter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a parameter with the given name and integer value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: string</strong> :</p>
+<blockquote>
+<div><p>A one-word-description of the parameter</p>
+</div></blockquote>
+<p><strong>value: int</strong> :</p>
+<blockquote>
+<div><p>The integer associated with the name</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><strong>TypeError: Occurs if name is not a string or value is no an integer.</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.IntegerParameter.name">
+<tt class="descname">name</tt><a class="headerlink" href="#xdapy.parameters.IntegerParameter.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.IntegerParameter.value">
+<tt class="descname">value</tt><a class="headerlink" href="#xdapy.parameters.IntegerParameter.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.IntegerParameter.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#IntegerParameter.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.IntegerParameter.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.IntegerParameter.__mapper__">
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f06250; IntegerParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.IntegerParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.IntegerParameter.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.parameters'</em><a class="headerlink" href="#xdapy.parameters.IntegerParameter.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.IntegerParameter.__table__">
+<tt class="descname">__table__</tt><em class="property"> = Table('parameters_integer', MetaData(bind=None), Column('id', Integer(), ForeignKey('parameters.id'), table=&lt;parameters_integer&gt;, primary_key=True, nullable=False), Column('value', Integer(), table=&lt;parameters_integer&gt;), schema=None)</em><a class="headerlink" href="#xdapy.parameters.IntegerParameter.__table__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.IntegerParameter._sa_class_manager">
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.IntegerParameter'&gt; at 7ffaac1ddc90&gt;</em><a class="headerlink" href="#xdapy.parameters.IntegerParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.IntegerParameter.entity_id">
+<tt class="descname">entity_id</tt><a class="headerlink" href="#xdapy.parameters.IntegerParameter.entity_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Foreign key reference to the entity.id.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.IntegerParameter.type">
+<tt class="descname">type</tt><a class="headerlink" href="#xdapy.parameters.IntegerParameter.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The type of the parameter.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xdapy.parameters.FloatParameter">
+<em class="property">class </em><tt class="descclassname">xdapy.parameters.</tt><tt class="descname">FloatParameter</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#FloatParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.FloatParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class &#8216;FloatParameter&#8217; is mapped on the table &#8216;parameters_float&#8217; and
+is derived from &#8216;Parameter&#8217;. The value assigned to a FloatParameter must be
+a float.</p>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.FloatParameter.accepts" title="xdapy.parameters.FloatParameter.accepts"><tt class="xref py py-obj docutils literal"><span class="pre">accepts</span></tt></a>(value)</td>
+<td>returns true if we accept the value</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">create</span></tt>(name,&nbsp;value)</td>
+<td>Creates a new parameter instance with the correct type.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.FloatParameter.from_string" title="xdapy.parameters.FloatParameter.from_string"><tt class="xref py py-obj docutils literal"><span class="pre">from_string</span></tt></a>(value)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">typed_class</span></tt>()</td>
+<td>TODO: This class is unused. Is it needed?</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">validate_name</span></tt>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.parameters.FloatParameter.validate_value" title="xdapy.parameters.FloatParameter.validate_value"><tt class="xref py py-obj docutils literal"><span class="pre">validate_value</span></tt></a>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="xdapy.parameters.FloatParameter.id">
+<tt class="descname">id</tt><a class="headerlink" href="#xdapy.parameters.FloatParameter.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The auto-incrementing id column which all parameters share.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.FloatParameter.__tablename__">
+<tt class="descname">__tablename__</tt><em class="property"> = 'parameters_float'</em><a class="headerlink" href="#xdapy.parameters.FloatParameter.__tablename__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.FloatParameter.__mapper_args__">
+<tt class="descname">__mapper_args__</tt><em class="property"> = {'inherits': &lt;class 'xdapy.parameters.Parameter'&gt;, 'exclude_properties': set([]), 'polymorphic_identity': 'float'}</em><a class="headerlink" href="#xdapy.parameters.FloatParameter.__mapper_args__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="xdapy.parameters.FloatParameter.from_string">
+<em class="property">classmethod </em><tt class="descname">from_string</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#FloatParameter.from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.FloatParameter.from_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="xdapy.parameters.FloatParameter.accepts">
+<em class="property">classmethod </em><tt class="descname">accepts</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#FloatParameter.accepts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.FloatParameter.accepts" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns true if we accept the value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.FloatParameter.validate_value">
+<tt class="descname">validate_value</tt><big>(</big><em>key</em>, <em>parameter</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#FloatParameter.validate_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.FloatParameter.validate_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.FloatParameter.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#FloatParameter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.FloatParameter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a parameter with the given name and string value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: string</strong> :</p>
+<blockquote>
+<div><p>A one-word-description of the parameter</p>
+</div></blockquote>
+<p><strong>value: float</strong> :</p>
+<blockquote>
+<div><p>The float associated with the name</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><strong>TypeError: Occurs if name is not a string or value is no float.</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.FloatParameter.name">
+<tt class="descname">name</tt><a class="headerlink" href="#xdapy.parameters.FloatParameter.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.FloatParameter.value">
+<tt class="descname">value</tt><a class="headerlink" href="#xdapy.parameters.FloatParameter.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.FloatParameter.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#FloatParameter.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.FloatParameter.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.FloatParameter.__mapper__">
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f0c9d0; FloatParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.FloatParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.FloatParameter.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.parameters'</em><a class="headerlink" href="#xdapy.parameters.FloatParameter.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.FloatParameter.__table__">
+<tt class="descname">__table__</tt><em class="property"> = Table('parameters_float', MetaData(bind=None), Column('id', Integer(), ForeignKey('parameters.id'), table=&lt;parameters_float&gt;, primary_key=True, nullable=False), Column('value', Float(), table=&lt;parameters_float&gt;), schema=None)</em><a class="headerlink" href="#xdapy.parameters.FloatParameter.__table__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.FloatParameter._sa_class_manager">
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.FloatParameter'&gt; at 7ffaac1ebde0&gt;</em><a class="headerlink" href="#xdapy.parameters.FloatParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.FloatParameter.entity_id">
+<tt class="descname">entity_id</tt><a class="headerlink" href="#xdapy.parameters.FloatParameter.entity_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Foreign key reference to the entity.id.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.FloatParameter.type">
+<tt class="descname">type</tt><a class="headerlink" href="#xdapy.parameters.FloatParameter.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The type of the parameter.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xdapy.parameters.DateParameter">
+<em class="property">class </em><tt class="descclassname">xdapy.parameters.</tt><tt class="descname">DateParameter</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#DateParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.DateParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class &#8216;FloatParameter&#8217; is mapped on the table &#8216;parameters_date&#8217; and
+is derived from &#8216;Parameter&#8217;. The value assigned to a DateParameter must be
+a datetime.date.</p>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.DateParameter.accepts" title="xdapy.parameters.DateParameter.accepts"><tt class="xref py py-obj docutils literal"><span class="pre">accepts</span></tt></a>(value)</td>
+<td>returns true if we accept the value</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">create</span></tt>(name,&nbsp;value)</td>
+<td>Creates a new parameter instance with the correct type.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.DateParameter.from_string" title="xdapy.parameters.DateParameter.from_string"><tt class="xref py py-obj docutils literal"><span class="pre">from_string</span></tt></a>(value)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">typed_class</span></tt>()</td>
+<td>TODO: This class is unused. Is it needed?</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">validate_name</span></tt>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.parameters.DateParameter.validate_value" title="xdapy.parameters.DateParameter.validate_value"><tt class="xref py py-obj docutils literal"><span class="pre">validate_value</span></tt></a>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="xdapy.parameters.DateParameter.id">
+<tt class="descname">id</tt><a class="headerlink" href="#xdapy.parameters.DateParameter.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The auto-incrementing id column which all parameters share.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateParameter.__tablename__">
+<tt class="descname">__tablename__</tt><em class="property"> = 'parameters_date'</em><a class="headerlink" href="#xdapy.parameters.DateParameter.__tablename__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateParameter.__mapper_args__">
+<tt class="descname">__mapper_args__</tt><em class="property"> = {'inherits': &lt;class 'xdapy.parameters.Parameter'&gt;, 'exclude_properties': set([]), 'polymorphic_identity': 'date'}</em><a class="headerlink" href="#xdapy.parameters.DateParameter.__mapper_args__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="xdapy.parameters.DateParameter.from_string">
+<em class="property">classmethod </em><tt class="descname">from_string</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#DateParameter.from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.DateParameter.from_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateParameter.value_string">
+<tt class="descname">value_string</tt><a class="reference internal" href="../_modules/xdapy/parameters.html#DateParameter.value_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.DateParameter.value_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="xdapy.parameters.DateParameter.accepts">
+<em class="property">classmethod </em><tt class="descname">accepts</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#DateParameter.accepts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.DateParameter.accepts" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns true if we accept the value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.DateParameter.validate_value">
+<tt class="descname">validate_value</tt><big>(</big><em>key</em>, <em>parameter</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#DateParameter.validate_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.DateParameter.validate_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.DateParameter.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#DateParameter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.DateParameter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a parameter with the given name and datetime.date.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: string</strong> :</p>
+<blockquote>
+<div><p>A one-word-description of the parameter</p>
+</div></blockquote>
+<p><strong>value: date</strong> :</p>
+<blockquote>
+<div><p>The datetime.date associated with the name</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><strong>TypeError: Occurs if name is not a string or value is no a datetime.date.</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateParameter.name">
+<tt class="descname">name</tt><a class="headerlink" href="#xdapy.parameters.DateParameter.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateParameter.value">
+<tt class="descname">value</tt><a class="headerlink" href="#xdapy.parameters.DateParameter.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.DateParameter.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#DateParameter.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.DateParameter.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateParameter.__mapper__">
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f17150; DateParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.DateParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateParameter.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.parameters'</em><a class="headerlink" href="#xdapy.parameters.DateParameter.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateParameter.__table__">
+<tt class="descname">__table__</tt><em class="property"> = Table('parameters_date', MetaData(bind=None), Column('id', Integer(), ForeignKey('parameters.id'), table=&lt;parameters_date&gt;, primary_key=True, nullable=False), Column('value', Date(), table=&lt;parameters_date&gt;), schema=None)</em><a class="headerlink" href="#xdapy.parameters.DateParameter.__table__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateParameter._sa_class_manager">
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.DateParameter'&gt; at 7ffaac1f9e20&gt;</em><a class="headerlink" href="#xdapy.parameters.DateParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateParameter.entity_id">
+<tt class="descname">entity_id</tt><a class="headerlink" href="#xdapy.parameters.DateParameter.entity_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Foreign key reference to the entity.id.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateParameter.type">
+<tt class="descname">type</tt><a class="headerlink" href="#xdapy.parameters.DateParameter.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The type of the parameter.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xdapy.parameters.TimeParameter">
+<em class="property">class </em><tt class="descclassname">xdapy.parameters.</tt><tt class="descname">TimeParameter</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#TimeParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.TimeParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class &#8216;TimeParameter&#8217; is mapped on the table &#8216;parameters_time&#8217; and
+is derived from &#8216;Parameter&#8217;. The value assigned to a TimeParameter must be
+a datetime.time.</p>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.TimeParameter.accepts" title="xdapy.parameters.TimeParameter.accepts"><tt class="xref py py-obj docutils literal"><span class="pre">accepts</span></tt></a>(value)</td>
+<td>returns true if we accept the value</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">create</span></tt>(name,&nbsp;value)</td>
+<td>Creates a new parameter instance with the correct type.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.TimeParameter.from_string" title="xdapy.parameters.TimeParameter.from_string"><tt class="xref py py-obj docutils literal"><span class="pre">from_string</span></tt></a>(value)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">typed_class</span></tt>()</td>
+<td>TODO: This class is unused. Is it needed?</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">validate_name</span></tt>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.parameters.TimeParameter.validate_value" title="xdapy.parameters.TimeParameter.validate_value"><tt class="xref py py-obj docutils literal"><span class="pre">validate_value</span></tt></a>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="xdapy.parameters.TimeParameter.id">
+<tt class="descname">id</tt><a class="headerlink" href="#xdapy.parameters.TimeParameter.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The auto-incrementing id column which all parameters share.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.TimeParameter.__tablename__">
+<tt class="descname">__tablename__</tt><em class="property"> = 'parameters_time'</em><a class="headerlink" href="#xdapy.parameters.TimeParameter.__tablename__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.TimeParameter.__mapper_args__">
+<tt class="descname">__mapper_args__</tt><em class="property"> = {'inherits': &lt;class 'xdapy.parameters.Parameter'&gt;, 'exclude_properties': set([]), 'polymorphic_identity': 'time'}</em><a class="headerlink" href="#xdapy.parameters.TimeParameter.__mapper_args__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="xdapy.parameters.TimeParameter.from_string">
+<em class="property">classmethod </em><tt class="descname">from_string</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#TimeParameter.from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.TimeParameter.from_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.TimeParameter.value_string">
+<tt class="descname">value_string</tt><a class="reference internal" href="../_modules/xdapy/parameters.html#TimeParameter.value_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.TimeParameter.value_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="xdapy.parameters.TimeParameter.accepts">
+<em class="property">classmethod </em><tt class="descname">accepts</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#TimeParameter.accepts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.TimeParameter.accepts" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns true if we accept the value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.TimeParameter.validate_value">
+<tt class="descname">validate_value</tt><big>(</big><em>key</em>, <em>parameter</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#TimeParameter.validate_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.TimeParameter.validate_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.TimeParameter.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#TimeParameter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.TimeParameter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a parameter with the given name and datetime.time value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: string</strong> :</p>
+<blockquote>
+<div><p>A one-word-description of the parameter</p>
+</div></blockquote>
+<p><strong>value: time</strong> :</p>
+<blockquote>
+<div><p>The datetime.time object associated with the name</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><strong>TypeError: Occurs if name is not a string or value is not datetime.time.</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.TimeParameter.name">
+<tt class="descname">name</tt><a class="headerlink" href="#xdapy.parameters.TimeParameter.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.TimeParameter.value">
+<tt class="descname">value</tt><a class="headerlink" href="#xdapy.parameters.TimeParameter.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.TimeParameter.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#TimeParameter.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.TimeParameter.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.TimeParameter.__mapper__">
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f1c910; TimeParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.TimeParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.TimeParameter.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.parameters'</em><a class="headerlink" href="#xdapy.parameters.TimeParameter.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.TimeParameter.__table__">
+<tt class="descname">__table__</tt><em class="property"> = Table('parameters_time', MetaData(bind=None), Column('id', Integer(), ForeignKey('parameters.id'), table=&lt;parameters_time&gt;, primary_key=True, nullable=False), Column('value', Time(), table=&lt;parameters_time&gt;), schema=None)</em><a class="headerlink" href="#xdapy.parameters.TimeParameter.__table__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.TimeParameter._sa_class_manager">
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.TimeParameter'&gt; at 7ffaac20cb90&gt;</em><a class="headerlink" href="#xdapy.parameters.TimeParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.TimeParameter.entity_id">
+<tt class="descname">entity_id</tt><a class="headerlink" href="#xdapy.parameters.TimeParameter.entity_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Foreign key reference to the entity.id.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.TimeParameter.type">
+<tt class="descname">type</tt><a class="headerlink" href="#xdapy.parameters.TimeParameter.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The type of the parameter.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xdapy.parameters.DateTimeParameter">
+<em class="property">class </em><tt class="descclassname">xdapy.parameters.</tt><tt class="descname">DateTimeParameter</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#DateTimeParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.DateTimeParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class &#8216;DateTimeParameter&#8217; is mapped on the table &#8216;parameters_datetime&#8217; and
+is derived from &#8216;Parameter&#8217;. The value assigned to a DateTimeParameter must be
+a datetime.datetime.</p>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.DateTimeParameter.accepts" title="xdapy.parameters.DateTimeParameter.accepts"><tt class="xref py py-obj docutils literal"><span class="pre">accepts</span></tt></a>(value)</td>
+<td>returns true if we accept the value</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">create</span></tt>(name,&nbsp;value)</td>
+<td>Creates a new parameter instance with the correct type.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.DateTimeParameter.from_string" title="xdapy.parameters.DateTimeParameter.from_string"><tt class="xref py py-obj docutils literal"><span class="pre">from_string</span></tt></a>(value)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">typed_class</span></tt>()</td>
+<td>TODO: This class is unused. Is it needed?</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">validate_name</span></tt>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.parameters.DateTimeParameter.validate_value" title="xdapy.parameters.DateTimeParameter.validate_value"><tt class="xref py py-obj docutils literal"><span class="pre">validate_value</span></tt></a>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="xdapy.parameters.DateTimeParameter.id">
+<tt class="descname">id</tt><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The auto-incrementing id column which all parameters share.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateTimeParameter.__tablename__">
+<tt class="descname">__tablename__</tt><em class="property"> = 'parameters_datetime'</em><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.__tablename__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateTimeParameter.__mapper_args__">
+<tt class="descname">__mapper_args__</tt><em class="property"> = {'inherits': &lt;class 'xdapy.parameters.Parameter'&gt;, 'exclude_properties': set([]), 'polymorphic_identity': 'datetime'}</em><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.__mapper_args__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="xdapy.parameters.DateTimeParameter.from_string">
+<em class="property">classmethod </em><tt class="descname">from_string</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#DateTimeParameter.from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.from_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateTimeParameter.value_string">
+<tt class="descname">value_string</tt><a class="reference internal" href="../_modules/xdapy/parameters.html#DateTimeParameter.value_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.value_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="xdapy.parameters.DateTimeParameter.accepts">
+<em class="property">classmethod </em><tt class="descname">accepts</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#DateTimeParameter.accepts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.accepts" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns true if we accept the value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.DateTimeParameter.validate_value">
+<tt class="descname">validate_value</tt><big>(</big><em>key</em>, <em>parameter</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#DateTimeParameter.validate_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.validate_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.DateTimeParameter.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#DateTimeParameter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a parameter with the given name and datetime.datetime value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: string</strong> :</p>
+<blockquote>
+<div><p>A one-word-description of the parameter</p>
+</div></blockquote>
+<p><strong>value: datetime</strong> :</p>
+<blockquote>
+<div><p>The datetime.datetime object associated with the name</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><strong>TypeError: Occurs if name is not a string or value is no datetime.datetime.</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateTimeParameter.name">
+<tt class="descname">name</tt><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateTimeParameter.value">
+<tt class="descname">value</tt><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.DateTimeParameter.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#DateTimeParameter.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateTimeParameter.__mapper__">
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f260d0; DateTimeParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateTimeParameter.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.parameters'</em><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateTimeParameter.__table__">
+<tt class="descname">__table__</tt><em class="property"> = Table('parameters_datetime', MetaData(bind=None), Column('id', Integer(), ForeignKey('parameters.id'), table=&lt;parameters_datetime&gt;, primary_key=True, nullable=False), Column('value', DateTime(), table=&lt;parameters_datetime&gt;), schema=None)</em><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.__table__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateTimeParameter._sa_class_manager">
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.DateTimeParameter'&gt; at 7ffaac21c480&gt;</em><a class="headerlink" href="#xdapy.parameters.DateTimeParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateTimeParameter.entity_id">
+<tt class="descname">entity_id</tt><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.entity_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Foreign key reference to the entity.id.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.DateTimeParameter.type">
+<tt class="descname">type</tt><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The type of the parameter.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xdapy.parameters.BooleanParameter">
+<em class="property">class </em><tt class="descclassname">xdapy.parameters.</tt><tt class="descname">BooleanParameter</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#BooleanParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.BooleanParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class &#8216;BooleanParameter&#8217; is mapped on the table &#8216;parameters_boolean&#8217; and
+is derived from &#8216;Parameter&#8217;. The value assigned to a BooleanParameter must be
+a boolean.</p>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.BooleanParameter.accepts" title="xdapy.parameters.BooleanParameter.accepts"><tt class="xref py py-obj docutils literal"><span class="pre">accepts</span></tt></a>(value)</td>
+<td>returns true if we accept the value</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">create</span></tt>(name,&nbsp;value)</td>
+<td>Creates a new parameter instance with the correct type.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.parameters.BooleanParameter.from_string" title="xdapy.parameters.BooleanParameter.from_string"><tt class="xref py py-obj docutils literal"><span class="pre">from_string</span></tt></a>(value)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">typed_class</span></tt>()</td>
+<td>TODO: This class is unused. Is it needed?</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">validate_name</span></tt>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.parameters.BooleanParameter.validate_value" title="xdapy.parameters.BooleanParameter.validate_value"><tt class="xref py py-obj docutils literal"><span class="pre">validate_value</span></tt></a>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="xdapy.parameters.BooleanParameter.id">
+<tt class="descname">id</tt><a class="headerlink" href="#xdapy.parameters.BooleanParameter.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The auto-incrementing id column which all parameters share.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.BooleanParameter.__tablename__">
+<tt class="descname">__tablename__</tt><em class="property"> = 'parameters_boolean'</em><a class="headerlink" href="#xdapy.parameters.BooleanParameter.__tablename__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.BooleanParameter.__mapper_args__">
+<tt class="descname">__mapper_args__</tt><em class="property"> = {'inherits': &lt;class 'xdapy.parameters.Parameter'&gt;, 'exclude_properties': set([]), 'polymorphic_identity': 'boolean'}</em><a class="headerlink" href="#xdapy.parameters.BooleanParameter.__mapper_args__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="xdapy.parameters.BooleanParameter.from_string">
+<em class="property">classmethod </em><tt class="descname">from_string</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#BooleanParameter.from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.BooleanParameter.from_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.BooleanParameter.value_string">
+<tt class="descname">value_string</tt><a class="reference internal" href="../_modules/xdapy/parameters.html#BooleanParameter.value_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.BooleanParameter.value_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="xdapy.parameters.BooleanParameter.accepts">
+<em class="property">classmethod </em><tt class="descname">accepts</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#BooleanParameter.accepts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.BooleanParameter.accepts" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns true if we accept the value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.BooleanParameter.validate_value">
+<tt class="descname">validate_value</tt><big>(</big><em>key</em>, <em>parameter</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#BooleanParameter.validate_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.BooleanParameter.validate_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.BooleanParameter.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#BooleanParameter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.BooleanParameter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a parameter with the given name and boolean value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: string</strong> :</p>
+<blockquote>
+<div><p>A one-word-description of the parameter</p>
+</div></blockquote>
+<p><strong>value: bool</strong> :</p>
+<blockquote>
+<div><p>The boolean object associated with the name</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><strong>TypeError: Occurs if name is not a string or value is no boolean.</strong> :</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.BooleanParameter.name">
+<tt class="descname">name</tt><a class="headerlink" href="#xdapy.parameters.BooleanParameter.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.BooleanParameter.__mapper__">
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f2a9d0; BooleanParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.BooleanParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.BooleanParameter.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.parameters'</em><a class="headerlink" href="#xdapy.parameters.BooleanParameter.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.BooleanParameter.__table__">
+<tt class="descname">__table__</tt><em class="property"> = Table('parameters_boolean', MetaData(bind=None), Column('id', Integer(), ForeignKey('parameters.id'), table=&lt;parameters_boolean&gt;, primary_key=True, nullable=False), Column('value', Boolean(), table=&lt;parameters_boolean&gt;), schema=None)</em><a class="headerlink" href="#xdapy.parameters.BooleanParameter.__table__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.BooleanParameter._sa_class_manager">
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.BooleanParameter'&gt; at 7ffaac22e780&gt;</em><a class="headerlink" href="#xdapy.parameters.BooleanParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.BooleanParameter.entity_id">
+<tt class="descname">entity_id</tt><a class="headerlink" href="#xdapy.parameters.BooleanParameter.entity_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Foreign key reference to the entity.id.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.BooleanParameter.type">
+<tt class="descname">type</tt><a class="headerlink" href="#xdapy.parameters.BooleanParameter.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The type of the parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.parameters.BooleanParameter.value">
+<tt class="descname">value</tt><a class="headerlink" href="#xdapy.parameters.BooleanParameter.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.parameters.BooleanParameter.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#BooleanParameter.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.BooleanParameter.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="xdapy.parameters.parameter_ids">
+<tt class="descclassname">xdapy.parameters.</tt><tt class="descname">parameter_ids</tt><em class="property"> = ['datetime', 'date', 'time', 'integer', 'float', 'boolean', 'string']</em><a class="headerlink" href="#xdapy.parameters.parameter_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>The polymorphic ids of the parameters.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="xdapy.parameters.parameter_for_type">
+<tt class="descclassname">xdapy.parameters.</tt><tt class="descname">parameter_for_type</tt><big>(</big><em>typename</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#parameter_for_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.parameter_for_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the parameter class for the given <tt class="xref py py-obj docutils literal"><span class="pre">typename</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>typename: string</strong> :</p>
+<blockquote class="last">
+<div><p>The polymorphic identity of the <a class="reference internal" href="#xdapy.parameters.Parameter" title="xdapy.parameters.Parameter"><tt class="xref py py-obj docutils literal"><span class="pre">Parameter</span></tt></a> class.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="xdapy.parameters.find_accepting_class">
+<tt class="descclassname">xdapy.parameters.</tt><tt class="descname">find_accepting_class</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#find_accepting_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.find_accepting_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Goes through all classes and the first class which accepts the given <tt class="xref py py-obj docutils literal"><span class="pre">value</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>value: object</strong> :</p>
+<blockquote class="last">
+<div><p>Some object to check.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="operators.html"
+                        title="previous chapter">Operators</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/api/parameters.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="operators.html" title="Operators"
+             >previous</a> |</li>
+        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" >API</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

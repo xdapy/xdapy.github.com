@@ -1,0 +1,627 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>xdapy.parameters &mdash; xdapy 0.9.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.9.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="xdapy 0.9.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for xdapy.parameters</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">Provide a centralised typed key–value store.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext&quot;</span>
+
+<span class="n">__authors__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&quot;Hannah Dold&quot; &lt;hannah.dold@mailbox.tu-berlin.de&gt;&#39;</span><span class="p">,</span>
+               <span class="s">&#39;&quot;Rike-Benjamin Schuppner&quot; &lt;rikebs@debilski.de&gt;&#39;</span><span class="p">]</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Column</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">,</span> \
+     <span class="n">String</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Date</span><span class="p">,</span> <span class="n">Time</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Boolean</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">validates</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.schema</span> <span class="kn">import</span> <span class="n">UniqueConstraint</span>
+
+<span class="kn">from</span> <span class="nn">xdapy</span> <span class="kn">import</span> <span class="n">Base</span>
+<span class="kn">from</span> <span class="nn">xdapy.errors</span> <span class="kn">import</span> <span class="n">StringConversionError</span>
+
+
+<div class="viewcode-block" id="Parameter"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.Parameter">[docs]</a><span class="k">class</span> <span class="nc">Parameter</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The class &#39;Parameter&#39; is mapped on the table &#39;parameters&#39; and forms the</span>
+<span class="sd">    superclass of all possible parameter types (e.g. for string, integer...).</span>
+<span class="sd">    The name assigned to a Parameter must be a string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">(</span><span class="s">&#39;parameter_id_seq&#39;</span><span class="p">),</span> <span class="n">autoincrement</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">doc</span><span class="o">=</span><span class="s">&quot;The auto-incrementing id column which all parameters share.&quot;</span><span class="p">)</span>
+    <span class="n">entity_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&quot;entities.id&quot;</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">doc</span><span class="o">=</span><span class="s">&quot;Foreign key reference to the entity.id.&quot;</span><span class="p">)</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">40</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">doc</span><span class="o">=</span><span class="s">&quot;The name of the parameter.&quot;</span><span class="p">)</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">doc</span><span class="o">=</span><span class="s">&quot;The type of the parameter.&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Parameter.typed_class"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.Parameter.typed_class">[docs]</a>    <span class="k">def</span> <span class="nf">typed_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        TODO: This class is unused. Is it needed?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">parameter_for_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Parameter</span>
+</div>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;parameters&#39;</span>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">(</span><span class="n">UniqueConstraint</span><span class="p">(</span><span class="n">entity_id</span><span class="p">,</span> <span class="n">name</span><span class="p">),)</span>
+    <span class="c">#: Type is the polymorphic parameter.</span>
+    <span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;polymorphic_on&#39;</span><span class="p">:</span><span class="nb">type</span><span class="p">,</span> <span class="s">&#39;polymorphic_identity&#39;</span><span class="p">:</span><span class="s">&#39;parameter&#39;</span><span class="p">}</span>
+
+    <span class="nd">@validates</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="Parameter.validate_name"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.Parameter.validate_name">[docs]</a>    <span class="k">def</span> <span class="nf">validate_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">parameter</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Argument must be unicode or string&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">parameter</span>
+</div>
+<div class="viewcode-block" id="Parameter.__init__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.Parameter.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This method should never be called directly.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        Exception</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Parameter.__init__ should not be called directly.&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Parameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.Parameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Parameter.value_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.Parameter.value_string">[docs]</a>    <span class="k">def</span> <span class="nf">value_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the value as a string.</span>
+<span class="sd">        This function is preferred over str(self.value) for exporting values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">unicode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Parameter.create"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.Parameter.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new parameter instance with the correct type.&quot;&quot;&quot;</span>
+        <span class="n">cls</span> <span class="o">=</span> <span class="n">find_accepting_class</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="StringParameter"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.StringParameter">[docs]</a><span class="k">class</span> <span class="nc">StringParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The class &#39;StringParameter&#39; is mapped on the table &#39;parameters_string&#39; and</span>
+<span class="sd">    is derived from &#39;Parameter&#39;. The value assigned to a StringParameter must be</span>
+<span class="sd">    a string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;parameters.id&#39;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">40</span><span class="p">))</span>
+
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;parameters_string&#39;</span>
+    <span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;polymorphic_identity&#39;</span><span class="p">:</span><span class="s">&#39;string&#39;</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="StringParameter.from_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.StringParameter.from_string">[docs]</a>    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="StringParameter.value_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.StringParameter.value_string">[docs]</a>    <span class="k">def</span> <span class="nf">value_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="StringParameter.accepts"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.StringParameter.accepts">[docs]</a>    <span class="k">def</span> <span class="nf">accepts</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;returns true if we accept the value&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span>
+</div>
+    <span class="nd">@validates</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="StringParameter.validate_value"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.StringParameter.validate_value">[docs]</a>    <span class="k">def</span> <span class="nf">validate_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">parameter</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Argument must be unicode or string&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parameter</span>
+</div>
+<div class="viewcode-block" id="StringParameter.__init__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.StringParameter.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a parameter with the given name and string value.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name: string</span>
+<span class="sd">            A one-word-description of the parameter</span>
+<span class="sd">        value: string</span>
+<span class="sd">            The string associated with the name</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError: Occurs if name is not a string or value is no a string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+<div class="viewcode-block" id="StringParameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.StringParameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;,&#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_string</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="IntegerParameter"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.IntegerParameter">[docs]</a><span class="k">class</span> <span class="nc">IntegerParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The class &#39;IntegerParameter&#39; is mapped on the table &#39;parameters_integer&#39; and</span>
+<span class="sd">    is derived from Parameter. The value assigned to an IntegerParameter must be</span>
+<span class="sd">    an integer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;parameters.id&#39;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">)</span>
+
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;parameters_integer&#39;</span>
+    <span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;polymorphic_identity&#39;</span><span class="p">:</span><span class="s">&#39;integer&#39;</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="IntegerParameter.from_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.IntegerParameter.from_string">[docs]</a>    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">StringConversionError</span><span class="p">(</span><span class="s">&quot;Could not convert value &#39;{0}&#39; to integer.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="IntegerParameter.accepts"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.IntegerParameter.accepts">[docs]</a>    <span class="k">def</span> <span class="nf">accepts</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;returns true if we accept the value&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">long</span><span class="p">)</span>
+</div>
+    <span class="nd">@validates</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="IntegerParameter.validate_value"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.IntegerParameter.validate_value">[docs]</a>    <span class="k">def</span> <span class="nf">validate_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">accepts</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Argument must be an integer&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parameter</span>
+</div>
+<div class="viewcode-block" id="IntegerParameter.__init__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.IntegerParameter.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a parameter with the given name and integer value.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name: string</span>
+<span class="sd">            A one-word-description of the parameter</span>
+<span class="sd">        value: int</span>
+<span class="sd">            The integer associated with the name</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError: Occurs if name is not a string or value is no an integer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+<div class="viewcode-block" id="IntegerParameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.IntegerParameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;,</span><span class="si">%s</span><span class="s">)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_string</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="FloatParameter"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.FloatParameter">[docs]</a><span class="k">class</span> <span class="nc">FloatParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The class &#39;FloatParameter&#39; is mapped on the table &#39;parameters_float&#39; and</span>
+<span class="sd">    is derived from &#39;Parameter&#39;. The value assigned to a FloatParameter must be</span>
+<span class="sd">    a float.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;parameters.id&#39;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="n">Float</span><span class="p">)</span>
+
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;parameters_float&#39;</span>
+    <span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;polymorphic_identity&#39;</span><span class="p">:</span><span class="s">&#39;float&#39;</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FloatParameter.from_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.FloatParameter.from_string">[docs]</a>    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">StringConversionError</span><span class="p">(</span><span class="s">&quot;Could not convert value &#39;}&#39; to float.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FloatParameter.accepts"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.FloatParameter.accepts">[docs]</a>    <span class="k">def</span> <span class="nf">accepts</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;returns true if we accept the value&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+</div>
+    <span class="nd">@validates</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="FloatParameter.validate_value"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.FloatParameter.validate_value">[docs]</a>    <span class="k">def</span> <span class="nf">validate_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">accepts</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Argument must be a float&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parameter</span>
+</div>
+<div class="viewcode-block" id="FloatParameter.__init__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.FloatParameter.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a parameter with the given name and string value.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name: string</span>
+<span class="sd">            A one-word-description of the parameter</span>
+<span class="sd">        value: float</span>
+<span class="sd">            The float associated with the name</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError: Occurs if name is not a string or value is no float.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+<div class="viewcode-block" id="FloatParameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.FloatParameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;,&#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_string</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="DateParameter"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateParameter">[docs]</a><span class="k">class</span> <span class="nc">DateParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The class &#39;FloatParameter&#39; is mapped on the table &#39;parameters_date&#39; and</span>
+<span class="sd">    is derived from &#39;Parameter&#39;. The value assigned to a DateParameter must be</span>
+<span class="sd">    a datetime.date.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;parameters.id&#39;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="n">Date</span><span class="p">)</span>
+
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;parameters_date&#39;</span>
+    <span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;polymorphic_identity&#39;</span><span class="p">:</span><span class="s">&#39;date&#39;</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="DateParameter.from_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateParameter.from_string">[docs]</a>    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">StringConversionError</span><span class="p">(</span><span class="s">&quot;Could not convert value &#39;{0}&#39; to date.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="DateParameter.value_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateParameter.value_string">[docs]</a>    <span class="k">def</span> <span class="nf">value_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s">&quot;</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="DateParameter.accepts"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateParameter.accepts">[docs]</a>    <span class="k">def</span> <span class="nf">accepts</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;returns true if we accept the value&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span> <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+    <span class="nd">@validates</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="DateParameter.validate_value"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateParameter.validate_value">[docs]</a>    <span class="k">def</span> <span class="nf">validate_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">accepts</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">StringConversionError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Argument must be a datetime.date&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parameter</span>
+</div>
+<div class="viewcode-block" id="DateParameter.__init__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateParameter.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a parameter with the given name and datetime.date.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name: string</span>
+<span class="sd">            A one-word-description of the parameter</span>
+<span class="sd">        value: date</span>
+<span class="sd">            The datetime.date associated with the name</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError: Occurs if name is not a string or value is no a datetime.date.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+<div class="viewcode-block" id="DateParameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateParameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;,&#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_string</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="TimeParameter"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.TimeParameter">[docs]</a><span class="k">class</span> <span class="nc">TimeParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The class &#39;TimeParameter&#39; is mapped on the table &#39;parameters_time&#39; and</span>
+<span class="sd">    is derived from &#39;Parameter&#39;. The value assigned to a TimeParameter must be</span>
+<span class="sd">    a datetime.time.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;parameters.id&#39;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="n">Time</span><span class="p">)</span>
+
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;parameters_time&#39;</span>
+    <span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;polymorphic_identity&#39;</span><span class="p">:</span><span class="s">&#39;time&#39;</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TimeParameter.from_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.TimeParameter.from_string">[docs]</a>    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s">&quot;%H:%M:%S&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">StringConversionError</span><span class="p">(</span><span class="s">&quot;Could not convert value &#39;{0}&#39; to time.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="TimeParameter.value_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.TimeParameter.value_string">[docs]</a>    <span class="k">def</span> <span class="nf">value_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s">&quot;%H:%M:%S&quot;</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TimeParameter.accepts"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.TimeParameter.accepts">[docs]</a>    <span class="k">def</span> <span class="nf">accepts</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;returns true if we accept the value&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span> <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+    <span class="nd">@validates</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="TimeParameter.validate_value"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.TimeParameter.validate_value">[docs]</a>    <span class="k">def</span> <span class="nf">validate_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">accepts</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Argument must be a datetime.time&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parameter</span>
+</div>
+<div class="viewcode-block" id="TimeParameter.__init__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.TimeParameter.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a parameter with the given name and datetime.time value.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name: string</span>
+<span class="sd">            A one-word-description of the parameter</span>
+<span class="sd">        value: time</span>
+<span class="sd">             The datetime.time object associated with the name</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError: Occurs if name is not a string or value is not datetime.time.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+<div class="viewcode-block" id="TimeParameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.TimeParameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;,&#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_string</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="DateTimeParameter"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateTimeParameter">[docs]</a><span class="k">class</span> <span class="nc">DateTimeParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The class &#39;DateTimeParameter&#39; is mapped on the table &#39;parameters_datetime&#39; and</span>
+<span class="sd">    is derived from &#39;Parameter&#39;. The value assigned to a DateTimeParameter must be</span>
+<span class="sd">    a datetime.datetime.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;parameters.id&#39;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">)</span>
+
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;parameters_datetime&#39;</span>
+    <span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;polymorphic_identity&#39;</span><span class="p">:</span><span class="s">&#39;datetime&#39;</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="DateTimeParameter.from_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateTimeParameter.from_string">[docs]</a>    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s">T%H:%M:%S&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">StringConversionError</span><span class="p">(</span><span class="s">&quot;Could not convert value &#39;{0}&#39; to datetime.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="DateTimeParameter.value_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateTimeParameter.value_string">[docs]</a>    <span class="k">def</span> <span class="nf">value_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s">T%H:%M:%S&quot;</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="DateTimeParameter.accepts"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateTimeParameter.accepts">[docs]</a>    <span class="k">def</span> <span class="nf">accepts</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;returns true if we accept the value&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+    <span class="nd">@validates</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="DateTimeParameter.validate_value"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateTimeParameter.validate_value">[docs]</a>    <span class="k">def</span> <span class="nf">validate_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">accepts</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Argument must be a datetime.datetime&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parameter</span>
+</div>
+<div class="viewcode-block" id="DateTimeParameter.__init__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateTimeParameter.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a parameter with the given name and datetime.datetime value.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name: string</span>
+<span class="sd">            A one-word-description of the parameter</span>
+<span class="sd">        value: datetime</span>
+<span class="sd">            The datetime.datetime object associated with the name</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError: Occurs if name is not a string or value is no datetime.datetime.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+<div class="viewcode-block" id="DateTimeParameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateTimeParameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;,&#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_string</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="BooleanParameter"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.BooleanParameter">[docs]</a><span class="k">class</span> <span class="nc">BooleanParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The class &#39;BooleanParameter&#39; is mapped on the table &#39;parameters_boolean&#39; and</span>
+<span class="sd">    is derived from &#39;Parameter&#39;. The value assigned to a BooleanParameter must be</span>
+<span class="sd">    a boolean.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;parameters.id&#39;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="n">Boolean</span><span class="p">)</span>
+
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;parameters_boolean&#39;</span>
+    <span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;polymorphic_identity&#39;</span><span class="p">:</span><span class="s">&#39;boolean&#39;</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="BooleanParameter.from_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.BooleanParameter.from_string">[docs]</a>    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s">&quot;FALSE&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">False</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s">&quot;TRUE&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="c"># need to transform to int first to get &quot;0&quot; right</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">raise</span> <span class="n">StringConversionError</span><span class="p">(</span><span class="s">&quot;Could not convert value &#39;{0}&#39; to boolean.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="BooleanParameter.value_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.BooleanParameter.value_string">[docs]</a>    <span class="k">def</span> <span class="nf">value_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;TRUE&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="bp">True</span> <span class="k">else</span> <span class="s">&quot;FALSE&quot;</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="BooleanParameter.accepts"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.BooleanParameter.accepts">[docs]</a>    <span class="k">def</span> <span class="nf">accepts</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;returns true if we accept the value&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+</div>
+    <span class="nd">@validates</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="BooleanParameter.validate_value"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.BooleanParameter.validate_value">[docs]</a>    <span class="k">def</span> <span class="nf">validate_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">accepts</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Argument must be a boolean&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parameter</span>
+</div>
+<div class="viewcode-block" id="BooleanParameter.__init__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.BooleanParameter.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a parameter with the given name and boolean value.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name: string</span>
+<span class="sd">            A one-word-description of the parameter</span>
+<span class="sd">        value: bool</span>
+<span class="sd">            The boolean object associated with the name</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError: Occurs if name is not a string or value is no boolean.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+<div class="viewcode-block" id="BooleanParameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.BooleanParameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;,&#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_string</span><span class="p">)</span>
+
+<span class="c">#: The classes/tables which store the parameters.</span></div></div>
+<span class="n">_parameter_classes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">DateTimeParameter</span><span class="p">,</span>
+            <span class="n">DateParameter</span><span class="p">,</span>
+            <span class="n">TimeParameter</span><span class="p">,</span>
+            <span class="n">IntegerParameter</span><span class="p">,</span>
+            <span class="n">FloatParameter</span><span class="p">,</span>
+            <span class="n">BooleanParameter</span><span class="p">,</span>
+            <span class="n">StringParameter</span>
+    <span class="p">]</span>
+
+<span class="c">#: The polymorphic ids of the parameters.</span>
+<span class="n">parameter_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">__mapper_args__</span><span class="p">[</span><span class="s">&#39;polymorphic_identity&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">pc</span> <span class="ow">in</span> <span class="n">_parameter_classes</span><span class="p">)</span>
+
+<span class="n">_parameter_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">pc</span><span class="o">.</span><span class="n">__mapper_args__</span><span class="p">[</span><span class="s">&#39;polymorphic_identity&#39;</span><span class="p">],</span> <span class="n">pc</span><span class="p">)</span> <span class="k">for</span> <span class="n">pc</span> <span class="ow">in</span> <span class="n">_parameter_classes</span><span class="p">)</span>
+
+<div class="viewcode-block" id="parameter_for_type"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.parameter_for_type">[docs]</a><span class="k">def</span> <span class="nf">parameter_for_type</span><span class="p">(</span><span class="n">typename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns the parameter class for the given `typename`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    typename: string</span>
+<span class="sd">        The polymorphic identity of the `Parameter` class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_parameter_map</span><span class="p">[</span><span class="n">typename</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="find_accepting_class"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.find_accepting_class">[docs]</a><span class="k">def</span> <span class="nf">find_accepting_class</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Goes through all classes and the first class which accepts the given `value`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    value: object</span>
+<span class="sd">        Some object to check.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">pc</span> <span class="ow">in</span> <span class="n">_parameter_classes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pc</span><span class="o">.</span><span class="n">accepts</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">pc</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Value not accepted by any class&quot;</span><span class="p">)</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

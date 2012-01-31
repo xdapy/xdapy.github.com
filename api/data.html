@@ -1,0 +1,755 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Data &mdash; xdapy 0.9.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.9.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="xdapy 0.9.0 documentation" href="../index.html" />
+    <link rel="up" title="API" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-xdapy.data">
+<span id="data"></span><h1>Data<a class="headerlink" href="#module-xdapy.data" title="Permalink to this headline">¶</a></h1>
+<dl class="data">
+<dt id="xdapy.data.DATA_CHUNK_SIZE">
+<tt class="descclassname">xdapy.data.</tt><tt class="descname">DATA_CHUNK_SIZE</tt><em class="property"> = 5000000</em><a class="headerlink" href="#xdapy.data.DATA_CHUNK_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd><p>The size in Byte of a data chunk.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="xdapy.data.DATA_COLUMN_LENGTH">
+<tt class="descclassname">xdapy.data.</tt><tt class="descname">DATA_COLUMN_LENGTH</tt><em class="property"> = 5000000</em><a class="headerlink" href="#xdapy.data.DATA_COLUMN_LENGTH" title="Permalink to this definition">¶</a></dt>
+<dd><p>The size of the database column which stores a chunk.
+This must be greater or equal than <a class="reference internal" href="#xdapy.data.DATA_CHUNK_SIZE" title="xdapy.data.DATA_CHUNK_SIZE"><tt class="xref py py-obj docutils literal"><span class="pre">DATA_CHUNK_SIZE</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="xdapy.data.DataChunks">
+<em class="property">class </em><tt class="descclassname">xdapy.data.</tt><tt class="descname">DataChunks</tt><big>(</big><em>index</em>, <em>chunk</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#DataChunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data.DataChunks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data are divided into smaller chunks of size <a class="reference internal" href="#xdapy.data.DATA_CHUNK_SIZE" title="xdapy.data.DATA_CHUNK_SIZE"><tt class="xref py py-obj docutils literal"><span class="pre">DATA_CHUNK_SIZE</span></tt></a> to avoid
+that everything is loaded all at once when accessing the data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>index: integer</strong> :</p>
+<blockquote>
+<div><p>The numeric index of this data chunk.</p>
+</div></blockquote>
+<p><strong>chunk: data</strong> :</p>
+<blockquote class="last">
+<div><p>The data to be stored.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="xdapy.data.DataChunks.id">
+<tt class="descname">id</tt><a class="headerlink" href="#xdapy.data.DataChunks.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The auto-incrementing id column.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.DataChunks.data_id">
+<tt class="descname">data_id</tt><a class="headerlink" href="#xdapy.data.DataChunks.data_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Foreign key reference to <a class="reference internal" href="#xdapy.data.Data.id" title="xdapy.data.Data.id"><tt class="xref py py-obj docutils literal"><span class="pre">Data.id</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.DataChunks._chunk">
+<tt class="descname">_chunk</tt><a class="headerlink" href="#xdapy.data.DataChunks._chunk" title="Permalink to this definition">¶</a></dt>
+<dd><p>The binary chunk data. Size is specified in <a class="reference internal" href="#xdapy.data.DATA_COLUMN_LENGTH" title="xdapy.data.DATA_COLUMN_LENGTH"><tt class="xref py py-obj docutils literal"><span class="pre">DATA_COLUMN_LENGTH</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.DataChunks._length">
+<tt class="descname">_length</tt><a class="headerlink" href="#xdapy.data.DataChunks._length" title="Permalink to this definition">¶</a></dt>
+<dd><p>The length of the data chunk.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.DataChunks.length">
+<tt class="descname">length</tt><a class="reference internal" href="../_modules/xdapy/data.html#DataChunks.length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data.DataChunks.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter property for the data chunk length.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.DataChunks.__tablename__">
+<tt class="descname">__tablename__</tt><em class="property"> = 'data_chunks'</em><a class="headerlink" href="#xdapy.data.DataChunks.__tablename__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.DataChunks.__table_args__">
+<tt class="descname">__table_args__</tt><em class="property"> = (UniqueConstraint(Column('data_id', Integer(), ForeignKey('data.id'), table=&lt;data_chunks&gt;, nullable=False), Column('index', Integer(), table=&lt;data_chunks&gt;)),)</em><a class="headerlink" href="#xdapy.data.DataChunks.__table_args__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data.DataChunks.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>index</em>, <em>chunk</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#DataChunks.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data.DataChunks.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.DataChunks.index">
+<tt class="descname">index</tt><a class="headerlink" href="#xdapy.data.DataChunks.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>The index of the data chunk. Used to keep the correct order of chunks.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.DataChunks.chunk">
+<tt class="descname">chunk</tt><a class="reference internal" href="../_modules/xdapy/data.html#DataChunks.chunk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data.DataChunks.chunk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor property for the binary data chunk.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data.DataChunks.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#DataChunks.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data.DataChunks.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.DataChunks.__mapper__">
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f3d5d0; DataChunks&gt;</em><a class="headerlink" href="#xdapy.data.DataChunks.__mapper__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.DataChunks.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.data'</em><a class="headerlink" href="#xdapy.data.DataChunks.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.DataChunks.__table__">
+<tt class="descname">__table__</tt><em class="property"> = Table('data_chunks', MetaData(bind=None), Column('id', Integer(), table=&lt;data_chunks&gt;, primary_key=True, nullable=False), Column('data_id', Integer(), ForeignKey('data.id'), table=&lt;data_chunks&gt;, nullable=False), Column('index', Integer(), table=&lt;data_chunks&gt;), Column('data', BYTEA(length=5000000), table=&lt;data_chunks&gt;, nullable=False), Column('length', Integer(), table=&lt;data_chunks&gt;), schema=None)</em><a class="headerlink" href="#xdapy.data.DataChunks.__table__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.DataChunks._sa_class_manager">
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.data.DataChunks'&gt; at 7ffaac23eff0&gt;</em><a class="headerlink" href="#xdapy.data.DataChunks._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xdapy.data.Data">
+<em class="property">class </em><tt class="descclassname">xdapy.data.</tt><tt class="descname">Data</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data.Data" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class <a class="reference internal" href="#xdapy.data.Data" title="xdapy.data.Data"><tt class="xref py py-obj docutils literal"><span class="pre">Data</span></tt></a> is mapped on the table &#8216;data&#8217;. The name assigned to Data
+must be a string. Each Data is connected to at most one entity through the
+adjacency list &#8216;datalist&#8217;. The corresponding entities can be accessed via
+the entities attribute of the Data class.</p>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.data.Data.validate_name" title="xdapy.data.Data.validate_name"><tt class="xref py py-obj docutils literal"><span class="pre">validate_name</span></tt></a>(key,&nbsp;parameter)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="xdapy.data.Data.id">
+<tt class="descname">id</tt><a class="headerlink" href="#xdapy.data.Data.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.Data.entity_id">
+<tt class="descname">entity_id</tt><a class="headerlink" href="#xdapy.data.Data.entity_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.Data.key">
+<tt class="descname">key</tt><a class="headerlink" href="#xdapy.data.Data.key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.Data.mimetype">
+<tt class="descname">mimetype</tt><a class="headerlink" href="#xdapy.data.Data.mimetype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.Data._chunks">
+<tt class="descname">_chunks</tt><a class="headerlink" href="#xdapy.data.Data._chunks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.Data.__tablename__">
+<tt class="descname">__tablename__</tt><em class="property"> = 'data'</em><a class="headerlink" href="#xdapy.data.Data.__tablename__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.Data.__table_args__">
+<tt class="descname">__table_args__</tt><em class="property"> = (UniqueConstraint(Column('entity_id', Integer(), ForeignKey('entities.id'), table=&lt;data&gt;, nullable=False), Column('key', String(length=40), table=&lt;data&gt;)),)</em><a class="headerlink" href="#xdapy.data.Data.__table_args__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data.Data.validate_name">
+<tt class="descname">validate_name</tt><big>(</big><em>key</em>, <em>parameter</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#Data.validate_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data.Data.validate_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data.Data.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#Data.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data.Data.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data.Data.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#xdapy.data.Data.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <tt class="docutils literal"><span class="pre">kwargs</span></tt>.</p>
+<p>Only keys that are present as
+attributes of the instance&#8217;s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.Data.__mapper__">
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f40d90; Data&gt;</em><a class="headerlink" href="#xdapy.data.Data.__mapper__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.Data.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.data'</em><a class="headerlink" href="#xdapy.data.Data.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.Data.__table__">
+<tt class="descname">__table__</tt><em class="property"> = Table('data', MetaData(bind=None), Column('id', Integer(), table=&lt;data&gt;, primary_key=True, nullable=False), Column('entity_id', Integer(), ForeignKey('entities.id'), table=&lt;data&gt;, nullable=False), Column('key', String(length=40), table=&lt;data&gt;), Column('mimetype', String(length=40), table=&lt;data&gt;), schema=None)</em><a class="headerlink" href="#xdapy.data.Data.__table__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data.Data._sa_class_manager">
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.data.Data'&gt; at 7ffaac250fc0&gt;</em><a class="headerlink" href="#xdapy.data.Data._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xdapy.data._DataProxy">
+<em class="property">class </em><tt class="descclassname">xdapy.data.</tt><tt class="descname">_DataProxy</tt><big>(</big><em>assoc</em>, <em>key</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#xdapy.data._DataProxy" title="xdapy.data._DataProxy"><tt class="xref py py-obj docutils literal"><span class="pre">_DataProxy</span></tt></a> class acts as a convenience wrapper to the more low-level <a class="reference internal" href="#xdapy.data.Data" title="xdapy.data.Data"><tt class="xref py py-obj docutils literal"><span class="pre">Data</span></tt></a> class,
+thereby hiding details such as the separate data chunks.</p>
+<p><a class="reference internal" href="#xdapy.data._DataProxy" title="xdapy.data._DataProxy"><tt class="xref py py-obj docutils literal"><span class="pre">_DataProxy</span></tt></a> provides methods which either accept strings as data or file-like objects,
+thus making it possible to directly write to the file system. This approach is very
+advisable for large sets of data, as too large blobs of data will freeze Python
+or even the database or the system.</p>
+<p>Usually, this class is not instantiated directly but transparently created through
+the <a class="reference internal" href="#xdapy.data._DataAssoc" title="xdapy.data._DataAssoc"><tt class="xref py py-obj docutils literal"><span class="pre">_DataAssoc</span></tt></a> class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>assoc: _DataAssoc</strong> :</p>
+<blockquote>
+<div><p>Back-reference to the calling <a class="reference internal" href="#xdapy.data._DataAssoc" title="xdapy.data._DataAssoc"><tt class="xref py py-obj docutils literal"><span class="pre">_DataAssoc</span></tt></a> instance</p>
+</div></blockquote>
+<p><strong>key: String</strong> :</p>
+<blockquote class="last">
+<div><p>The key by which the data is stored in the database.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.data._DataProxy.check_consistency" title="xdapy.data._DataProxy.check_consistency"><tt class="xref py py-obj docutils literal"><span class="pre">check_consistency</span></tt></a>()</td>
+<td>Checks that data chunks are indexed in order without gaps.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.data._DataProxy.chunk_ids" title="xdapy.data._DataProxy.chunk_ids"><tt class="xref py py-obj docutils literal"><span class="pre">chunk_ids</span></tt></a>()</td>
+<td>Returns the respective <a class="reference internal" href="#xdapy.data.DataChunks.id" title="xdapy.data.DataChunks.id"><tt class="xref py py-obj docutils literal"><span class="pre">DataChunks.id</span></tt></a>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.data._DataProxy.chunk_index" title="xdapy.data._DataProxy.chunk_index"><tt class="xref py py-obj docutils literal"><span class="pre">chunk_index</span></tt></a>()</td>
+<td>Returns the respective <a class="reference internal" href="#xdapy.data.DataChunks.index" title="xdapy.data.DataChunks.index"><tt class="xref py py-obj docutils literal"><span class="pre">DataChunks.index</span></tt></a>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.data._DataProxy.chunks" title="xdapy.data._DataProxy.chunks"><tt class="xref py py-obj docutils literal"><span class="pre">chunks</span></tt></a>()</td>
+<td>Returns the number of data chunks.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.data._DataProxy.clear_data" title="xdapy.data._DataProxy.clear_data"><tt class="xref py py-obj docutils literal"><span class="pre">clear_data</span></tt></a>()</td>
+<td>Clears all data chunks for <tt class="xref py py-obj docutils literal"><span class="pre">self.key</span></tt>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.data._DataProxy.delete" title="xdapy.data._DataProxy.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>()</td>
+<td>Deletes all referenced data for <tt class="xref py py-obj docutils literal"><span class="pre">self.key</span></tt>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.data._DataProxy.get" title="xdapy.data._DataProxy.get"><tt class="xref py py-obj docutils literal"><span class="pre">get</span></tt></a>(fileish)</td>
+<td>Stores the data content in a file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.data._DataProxy.get_data" title="xdapy.data._DataProxy.get_data"><tt class="xref py py-obj docutils literal"><span class="pre">get_data</span></tt></a>()</td>
+<td>Returns the associated data for <tt class="xref py py-obj docutils literal"><span class="pre">self.key</span></tt>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.data._DataProxy.get_or_create_data" title="xdapy.data._DataProxy.get_or_create_data"><tt class="xref py py-obj docutils literal"><span class="pre">get_or_create_data</span></tt></a>()</td>
+<td>Returns the associated data for <tt class="xref py py-obj docutils literal"><span class="pre">self.key</span></tt>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.data._DataProxy.get_string" title="xdapy.data._DataProxy.get_string"><tt class="xref py py-obj docutils literal"><span class="pre">get_string</span></tt></a>()</td>
+<td>Explicitly return the data as a string.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.data._DataProxy.has_data" title="xdapy.data._DataProxy.has_data"><tt class="xref py py-obj docutils literal"><span class="pre">has_data</span></tt></a>()</td>
+<td>Returns true if data is associated.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.data._DataProxy.put" title="xdapy.data._DataProxy.put"><tt class="xref py py-obj docutils literal"><span class="pre">put</span></tt></a>(file_or_str[,&nbsp;mimetype])</td>
+<td>Store data from a file or a string object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.data._DataProxy.put_file" title="xdapy.data._DataProxy.put_file"><tt class="xref py py-obj docutils literal"><span class="pre">put_file</span></tt></a>(fileish)</td>
+<td>Explicitly stores data from a file-like object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.data._DataProxy.put_string" title="xdapy.data._DataProxy.put_string"><tt class="xref py py-obj docutils literal"><span class="pre">put_string</span></tt></a>(string)</td>
+<td>Explicitly stores data from a string object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.data._DataProxy.size" title="xdapy.data._DataProxy.size"><tt class="xref py py-obj docutils literal"><span class="pre">size</span></tt></a>()</td>
+<td>Returns the size of all data chunks.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="xdapy.data._DataProxy.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>assoc</em>, <em>key</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data._DataProxy.mimetype">
+<tt class="descname">mimetype</tt><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.mimetype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.mimetype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the mimetype of the related data object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.has_data">
+<tt class="descname">has_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.has_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.has_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if data is associated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.get_data">
+<tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the associated data for <tt class="xref py py-obj docutils literal"><span class="pre">self.key</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.get_or_create_data">
+<tt class="descname">get_or_create_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.get_or_create_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.get_or_create_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the associated data for <tt class="xref py py-obj docutils literal"><span class="pre">self.key</span></tt>.</p>
+<p>If no data is yet available, this will create a new object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.chunk_ids">
+<tt class="descname">chunk_ids</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.chunk_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.chunk_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the respective <a class="reference internal" href="#xdapy.data.DataChunks.id" title="xdapy.data.DataChunks.id"><tt class="xref py py-obj docutils literal"><span class="pre">DataChunks.id</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.chunk_index">
+<tt class="descname">chunk_index</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.chunk_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.chunk_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the respective <a class="reference internal" href="#xdapy.data.DataChunks.index" title="xdapy.data.DataChunks.index"><tt class="xref py py-obj docutils literal"><span class="pre">DataChunks.index</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.delete">
+<tt class="descname">delete</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes all referenced data for <tt class="xref py py-obj docutils literal"><span class="pre">self.key</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.clear_data">
+<tt class="descname">clear_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.clear_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.clear_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears all data chunks for <tt class="xref py py-obj docutils literal"><span class="pre">self.key</span></tt>. (But keeps the data reference intact.)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.put">
+<tt class="descname">put</tt><big>(</big><em>file_or_str</em>, <em>mimetype=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store data from a file or a string object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>file_or_str: file-like or string</strong> :</p>
+<blockquote>
+<div><p>Either a file which can be read or</p>
+</div></blockquote>
+<p><strong>mimetype: string, optional</strong> :</p>
+<blockquote class="last">
+<div><p>A mimetime to define the type of the data</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.put_string">
+<tt class="descname">put_string</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.put_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.put_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Explicitly stores data from a string object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>string: string</strong> :</p>
+<blockquote class="last">
+<div><p>The data string to be stored.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.put_file">
+<tt class="descname">put_file</tt><big>(</big><em>fileish</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.put_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.put_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Explicitly stores data from a file-like object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>fileish: file-like object (must have `read` attribute)</strong> :</p>
+<blockquote class="last">
+<div><p>The file object which contains the data to be stored.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy._chunk_query">
+<tt class="descname">_chunk_query</tt><big>(</big><em>*entities</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy._chunk_query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy._chunk_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a query which is restricted to data chunks with the
+<tt class="xref py py-obj docutils literal"><span class="pre">data_id</span></tt> of this <a class="reference internal" href="#xdapy.data._DataProxy" title="xdapy.data._DataProxy"><tt class="xref py py-obj docutils literal"><span class="pre">_DataProxy</span></tt></a>.</p>
+<p><tt class="xref py py-obj docutils literal"><span class="pre">*entities</span></tt> and <tt class="xref py py-obj docutils literal"><span class="pre">**kwargs</span></tt> are passed verbatim the the SQLAlchemy <tt class="xref py py-obj docutils literal"><span class="pre">Session.query()</span></tt> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.get">
+<tt class="descname">get</tt><big>(</big><em>fileish</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores the data content in a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>fileish: file-like object</strong> :</p>
+<blockquote class="last">
+<div><p>The file to hold the data.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.get_string">
+<tt class="descname">get_string</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.get_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.get_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Explicitly return the data as a string.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the data object is too large, this method will likely slow down or halt
+Python. In extreme cases, the system will exhibit swapping behaviour or even
+crash. It is advisable to use <a class="reference internal" href="#xdapy.data._DataProxy.get" title="xdapy.data._DataProxy.get"><tt class="xref py py-obj docutils literal"><span class="pre">_DataProxy.get</span></tt></a> and save to a file instead.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.size">
+<tt class="descname">size</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the size of all data chunks.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.chunks">
+<tt class="descname">chunks</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.chunks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of data chunks.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.check_consistency">
+<tt class="descname">check_consistency</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.check_consistency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.check_consistency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks that data chunks are indexed in order without gaps.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataProxy.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataProxy.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataProxy.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data._DataProxy._DataProxy__data">
+<tt class="descname">_DataProxy__data</tt><a class="headerlink" href="#xdapy.data._DataProxy._DataProxy__data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the data relation object of the associated entity.
+This method also raises a <tt class="xref py py-obj docutils literal"><span class="pre">MissingSessionError</span></tt>, if no session is
+associated with the entity.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data._DataProxy._DataProxy__session">
+<tt class="descname">_DataProxy__session</tt><a class="headerlink" href="#xdapy.data._DataProxy._DataProxy__session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the session of the associated entity.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data._DataProxy.__dict__">
+<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x10aadcbe8&gt;</em><a class="headerlink" href="#xdapy.data._DataProxy.__dict__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data._DataProxy.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.data'</em><a class="headerlink" href="#xdapy.data._DataProxy.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data._DataProxy.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#xdapy.data._DataProxy.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xdapy.data._DataAssoc">
+<em class="property">class </em><tt class="descclassname">xdapy.data.</tt><tt class="descname">_DataAssoc</tt><big>(</big><em>owning</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataAssoc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataAssoc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Association dict for data.</p>
+<p>This class implements the API for <tt class="xref py py-obj docutils literal"><span class="pre">collections.MutableMapping</span></tt> and as such
+allows for a <tt class="xref py py-obj docutils literal"><span class="pre">dict</span></tt>-like syntax.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The dict acts a bit <em>weird</em> in the sense that <tt class="docutils literal"><span class="pre">dict[&quot;unknown</span> <span class="pre">item&quot;]</span></tt> does not
+raise a <tt class="xref py py-obj docutils literal"><span class="pre">KeyError</span></tt>. In order to find out that an item exists, one must use
+<tt class="docutils literal"><span class="pre">&quot;item&quot;</span> <span class="pre">in</span> <span class="pre">dict</span></tt>.</p>
+</div>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">clear</span></tt>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.data._DataAssoc.copy" title="xdapy.data._DataAssoc.copy"><tt class="xref py py-obj docutils literal"><span class="pre">copy</span></tt></a>(other)</td>
+<td>Copys everything from another DataAssoc into this.</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">get</span></tt>(key[,&nbsp;default])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">items</span></tt>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">iteritems</span></tt>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">iterkeys</span></tt>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">itervalues</span></tt>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">keys</span></tt>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">pop</span></tt>(key[,&nbsp;default])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">popitem</span></tt>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">setdefault</span></tt>(key[,&nbsp;default])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt>(*args,&nbsp;**kwds)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">values</span></tt>()</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="xdapy.data._DataAssoc.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>owning</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataAssoc.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataAssoc.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataAssoc._query">
+<tt class="descname">_query</tt><big>(</big><em>*entities</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataAssoc._query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataAssoc._query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issues a query on the session of the owning object, with a filter on the owning id.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataAssoc.__getitem__">
+<tt class="descname">__getitem__</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataAssoc.__getitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataAssoc.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataAssoc.__delitem__">
+<tt class="descname">__delitem__</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataAssoc.__delitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataAssoc.__delitem__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data._DataAssoc.__abstractmethods__">
+<tt class="descname">__abstractmethods__</tt><em class="property"> = frozenset([])</em><a class="headerlink" href="#xdapy.data._DataAssoc.__abstractmethods__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data._DataAssoc.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.data'</em><a class="headerlink" href="#xdapy.data._DataAssoc.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataAssoc.__setitem__">
+<tt class="descname">__setitem__</tt><big>(</big><em>key</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataAssoc.__setitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataAssoc.__setitem__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data._DataAssoc._abc_cache">
+<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x109f495d0&gt;</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data._DataAssoc._abc_negative_cache">
+<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x1098a5b90&gt;</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data._DataAssoc._abc_negative_cache_version">
+<tt class="descname">_abc_negative_cache_version</tt><em class="property"> = 26</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.data._DataAssoc._abc_registry">
+<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x109f49550&gt;</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_registry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataAssoc.__len__">
+<tt class="descname">__len__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataAssoc.__len__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataAssoc.__len__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataAssoc.__iter__">
+<tt class="descname">__iter__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataAssoc.__iter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataAssoc.__iter__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over the keys.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataAssoc.__contains__">
+<tt class="descname">__contains__</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataAssoc.__contains__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataAssoc.__contains__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is key in self?</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataAssoc.copy">
+<tt class="descname">copy</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataAssoc.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataAssoc.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copys everything from another DataAssoc into this.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.data._DataAssoc.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/data.html#_DataAssoc.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.data._DataAssoc.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/api/data.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" >API</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

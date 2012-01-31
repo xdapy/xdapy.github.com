@@ -1,0 +1,515 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>xdapy.data &mdash; xdapy 0.9.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.9.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="xdapy 0.9.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for xdapy.data</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext&quot;</span>
+
+<span class="n">__authors__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&quot;Rike-Benjamin Schuppner&quot; &lt;rikebs@debilski.de&gt;&#39;</span><span class="p">]</span>
+
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c"># check, if the faster version of StringIO is available</span>
+    <span class="kn">from</span> <span class="nn">cStringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Column</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">Integer</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">func</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.schema</span> <span class="kn">import</span> <span class="n">UniqueConstraint</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">relationship</span><span class="p">,</span> <span class="n">validates</span><span class="p">,</span> <span class="n">synonym</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.declarative</span> <span class="kn">import</span> <span class="n">synonym_for</span>
+
+<span class="c"># So we really want to support only Postgresql?</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">BYTEA</span>
+
+<span class="kn">from</span> <span class="nn">xdapy</span> <span class="kn">import</span> <span class="n">Base</span>
+<span class="kn">from</span> <span class="nn">xdapy.errors</span> <span class="kn">import</span> <span class="n">DataInconsistencyError</span>
+
+
+<span class="c">#: The size in Byte of a data chunk.</span>
+<span class="n">DATA_CHUNK_SIZE</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">*</span> <span class="mi">1000</span> <span class="c"># Byte</span>
+
+<span class="c">#: The size of the database column which stores a chunk.</span>
+<span class="c">#: This must be greater or equal than `DATA_CHUNK_SIZE`.</span>
+<span class="n">DATA_COLUMN_LENGTH</span> <span class="o">=</span> <span class="n">DATA_CHUNK_SIZE</span>
+
+<div class="viewcode-block" id="DataChunks"><a class="viewcode-back" href="../../api/data.html#xdapy.data.DataChunks">[docs]</a><span class="k">class</span> <span class="nc">DataChunks</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Data are divided into smaller chunks of size `DATA_CHUNK_SIZE` to avoid</span>
+<span class="sd">    that everything is loaded all at once when accessing the data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    index: integer</span>
+<span class="sd">        The numeric index of this data chunk.</span>
+<span class="sd">    chunk: data</span>
+<span class="sd">        The data to be stored.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">autoincrement</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">doc</span><span class="o">=</span><span class="s">&quot;The auto-incrementing id column.&quot;</span><span class="p">)</span>
+    <span class="n">data_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;data.id&#39;</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">doc</span><span class="o">=</span><span class="s">&quot;Foreign key reference to `Data.id`.&quot;</span><span class="p">)</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&quot;index&quot;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span>
+            <span class="n">doc</span><span class="o">=</span><span class="s">&quot;The index of the data chunk. Used to keep the correct order of chunks.&quot;</span><span class="p">)</span>
+
+    <span class="c"># hide the raw value in order to allow for a specific setter method</span>
+    <span class="n">_chunk</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="n">BYTEA</span><span class="p">(</span><span class="n">DATA_COLUMN_LENGTH</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">doc</span><span class="o">=</span><span class="s">&quot;The binary chunk data. Size is specified in `DATA_COLUMN_LENGTH`.&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">chunk</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Accessor property for the binary data chunk.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chunk</span>
+
+    <span class="nd">@chunk.setter</span>
+<div class="viewcode-block" id="DataChunks.chunk"><a class="viewcode-back" href="../../api/data.html#xdapy.data.DataChunks.chunk">[docs]</a>    <span class="k">def</span> <span class="nf">chunk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
+        <span class="c"># we also set the _length here</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span> <span class="c"># TODO what about real binary?</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Data must be a string&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chunk</span> <span class="o">=</span> <span class="n">chunk</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+</div>
+    <span class="n">chunk</span> <span class="o">=</span> <span class="n">synonym</span><span class="p">(</span><span class="s">&#39;_chunk&#39;</span><span class="p">,</span> <span class="n">descriptor</span><span class="o">=</span><span class="n">chunk</span><span class="p">)</span>
+
+    <span class="n">_length</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;length&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span>
+            <span class="n">doc</span><span class="o">=</span><span class="s">&quot;The length of the data chunk.&quot;</span><span class="p">)</span>
+
+    <span class="nd">@synonym_for</span><span class="p">(</span><span class="s">&#39;_length&#39;</span><span class="p">)</span>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="DataChunks.length"><a class="viewcode-back" href="../../api/data.html#xdapy.data.DataChunks.length">[docs]</a>    <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Getter property for the data chunk length.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length</span>
+</div>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;data_chunks&#39;</span>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">(</span><span class="n">UniqueConstraint</span><span class="p">(</span><span class="n">data_id</span><span class="p">,</span> <span class="n">index</span><span class="p">),</span> <span class="p">)</span>
+
+<div class="viewcode-block" id="DataChunks.__init__"><a class="viewcode-back" href="../../api/data.html#xdapy.data.DataChunks.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chunk</span> <span class="o">=</span> <span class="n">chunk</span>
+</div>
+<div class="viewcode-block" id="DataChunks.__repr__"><a class="viewcode-back" href="../../api/data.html#xdapy.data.DataChunks.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;DataChunk #{0} for Data[{1}], length {2}&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="Data"><a class="viewcode-back" href="../../api/data.html#xdapy.data.Data">[docs]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The class `Data` is mapped on the table &#39;data&#39;. The name assigned to Data</span>
+<span class="sd">    must be a string. Each Data is connected to at most one entity through the</span>
+<span class="sd">    adjacency list &#39;datalist&#39;. The corresponding entities can be accessed via</span>
+<span class="sd">    the entities attribute of the Data class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">autoincrement</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">entity_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;entities.id&#39;</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;key&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">40</span><span class="p">))</span>
+    <span class="n">mimetype</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;mimetype&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">40</span><span class="p">))</span>
+
+    <span class="n">_chunks</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">DataChunks</span><span class="p">,</span> <span class="n">cascade</span><span class="o">=</span><span class="s">&quot;save-update, merge, delete&quot;</span><span class="p">)</span>
+
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;data&#39;</span>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">(</span><span class="n">UniqueConstraint</span><span class="p">(</span><span class="n">entity_id</span><span class="p">,</span> <span class="n">key</span><span class="p">),)</span>
+
+    <span class="nd">@validates</span><span class="p">(</span><span class="s">&#39;key&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="Data.validate_name"><a class="viewcode-back" href="../../api/data.html#xdapy.data.Data.validate_name">[docs]</a>    <span class="k">def</span> <span class="nf">validate_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Argument must be a string&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parameter</span>
+</div>
+<div class="viewcode-block" id="Data.__repr__"><a class="viewcode-back" href="../../api/data.html#xdapy.data.Data.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(&#39;</span><span class="si">%s</span><span class="s">&#39;,&#39;</span><span class="si">%s</span><span class="s">&#39;,</span><span class="si">%s</span><span class="s">)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mimetype</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_id</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="_DataProxy"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy">[docs]</a><span class="k">class</span> <span class="nc">_DataProxy</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The `_DataProxy` class acts as a convenience wrapper to the more low-level `Data` class,</span>
+<span class="sd">    thereby hiding details such as the separate data chunks.</span>
+
+<span class="sd">    `_DataProxy` provides methods which either accept strings as data or file-like objects,</span>
+<span class="sd">    thus making it possible to directly write to the file system. This approach is very</span>
+<span class="sd">    advisable for large sets of data, as too large blobs of data will freeze Python</span>
+<span class="sd">    or even the database or the system.</span>
+
+<span class="sd">    Usually, this class is not instantiated directly but transparently created through</span>
+<span class="sd">    the `_DataAssoc` class.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    assoc: _DataAssoc</span>
+<span class="sd">        Back-reference to the calling `_DataAssoc` instance</span>
+<span class="sd">    key: String</span>
+<span class="sd">        The key by which the data is stored in the database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="_DataProxy.__init__"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assoc</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assoc</span> <span class="o">=</span> <span class="n">assoc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">__session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the session of the associated entity.&quot;&quot;&quot;</span>
+        <span class="c"># makes code more readable</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assoc</span><span class="o">.</span><span class="n">owning</span><span class="o">.</span><span class="n">_session</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">__data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the data relation object of the associated entity.</span>
+<span class="sd">        This method also raises a `MissingSessionError`, if no session is</span>
+<span class="sd">        associated with the entity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__session</span> <span class="c"># check that a session is available</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assoc</span><span class="o">.</span><span class="n">owning</span><span class="o">.</span><span class="n">_data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mimetype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the mimetype of the related data object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span><span class="o">.</span><span class="n">mimetype</span>
+
+    <span class="nd">@mimetype.setter</span>
+    <span class="k">def</span> <span class="nf">mimetype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_or_create_data</span><span class="p">()</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">=</span> <span class="n">mimetype</span>
+
+    <span class="nd">@mimetype.deleter</span>
+<div class="viewcode-block" id="_DataProxy.mimetype"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.mimetype">[docs]</a>    <span class="k">def</span> <span class="nf">mimetype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">=</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.has_data"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.has_data">[docs]</a>    <span class="k">def</span> <span class="nf">has_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns true if data is associated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.get_data"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the associated data for `self.key`.&quot;&quot;&quot;</span>
+        <span class="c"># raises a KeyError, if no data is associated</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="k">assert</span> <span class="n">data</span><span class="o">.</span><span class="n">id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&quot;data.id has not been set&quot;</span> <span class="c"># we check explicitly to avoid complications at a later point</span>
+        <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.get_or_create_data"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.get_or_create_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_or_create_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the associated data for `self.key`.</span>
+
+<span class="sd">        If no data is yet available, this will create a new object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_data</span><span class="p">():</span>
+            <span class="c"># Add a new data entry to the owning list (which should add it to the session)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+            <span class="c"># and flush it</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.chunk_ids"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.chunk_ids">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the respective `DataChunks.id`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">chunk</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chunk_query</span><span class="p">(</span><span class="n">DataChunks</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.chunk_index"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.chunk_index">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the respective `DataChunks.index`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">chunk</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chunk_query</span><span class="p">(</span><span class="n">DataChunks</span><span class="o">.</span><span class="n">index</span><span class="p">)]</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.delete"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Deletes all referenced data for `self.key`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.clear_data"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.clear_data">[docs]</a>    <span class="k">def</span> <span class="nf">clear_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Clears all data chunks for `self.key`. (But keeps the data reference intact.)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">_chunks</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.put"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_or_str</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Store data from a file or a string object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file_or_str: file-like or string</span>
+<span class="sd">            Either a file which can be read or</span>
+<span class="sd">        mimetype: string, optional</span>
+<span class="sd">            A mimetime to define the type of the data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_or_str</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">put_string</span><span class="p">(</span><span class="n">file_or_str</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">put_file</span><span class="p">(</span><span class="n">file_or_str</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mimetype</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">=</span> <span class="n">mimetype</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.put_string"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.put_string">[docs]</a>    <span class="k">def</span> <span class="nf">put_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Explicitly stores data from a string object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        string: string</span>
+<span class="sd">            The data string to be stored.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">put_file</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">string</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.put_file"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.put_file">[docs]</a>    <span class="k">def</span> <span class="nf">put_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fileish</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Explicitly stores data from a file-like object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fileish: file-like object (must have `read` attribute)</span>
+<span class="sd">            The file object which contains the data to be stored.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fileish</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">):</span>
+            <span class="c"># if there is no &#39;read&#39; method, is is</span>
+            <span class="c"># probably the wrong type</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unassignable Type&quot;</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_or_create_data</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_data</span><span class="p">()</span>
+
+        <span class="n">buffer_size</span> <span class="o">=</span> <span class="n">DATA_CHUNK_SIZE</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">chunk</span> <span class="o">=</span> <span class="n">fileish</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">buffer_size</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="n">chunk</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">chunk</span> <span class="o">=</span> <span class="n">DataChunks</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">chunk</span><span class="p">)</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">_chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+
+            <span class="n">chunk</span> <span class="o">=</span> <span class="n">fileish</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">buffer_size</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">idx</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c"># we flush every now and then</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="_DataProxy._chunk_query"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy._chunk_query">[docs]</a>    <span class="k">def</span> <span class="nf">_chunk_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">entities</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a query which is restricted to data chunks with the</span>
+<span class="sd">        `data_id` of this `_DataProxy`.</span>
+
+<span class="sd">        `*entities` and `**kwargs` are passed verbatim the the SQLAlchemy `Session.query()` method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Version which uses caching of data_id</span>
+        <span class="c"># if not hasattr(self, &quot;data_id&quot;) or self.data_id is None:</span>
+        <span class="c">#   try:</span>
+        <span class="c">#       self.data_id = self.__session().query(Data.id).filter(Data.entity_id==self.assoc.owning.id).filter(Data.key==self.key).one().id</span>
+        <span class="c">#   except NoResultFound:</span>
+        <span class="c">#       raise SelectionError(&quot;Could not find a result. Maybe there is no data associated with this key.&quot;)</span>
+        <span class="n">data_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span><span class="o">.</span><span class="n">id</span> <span class="c"># this probably does the same as above code and raises a KeyError</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="o">*</span><span class="n">entities</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">DataChunks</span><span class="o">.</span><span class="n">data_id</span><span class="o">==</span><span class="n">data_id</span><span class="p">)</span>
+
+        <span class="c"># Version which uses a join each time</span>
+        <span class="c"># return self.__session.query(*entities, **kwargs).join(Data).filter(Data.entity_id==self.assoc.owning.id).filter(Data.key==self.key)</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.get"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fileish</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Stores the data content in a file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fileish: file-like object</span>
+<span class="sd">            The file to hold the data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chunk_query</span><span class="p">(</span><span class="n">DataChunks</span><span class="o">.</span><span class="n">chunk</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">DataChunks</span><span class="o">.</span><span class="n">index</span><span class="p">):</span>
+            <span class="n">fileish</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="o">.</span><span class="n">chunk</span><span class="p">)</span> <span class="c"># self._data[gen_key].data)</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.get_string"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.get_string">[docs]</a>    <span class="k">def</span> <span class="nf">get_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Explicitly return the data as a string.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            If the data object is too large, this method will likely slow down or halt</span>
+<span class="sd">            Python. In extreme cases, the system will exhibit swapping behaviour or even</span>
+<span class="sd">            crash. It is advisable to use `_DataProxy.get` and save to a file instead.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">string_io</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">string_io</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">string_io</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">string_io</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.size"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.size">[docs]</a>    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the size of all data chunks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chunk_query</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">DataChunks</span><span class="o">.</span><span class="n">length</span><span class="p">))</span><span class="o">.</span><span class="n">scalar</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.chunks"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.chunks">[docs]</a>    <span class="k">def</span> <span class="nf">chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the number of data chunks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chunk_query</span><span class="p">(</span><span class="n">DataChunks</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.check_consistency"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.check_consistency">[docs]</a>    <span class="k">def</span> <span class="nf">check_consistency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks that data chunks are indexed in order without gaps.&quot;&quot;&quot;</span>
+        <span class="n">check</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chunk_query</span><span class="p">(</span><span class="n">DataChunks</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">DataChunks</span><span class="o">.</span><span class="n">index</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">check</span> <span class="o">!=</span> <span class="n">idx</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">DataInconsistencyError</span><span class="p">(</span><span class="s">&quot;Chunked data is inconsistent.&quot;</span><span class="p">)</span>
+            <span class="n">check</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="_DataProxy.__repr__"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataProxy.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;DataProxy(mimetype={0}, chunks={1}, size={2})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mimetype</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+
+</div></div>
+<div class="viewcode-block" id="_DataAssoc"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataAssoc">[docs]</a><span class="k">class</span> <span class="nc">_DataAssoc</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Association dict for data.</span>
+
+<span class="sd">    This class implements the API for `collections.MutableMapping` and as such</span>
+<span class="sd">    allows for a `dict`-like syntax.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        The dict acts a bit *weird* in the sense that ``dict[&quot;unknown item&quot;]`` does not</span>
+<span class="sd">        raise a `KeyError`. In order to find out that an item exists, one must use</span>
+<span class="sd">        ``&quot;item&quot; in dict``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="_DataAssoc.__init__"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataAssoc.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owning</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">owning</span> <span class="o">=</span> <span class="n">owning</span>
+</div>
+<div class="viewcode-block" id="_DataAssoc._query"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataAssoc._query">[docs]</a>    <span class="k">def</span> <span class="nf">_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">entities</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Issues a query on the session of the owning object, with a filter on the owning id.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="o">.</span><span class="n">_session</span><span class="p">()</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="o">*</span><span class="n">entities</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Data</span><span class="o">.</span><span class="n">entity_id</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="_DataAssoc.__getitem__"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataAssoc.__getitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_DataProxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="_DataAssoc.__delitem__"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataAssoc.__delitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="_DataAssoc.__setitem__"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataAssoc.__setitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_DataProxy</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;value needs to be instance of DataProxy&quot;</span><span class="p">)</span>
+        <span class="c"># &quot;&quot;&quot;Note that this is only expected to work if value *really* has the same semantics.&quot;&quot;&quot;</span>
+
+        <span class="c"># We use a tempfile as long as chunk based copying is not established</span>
+        <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryFile</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c"># Reset the file pointer, otherwise we&#39;ll only see EOF</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">mimetype</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">mimetype</span>
+</div>
+<div class="viewcode-block" id="_DataAssoc.__len__"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataAssoc.__len__">[docs]</a>    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="_DataAssoc.__iter__"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataAssoc.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Iterate over the keys.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span> <span class="c"># our keys are of course the same as _data&#39;s</span>
+</div>
+<div class="viewcode-block" id="_DataAssoc.__contains__"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataAssoc.__contains__">[docs]</a>    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Is key in self?&quot;&quot;&quot;</span>
+        <span class="c"># We must do this, because we do not raise a KeyError in __getitem__</span>
+        <span class="k">return</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="o">.</span><span class="n">_data</span>
+</div>
+<div class="viewcode-block" id="_DataAssoc.copy"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataAssoc.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Copys everything from another DataAssoc into this.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">data_key</span> <span class="ow">in</span> <span class="n">other</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">data_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">other</span><span class="p">[</span><span class="n">data_key</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="_DataAssoc.__repr__"><a class="viewcode-back" href="../../api/data.html#xdapy.data._DataAssoc.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()))</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

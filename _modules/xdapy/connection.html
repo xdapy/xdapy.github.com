@@ -1,0 +1,362 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>xdapy.connection &mdash; xdapy 0.9.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.9.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="xdapy 0.9.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for xdapy.connection</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">The `Connection` module is used to establish a connection to the database and</span>
+<span class="sd">takes care of creating the database tables.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext&quot;</span>
+
+<span class="n">__authors__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&quot;Hannah Dold&quot; &lt;hannah.dold@mailbox.tu-berlin.de&gt;&#39;</span><span class="p">,</span>
+               <span class="s">&#39;&quot;Rike-Benjamin Schuppner&quot; &lt;rikebs@debilski.de&gt;&#39;</span><span class="p">]</span>
+
+
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">sessionmaker</span><span class="p">,</span> <span class="n">scoped_session</span>
+
+<span class="kn">from</span> <span class="nn">xdapy</span> <span class="kn">import</span> <span class="n">Base</span>
+<span class="kn">from</span> <span class="nn">xdapy.utils.configobj</span> <span class="kn">import</span> <span class="n">ConfigObj</span>
+<span class="kn">from</span> <span class="nn">xdapy.errors</span> <span class="kn">import</span> <span class="n">ConfigurationError</span>
+
+
+<div class="viewcode-block" id="AutoSession"><a class="viewcode-back" href="../../api/connection.html#xdapy.connection.AutoSession">[docs]</a><span class="k">class</span> <span class="nc">AutoSession</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Provides an automatically committing session.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session: Session</span>
+<span class="sd">        The `Session` object which is wrapped by this `AutoSession`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="AutoSession.__init__"><a class="viewcode-back" href="../../api/connection.html#xdapy.connection.AutoSession.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
+</div>
+<div class="viewcode-block" id="AutoSession.__enter__"><a class="viewcode-back" href="../../api/connection.html#xdapy.connection.AutoSession.__enter__">[docs]</a>    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calls `self.session.begin()` and returns the session object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
+        <span class="c"># We are in autocommit mode. If we do not explicitly begin a session</span>
+        <span class="c"># we must flush afterwards because we cannot be sure WHEN the session</span>
+        <span class="c"># is really committed.</span>
+        <span class="c"># Especially the last commit may get lost without an explicit flush</span>
+        <span class="c"># or a session.close</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span>
+</div>
+<div class="viewcode-block" id="AutoSession.__exit__"><a class="viewcode-back" href="../../api/connection.html#xdapy.connection.AutoSession.__exit__">[docs]</a>    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e_type</span><span class="p">,</span> <span class="n">e_val</span><span class="p">,</span> <span class="n">e_tb</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks for success and commits the session.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">e_type</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</div></div>
+<div class="viewcode-block" id="Connection"><a class="viewcode-back" href="../../api/connection.html#xdapy.connection.Connection">[docs]</a><span class="k">class</span> <span class="nc">Connection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Initialises a Connection object which holds all parameters to create engines and sessions.</span>
+
+<span class="sd">    Additional options for the `sessionmaker` or `create_engine` functions may be passed as a dict</span>
+<span class="sd">    in `session_opts` and `engine_opts`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    host: string, optional</span>
+<span class="sd">        The host where the database lives. (Defaults to ``&quot;localhost&quot;``.)</span>
+<span class="sd">    dialect: string, optional</span>
+<span class="sd">        The SQL dialect to use. (Defaults to ``&quot;postgresql&quot;``, which is also the only supported option.)</span>
+<span class="sd">    user: string, optional</span>
+<span class="sd">        The database user. (Defaults to ``&quot;&quot;``.)</span>
+<span class="sd">    password: string, optional</span>
+<span class="sd">        The database password. (Defaults to ``&quot;&quot;``.)</span>
+<span class="sd">    dbname: string</span>
+<span class="sd">        The name of the database to use.</span>
+<span class="sd">    uri: string, optional</span>
+<span class="sd">        A URI representation of the database connection of the form `{dialect}://{user}:{password}@{host}/{dbname}`.</span>
+<span class="sd">        If this field is given, all other fields may be left out.</span>
+<span class="sd">    echo: bool, optional</span>
+<span class="sd">        Print all SQL queries to stdout. (Defaults to ``False``.)</span>
+<span class="sd">    session_opts: dict, optional</span>
+<span class="sd">        Key–value options to pass to the `sessionmaker()` function.</span>
+<span class="sd">    engine_opts: dict, optional</span>
+<span class="sd">        Key–value options to pass to the `create_engine()` function.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    uri</span>
+<span class="sd">        The constructed database URI.</span>
+<span class="sd">    Session</span>
+<span class="sd">        The SQLAlchemy session.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Connection.__init__"><a class="viewcode-back" href="../../api/connection.html#xdapy.connection.Connection.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dialect</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dbname</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                       <span class="n">uri</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">echo</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">session_opts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">engine_opts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">uri</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">host</span> <span class="ow">or</span> <span class="n">dialect</span> <span class="ow">or</span> <span class="n">user</span> <span class="ow">or</span> <span class="n">password</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span><span class="s">&quot;If uri is given neither host, dialect, user nor password may be specified&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">dialect</span><span class="p">:</span>
+                <span class="n">dialect</span> <span class="o">=</span> <span class="s">&quot;postgresql&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">host</span><span class="p">:</span>
+                <span class="n">host</span> <span class="o">=</span> <span class="s">&quot;localhost&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">password</span><span class="p">:</span>
+                <span class="n">password</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">dbname</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span><span class="s">&quot;No dbname specified&quot;</span><span class="p">)</span>
+            <span class="n">uri</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;{dialect}://{user}:{password}@{host}/{dbname}&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dialect</span><span class="o">=</span><span class="n">dialect</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">dbname</span><span class="o">=</span><span class="n">dbname</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="n">uri</span>
+
+        <span class="k">if</span> <span class="n">session_opts</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">session_opts</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">engine_opts</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">engine_opts</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_engine_opts</span> <span class="o">=</span> <span class="n">engine_opts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_engine_opts</span><span class="p">[</span><span class="s">&quot;echo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">echo</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Session</span> <span class="o">=</span> <span class="n">scoped_session</span><span class="p">(</span><span class="n">sessionmaker</span><span class="p">(</span><span class="n">autocommit</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">session_opts</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span> <span class="o">=</span> <span class="bp">None</span>
+
+</div>
+    <span class="n">DEFAULT_CONFIG_PATH</span> <span class="o">=</span> <span class="s">&quot;~/.xdapy/engine.ini&quot;</span>
+    <span class="n">TEST_PROFILE</span> <span class="o">=</span> <span class="s">&quot;test&quot;</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Connection.profile"><a class="viewcode-back" href="../../api/connection.html#xdapy.connection.Connection.profile">[docs]</a>    <span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads the settings from the file ``~/.xdapy/engine.ini`` or the path value.</span>
+
+<span class="sd">        Create file ``~/.xdapy/engine.ini`` with the following content and replace</span>
+<span class="sd">        your username, password, host and dbname::</span>
+
+<span class="sd">            dialect = postgresql</span>
+<span class="sd">            user = hannah</span>
+<span class="sd">            password = &quot;&quot;</span>
+<span class="sd">            host = localhost</span>
+<span class="sd">            dbname = xdapy</span>
+<span class="sd">            [test]</span>
+<span class="sd">            dbname = xdapy_test</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        profile: string, optional</span>
+<span class="sd">            The profile to load. (Defaults to ``None``.)</span>
+<span class="sd">        filename: string, optional</span>
+<span class="sd">            The file to load the setting from. (Defaults to `DEFAULT_CONFIG_PATH`.)</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            All other arguments will be passed to `Connection.__init__`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">DEFAULT_CONFIG_PATH</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span><span class="s">&#39;the engine ini file does not exist. please create file </span><span class="se">\n</span><span class="s">&#39;</span>\
+                                     <span class="s">&#39; ~/.xdapy/engine.ini with following content and replace </span><span class="se">\n</span><span class="s">&#39;</span>\
+                                     <span class="s">&#39;with your settings: </span><span class="se">\n\n</span><span class="s">&#39;</span>\
+                                     <span class="s">&#39;dialect = postgresql</span><span class="se">\n</span><span class="s">&#39;</span>\
+                                     <span class="s">&#39;user = myname</span><span class="se">\n</span><span class="s">&#39;</span>\
+                                     <span class="s">&#39;password = mypassword</span><span class="se">\n</span><span class="s">&#39;</span>\
+                                     <span class="s">&#39;host = localhost</span><span class="se">\n</span><span class="s">&#39;</span>\
+                                     <span class="s">&#39;dbname = xdapy&#39;</span><span class="p">)</span>
+
+        <span class="n">config</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="c"># do the very important check that we don’t lose our db while testing</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">_check_config_file_sanity</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+        <span class="n">opts</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_extract_options</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">profile</span><span class="p">)</span>
+
+        <span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Connection.test"><a class="viewcode-back" href="../../api/connection.html#xdapy.connection.Connection.test">[docs]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a connection with the test profile.</span>
+
+<span class="sd">        Shortcut for ``Connection(profile=Connection.TEST_PROFILE, **kwargs)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">profile</span><span class="p">(</span><span class="n">profile</span><span class="o">=</span><span class="n">cls</span><span class="o">.</span><span class="n">TEST_PROFILE</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Connection.default"><a class="viewcode-back" href="../../api/connection.html#xdapy.connection.Connection.default">[docs]</a>    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a connection with the default profile.</span>
+
+<span class="sd">        Shortcut for ``Connection(profile=None, **kwargs)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">profile</span><span class="p">(</span><span class="n">profile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Connection._extract_options"><a class="viewcode-back" href="../../api/connection.html#xdapy.connection.Connection._extract_options">[docs]</a>    <span class="k">def</span> <span class="nf">_extract_options</span><span class="p">(</span><span class="n">config_obj</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config_obj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">profile</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">config_obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;The profile &#39;</span><span class="si">%s</span><span class="s">&#39; is not specified in your configuration.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">profile</span><span class="p">))</span>
+            <span class="c"># merge the profile options to base</span>
+            <span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config_obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">profile</span><span class="p">))</span>
+
+        <span class="c"># keep only valid options</span>
+        <span class="n">valid_opts</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;dialect&#39;</span><span class="p">,</span> <span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;password&#39;</span><span class="p">,</span> <span class="s">&#39;host&#39;</span><span class="p">,</span> <span class="s">&#39;dbname&#39;</span><span class="p">]</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">opts</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">valid_opts</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">opts</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Connection._check_config_file_sanity"><a class="viewcode-back" href="../../api/connection.html#xdapy.connection.Connection._check_config_file_sanity">[docs]</a>    <span class="k">def</span> <span class="nf">_check_config_file_sanity</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="c"># do check that test is not the same as normal</span>
+        <span class="n">main_profile</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_extract_options</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="n">test_profile</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_extract_options</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">TEST_PROFILE</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">main_profile</span><span class="p">[</span><span class="s">&#39;host&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">test_profile</span><span class="p">[</span><span class="s">&#39;host&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">main_profile</span><span class="p">[</span><span class="s">&#39;dbname&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">test_profile</span><span class="p">[</span><span class="s">&#39;dbname&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span><span class="s">&quot;Please use a different test db.&quot;</span><span class="p">)</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Connection.auto_session"><a class="viewcode-back" href="../../api/connection.html#xdapy.connection.Connection.auto_session">[docs]</a>    <span class="k">def</span> <span class="nf">auto_session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        For use in a ``with`` context. Opens a `Session` and automatically</span>
+<span class="sd">        commits when the ``with`` context exits. (Unless an exception was raised.)</span>
+
+<span class="sd">        Usage::</span>
+
+<span class="sd">            with connection.auto_session as session:</span>
+<span class="sd">                session.add(some_obj)</span>
+<span class="sd">                if not condition:</span>
+<span class="sd">                    raise Exception</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;_auto_session&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_auto_session</span> <span class="o">=</span> <span class="n">AutoSession</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auto_session</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Connection.session"><a class="viewcode-back" href="../../api/connection.html#xdapy.connection.Connection.session">[docs]</a>    <span class="k">def</span> <span class="nf">session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the session object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_session</span><span class="o">.</span><span class="n">session</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Connection.engine"><a class="viewcode-back" href="../../api/connection.html#xdapy.connection.Connection.engine">[docs]</a>    <span class="k">def</span> <span class="nf">engine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_engine_opts</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span>
+</div>
+<div class="viewcode-block" id="Connection.create_tables"><a class="viewcode-back" href="../../api/connection.html#xdapy.connection.Connection.create_tables">[docs]</a>    <span class="k">def</span> <span class="nf">create_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the xdapy table structure in database.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        overwrite: bool, optional</span>
+<span class="sd">            Drop all tables before creating the structure. (Defaults to ``False``.)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">Base</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">drop_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="p">,</span> <span class="n">checkfirst</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">Base</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>
