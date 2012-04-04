@@ -10,8 +10,9 @@
     
     <title>xdapy.mapper &mdash; xdapy 0.9.0 documentation</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/print.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,33 +26,25 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/theme_extras.js"></script>
     <link rel="top" title="xdapy 0.9.0 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
-      </ul>
-    </div>  
+      <div class="header"><h1 class="heading"><a href="../../index.html">
+          <span>xdapy 0.9.0 documentation</span></a></h1>
+        <h2 class="heading"><span>xdapy.mapper</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
+      </div>
+      <div class="content">
+        
+        
   <h1>Source code for xdapy.mapper</h1><div class="highlight"><pre>
 <span class="c"># -*- coding: utf-8 -*-</span>
 
@@ -67,8 +60,7 @@
                <span class="s">&#39;&quot;Rike-Benjamin Schuppner&quot; &lt;rikebs@debilski.de&gt;&#39;</span><span class="p">]</span>
 
 <span class="kn">from</span> <span class="nn">xdapy.errors</span> <span class="kn">import</span> <span class="n">InsertionError</span>
-<span class="kn">from</span> <span class="nn">xdapy.utils.decorators</span> <span class="kn">import</span> <span class="n">require</span>
-<span class="kn">from</span> <span class="nn">xdapy.structures</span> <span class="kn">import</span> <span class="n">ParameterOption</span><span class="p">,</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">EntityObject</span>
+<span class="kn">from</span> <span class="nn">xdapy.structures</span> <span class="kn">import</span> <span class="n">ParameterDeclaration</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">calculate_polymorphic_name</span><span class="p">,</span> <span class="n">create_entity</span>
 <span class="kn">from</span> <span class="nn">xdapy.parameters</span> <span class="kn">import</span> <span class="n">StringParameter</span><span class="p">,</span> <span class="n">DateParameter</span><span class="p">,</span> <span class="n">parameter_for_type</span>
 <span class="kn">from</span> <span class="nn">xdapy.errors</span> <span class="kn">import</span> <span class="n">StringConversionError</span><span class="p">,</span> <span class="n">FilterError</span>
 <span class="kn">from</span> <span class="nn">xdapy.find</span> <span class="kn">import</span> <span class="n">SearchProxy</span>
@@ -95,13 +87,13 @@
 <span class="sd">    connection</span>
 <span class="sd">        The database connection</span>
 
-<span class="sd">    registered_objects</span>
+<span class="sd">    registered_entities</span>
 <span class="sd">        The objects this mapper cares about</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Mapper.__init__"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">connection</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">registered_objects</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">registered_entities</span> <span class="o">=</span> <span class="p">[]</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Mapper.auto_session"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.auto_session">[docs]</a>    <span class="k">def</span> <span class="nf">auto_session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -119,12 +111,12 @@
 </div>
 <div class="viewcode-block" id="Mapper.save"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Save instances inheriting from `EntityObject` into database.</span>
+<span class="sd">        Save instances inheriting from `Entity` into database.</span>
 
 <span class="sd">        Attributes</span>
 <span class="sd">        ----------</span>
 <span class="sd">        args</span>
-<span class="sd">            One or more objects derived from `xdapy.structures.EntityObject`.</span>
+<span class="sd">            One or more objects derived from `xdapy.structures.Entity`.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -143,12 +135,12 @@
 </div>
 <div class="viewcode-block" id="Mapper.save_all"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.save_all">[docs]</a>    <span class="k">def</span> <span class="nf">save_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Save instances inheriting from `EntityObject` into database as well as their children.</span>
+<span class="sd">        Save instances inheriting from `Entity` into database as well as their children.</span>
 
 <span class="sd">        Attributes</span>
 <span class="sd">        ----------</span>
 <span class="sd">        args</span>
-<span class="sd">            One or more objects derived from `xdapy.structures.EntityObject`.</span>
+<span class="sd">            One or more objects derived from `xdapy.structures.Entity`.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -207,7 +199,7 @@
 
                 <span class="n">or_clause</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="c"># Ask for the type of the parameter according to the entity</span>
-                <span class="n">parameter_class</span> <span class="o">=</span> <span class="n">parameter_for_type</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">parameter_types</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                <span class="n">parameter_class</span> <span class="o">=</span> <span class="n">parameter_for_type</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">declared_params</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
                 <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
                     <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
                         <span class="c"># we’ve been given a function</span>
@@ -272,11 +264,11 @@
             <span class="c"># entity class</span>
             <span class="n">entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_by_name</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">EntityObject</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">Entity</span><span class="p">):</span>
             <span class="c"># if we&#39;ve been given an instance, get the parameters</span>
             <span class="c"># and update the filter</span>
 
-            <span class="c"># check for EntityObject and filter parameters</span>
+            <span class="c"># check for Entity and filter parameters</span>
             <span class="c"># filter comes second, so we assume it has higher priority</span>
             <span class="n">f</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">filter</span><span class="p">:</span>
@@ -302,7 +294,7 @@
 </div>
 <div class="viewcode-block" id="Mapper.find_by_id"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.find_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">find_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_session</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Entity</span><span class="o">.</span><span class="n">id</span><span class="o">==</span><span class="nb">id</span><span class="p">)</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">BaseEntity</span><span class="o">.</span><span class="n">id</span><span class="o">==</span><span class="nb">id</span><span class="p">)</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="Mapper.find_first"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.find_first">[docs]</a>    <span class="k">def</span> <span class="nf">find_first</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="nb">filter</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
@@ -312,8 +304,8 @@
 </div>
 <div class="viewcode-block" id="Mapper.find_roots"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.find_roots">[docs]</a>    <span class="k">def</span> <span class="nf">find_roots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">entity</span><span class="p">:</span>
-            <span class="n">entity</span> <span class="o">=</span> <span class="n">Entity</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Entity</span><span class="o">.</span><span class="n">parent</span><span class="o">==</span><span class="bp">None</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="n">entity</span> <span class="o">=</span> <span class="n">BaseEntity</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">BaseEntity</span><span class="o">.</span><span class="n">parent</span><span class="o">==</span><span class="bp">None</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="Mapper.find_related"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.find_related">[docs]</a>    <span class="k">def</span> <span class="nf">find_related</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">related</span><span class="p">):</span>
         <span class="n">the_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -324,7 +316,7 @@
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">the_set</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Mapper.find_by_uuid"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.find_by_uuid">[docs]</a>    <span class="k">def</span> <span class="nf">find_by_uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">Entity</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Entity</span><span class="o">.</span><span class="n">_uuid</span><span class="o">==</span><span class="n">uuid</span><span class="p">)</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">BaseEntity</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">BaseEntity</span><span class="o">.</span><span class="n">_uuid</span><span class="o">==</span><span class="n">uuid</span><span class="p">)</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="Mapper.get_data_matrix"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.get_data_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">get_data_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conditions</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Finds related items for the entity which satisfies condition</span>
@@ -356,9 +348,9 @@
             <span class="n">related</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
                 <span class="k">if</span> <span class="s">&quot;PARENT&quot;</span> <span class="ow">in</span> <span class="n">include</span><span class="p">:</span>
-                    <span class="n">related</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">all_parents</span><span class="p">())</span>
+                    <span class="n">related</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">ancestors</span><span class="p">())</span>
                 <span class="k">if</span> <span class="s">&quot;CHILDREN&quot;</span> <span class="ow">in</span> <span class="n">include</span><span class="p">:</span>
-                    <span class="n">related</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">all_children</span><span class="p">())</span>
+                    <span class="n">related</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">siblings</span><span class="p">())</span>
                 <span class="k">if</span> <span class="s">&quot;CONTEXT&quot;</span> <span class="ow">in</span> <span class="n">include</span><span class="p">:</span>
                     <span class="n">related</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">connected</span><span class="p">)</span>
                 <span class="k">if</span> <span class="s">&quot;CONTEXT_REVERSED&quot;</span> <span class="ow">in</span> <span class="n">include</span><span class="p">:</span>
@@ -454,39 +446,7 @@
         <span class="n">proxy</span> <span class="o">=</span> <span class="n">SearchProxy</span><span class="p">((</span><span class="n">entity</span><span class="p">,</span> <span class="n">the_filter</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">proxy</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Mapper.connect_objects"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.connect_objects">[docs]</a>    <span class="k">def</span> <span class="nf">connect_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Connect two related objects</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        parent : The parent object derived from datamanager.objects.ObjectDict or</span>
-<span class="sd">            the integer id describing this object.</span>
-
-<span class="sd">        child : The child object derived from datamanager.objects.ObjectDict or</span>
-<span class="sd">            the integer id describing this object.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        RequestObjectError : If the objects to be connected are not properly</span>
-<span class="sd">            saved in the database</span>
-
-<span class="sd">        TODO: Maybe consider to save objects automatically</span>
-<span class="sd">        TODO: Revise session closing</span>
-<span class="sd">        TODO: Why this method and not parent.children.append(child)?</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_session</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">parent</span><span class="o">.</span><span class="n">all_parents</span><span class="p">()</span> <span class="o">+</span> <span class="p">[</span><span class="n">parent</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="n">InsertionError</span><span class="p">(</span><span class="s">&#39;Can not insert child because of circularity.&#39;</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">parent</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">InsertionError</span><span class="p">(</span><span class="s">&#39;Child already has parent. Please set force=True.&#39;</span><span class="p">)</span>
-            <span class="n">child</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
-
-</div>
-    <span class="nd">@require</span><span class="p">(</span><span class="s">&#39;entity_name&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-    <span class="nd">@require</span><span class="p">(</span><span class="s">&#39;parameter_name&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-    <span class="nd">@require</span><span class="p">(</span><span class="s">&#39;parameter_type&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-<div class="viewcode-block" id="Mapper.register_parameter"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.register_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">register_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_name</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_type</span><span class="p">):</span>
+<div class="viewcode-block" id="Mapper._register_parameter"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper._register_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">_register_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_name</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_type</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Register a new parameter description for a specific experimental object</span>
 
 <span class="sd">        Attribute:</span>
@@ -499,15 +459,15 @@
 <span class="sd">        Some SQL error -- If the same entry already exists</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_session</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-            <span class="n">parameter_option</span> <span class="o">=</span> <span class="n">ParameterOption</span><span class="p">(</span><span class="n">entity_name</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_type</span><span class="p">)</span>
-            <span class="n">session</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">parameter_option</span><span class="p">)</span>
+            <span class="n">parameter_declaration</span> <span class="o">=</span> <span class="n">ParameterDeclaration</span><span class="p">(</span><span class="n">entity_name</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_type</span><span class="p">)</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">parameter_declaration</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Mapper.is_consistent"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.is_consistent">[docs]</a>    <span class="k">def</span> <span class="nf">is_consistent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_name</span><span class="p">,</span> <span class="n">parameter_defaults</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Checks if an entity definition would be consistent with the current state</span>
 <span class="sd">        of the database.&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_session</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-            <span class="n">db_defaults</span> <span class="o">=</span> <span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">ParameterOption</span><span class="o">.</span><span class="n">parameter_name</span><span class="p">,</span> <span class="n">ParameterOption</span><span class="o">.</span><span class="n">parameter_type</span><span class="p">)</span>
-                                  <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ParameterOption</span><span class="o">.</span><span class="n">entity_name</span><span class="o">==</span><span class="s">&quot;Observer&quot;</span><span class="p">)</span>
+            <span class="n">db_defaults</span> <span class="o">=</span> <span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">ParameterDeclaration</span><span class="o">.</span><span class="n">parameter_name</span><span class="p">,</span> <span class="n">ParameterDeclaration</span><span class="o">.</span><span class="n">parameter_type</span><span class="p">)</span>
+                                  <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ParameterDeclaration</span><span class="o">.</span><span class="n">entity_name</span><span class="o">==</span><span class="n">entity_name</span><span class="p">)</span>
                                   <span class="o">.</span><span class="n">all</span><span class="p">())</span>
             <span class="n">db_defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">db_defaults</span><span class="p">)</span>
 
@@ -516,14 +476,23 @@
 <div class="viewcode-block" id="Mapper.register"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.register">[docs]</a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">klasses</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Registers the class and the class’s parameters.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">klass</span> <span class="ow">in</span> <span class="n">klasses</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">EntityObject</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Class must be subclass of EntityObject.&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">klass</span> <span class="ow">is</span> <span class="n">EntityObject</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;EntityObject is no valid class.&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">registered_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">Entity</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Class must be subclass of Entity.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">klass</span> <span class="ow">is</span> <span class="n">Entity</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Entity is no valid class.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">registered_entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">paramtype</span> <span class="ow">in</span> <span class="n">klass</span><span class="o">.</span><span class="n">parameter_types</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">register_parameter</span><span class="p">(</span><span class="n">klass</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">paramtype</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">paramtype</span> <span class="ow">in</span> <span class="n">klass</span><span class="o">.</span><span class="n">declared_params</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_register_parameter</span><span class="p">(</span><span class="n">klass</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">paramtype</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Mapper.is_registered"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.is_registered">[docs]</a>    <span class="k">def</span> <span class="nf">is_registered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">declared_params</span><span class="p">):</span>
+        <span class="n">polymorphic_name</span> <span class="o">=</span> <span class="n">calculate_polymorphic_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">declared_params</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">polymorphic_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registered_entities</span>
+</div>
+<div class="viewcode-block" id="Mapper.register_type"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.register_type">[docs]</a>    <span class="k">def</span> <span class="nf">register_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">declared_params</span><span class="p">):</span>
+        <span class="n">new_type</span> <span class="o">=</span> <span class="n">create_entity</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">declared_params</span><span class="o">=</span><span class="n">declared_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">new_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_type</span>
 </div>
 <div class="viewcode-block" id="Mapper.entity_by_name"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.entity_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">entity_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns the mapped entity class with the supplied name</span>
@@ -531,14 +500,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        name: string or subclass of EntityObject</span>
+<span class="sd">        name: string or subclass of Entity</span>
 <span class="sd">            The name of the entity object to find.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># maybe name was a class already, then we&#39;re done</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registered_objects</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registered_entities</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">name</span>
 
-        <span class="n">klasses</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">sub</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">sub</span><span class="p">)</span> <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registered_objects</span><span class="p">)</span>
+        <span class="n">klasses</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">sub</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">sub</span><span class="p">)</span> <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registered_entities</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">klasses</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">klasses</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
         <span class="n">klasses_guessed</span> <span class="o">=</span> <span class="p">[</span><span class="n">cls</span> <span class="k">for</span> <span class="n">cls</span> <span class="ow">in</span> <span class="n">klasses</span> <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">cls</span> <span class="o">==</span> <span class="n">name</span><span class="p">]</span>
@@ -548,50 +517,23 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;&quot;&quot;More than one entity with name &quot;{0}&quot; registered.&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
 
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;&quot;&quot;No entity with name &quot;{0}&quot; registered.&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-
+</div>
+<div class="viewcode-block" id="Mapper.__repr__"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;Mapper(</span><span class="si">%r</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span>
 </div></div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="k">pass</span>
 </pre></div>
 
-          </div>
-        </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
+      <div class="bottomnav">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li> 
-      </ul>
-    </div>
+
     <div class="footer">
         &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.

@@ -10,8 +10,9 @@
     
     <title>I/O &mdash; xdapy 0.9.0 documentation</title>
     
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/print.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,40 +26,31 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/theme_extras.js"></script>
     <link rel="top" title="xdapy 0.9.0 documentation" href="../index.html" />
     <link rel="up" title="API" href="index.html" />
     <link rel="prev" title="Errors" href="errors.html" /> 
   </head>
   <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="errors.html" title="Errors"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">API</a> &raquo;</li> 
-      </ul>
-    </div>  
+      <div class="header"><h1 class="heading"><a href="../index.html">
+          <span>xdapy 0.9.0 documentation</span></a></h1>
+        <h2 class="heading"><span>I/O</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        «&#160;&#160;<a href="errors.html">Errors</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
+      </div>
+      <div class="content">
+        
+        
   <div class="section" id="module-xdapy.io">
 <span id="i-o"></span><h1>I/O<a class="headerlink" href="#module-xdapy.io" title="Permalink to this headline">¶</a></h1>
-<p>This module wrapes the input and output functionality.</p>
+<p>This module wraps the input and output functionality.</p>
 <dl class="class">
 <dt id="xdapy.io.UnregisteredTypesError">
 <em class="property">class </em><tt class="descclassname">xdapy.io.</tt><tt class="descname">UnregisteredTypesError</tt><big>(</big><em>msg</em>, <em>*types</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#UnregisteredTypesError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.UnregisteredTypesError" title="Permalink to this definition">¶</a></dt>
@@ -110,7 +102,7 @@
 
 <dl class="attribute">
 <dt id="xdapy.io.BinaryEncoder.__dict__">
-<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x10aab8670&gt;</em><a class="headerlink" href="#xdapy.io.BinaryEncoder.__dict__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x1108af7c0&gt;</em><a class="headerlink" href="#xdapy.io.BinaryEncoder.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -149,10 +141,30 @@
 
 <dl class="class">
 <dt id="xdapy.io.IO">
-<em class="property">class </em><tt class="descclassname">xdapy.io.</tt><tt class="descname">IO</tt><a class="reference internal" href="../_modules/xdapy/io.html#IO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.IO" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
+<em class="property">class </em><tt class="descclassname">xdapy.io.</tt><tt class="descname">IO</tt><big>(</big><em>mapper</em>, <em>known_objects=None</em>, <em>add_new_types=False</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#IO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.IO" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="xdapy.io.IO.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>mapper</em>, <em>known_objects=None</em>, <em>add_new_types=False</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#IO.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.IO.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>If known_objects is None (or left empty), it defaults to mapper.registered_entities.
+This is most likely the right thing and supplying other objects might lead to inconsistencies.</p>
+<p>An empty dict means there are no known_objects.</p>
+<p>For debugging reasons, it could be useful, though.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.io.IO.ignore_unknown_attributes">
+<tt class="descname">ignore_unknown_attributes</tt><em class="property"> = None</em><a class="headerlink" href="#xdapy.io.IO.ignore_unknown_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>If true, we’ll ignore KeyErrors?</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.io.IO.known_objects">
+<tt class="descname">known_objects</tt><a class="reference internal" href="../_modules/xdapy/io.html#IO.known_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.IO.known_objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="xdapy.io.IO.__dict__">
-<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x10aab89b8&gt;</em><a class="headerlink" href="#xdapy.io.IO.__dict__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x1104b61a0&gt;</em><a class="headerlink" href="#xdapy.io.IO.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -170,8 +182,104 @@
 
 <dl class="class">
 <dt id="xdapy.io.JsonIO">
-<em class="property">class </em><tt class="descclassname">xdapy.io.</tt><tt class="descname">JsonIO</tt><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
+<em class="property">class </em><tt class="descclassname">xdapy.io.</tt><tt class="descname">JsonIO</tt><big>(</big><em>mapper</em>, <em>known_objects=None</em>, <em>add_new_types=False</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO" title="Permalink to this definition">¶</a></dt>
+<dd><p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.io.JsonIO.add_objects" title="xdapy.io.JsonIO.add_objects"><tt class="xref py py-obj docutils literal"><span class="pre">add_objects</span></tt></a>(objects)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.io.JsonIO.add_relations" title="xdapy.io.JsonIO.add_relations"><tt class="xref py py-obj docutils literal"><span class="pre">add_relations</span></tt></a>(relations,&nbsp;mapping)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.io.JsonIO.add_types" title="xdapy.io.JsonIO.add_types"><tt class="xref py py-obj docutils literal"><span class="pre">add_types</span></tt></a>(types)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.io.JsonIO.read_file" title="xdapy.io.JsonIO.read_file"><tt class="xref py py-obj docutils literal"><span class="pre">read_file</span></tt></a>(fileobj)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.io.JsonIO.read_json" title="xdapy.io.JsonIO.read_json"><tt class="xref py py-obj docutils literal"><span class="pre">read_json</span></tt></a>(json_data)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.io.JsonIO.read_string" title="xdapy.io.JsonIO.read_string"><tt class="xref py py-obj docutils literal"><span class="pre">read_string</span></tt></a>(jsonstr)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.io.JsonIO.write_file" title="xdapy.io.JsonIO.write_file"><tt class="xref py py-obj docutils literal"><span class="pre">write_file</span></tt></a>(objs,&nbsp;fileobj)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.io.JsonIO.write_json" title="xdapy.io.JsonIO.write_json"><tt class="xref py py-obj docutils literal"><span class="pre">write_json</span></tt></a>(objs)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.io.JsonIO.write_string" title="xdapy.io.JsonIO.write_string"><tt class="xref py py-obj docutils literal"><span class="pre">write_string</span></tt></a>(objs)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="xdapy.io.JsonIO.read_string">
+<tt class="descname">read_string</tt><big>(</big><em>jsonstr</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.read_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.read_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.io.JsonIO.read_file">
+<tt class="descname">read_file</tt><big>(</big><em>fileobj</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.read_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.read_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.io.JsonIO.read_json">
+<tt class="descname">read_json</tt><big>(</big><em>json_data</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.read_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.read_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.io.JsonIO.write_string">
+<tt class="descname">write_string</tt><big>(</big><em>objs</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.write_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.write_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.io.JsonIO.write_file">
+<tt class="descname">write_file</tt><big>(</big><em>objs</em>, <em>fileobj</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.write_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.write_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.io.JsonIO.write_json">
+<tt class="descname">write_json</tt><big>(</big><em>objs</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.write_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.write_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.io.JsonIO._iter_types">
+<tt class="descname">_iter_types</tt><big>(</big><em>types</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO._iter_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO._iter_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.io.JsonIO._iter_objects">
+<tt class="descname">_iter_objects</tt><big>(</big><em>objects</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO._iter_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO._iter_objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.io.JsonIO._iter_relations">
+<tt class="descname">_iter_relations</tt><big>(</big><em>relations</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO._iter_relations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO._iter_relations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.io.JsonIO.add_types">
+<tt class="descname">add_types</tt><big>(</big><em>types</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.add_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.add_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.io.JsonIO.add_objects">
+<tt class="descname">add_objects</tt><big>(</big><em>objects</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.add_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.add_objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.io.JsonIO.add_relations">
+<tt class="descname">add_relations</tt><big>(</big><em>relations</em>, <em>mapping</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.add_relations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.add_relations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="xdapy.io.JsonIO.__module__">
 <tt class="descname">__module__</tt><em class="property"> = 'xdapy.io'</em><a class="headerlink" href="#xdapy.io.JsonIO.__module__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -180,7 +288,7 @@
 
 <dl class="class">
 <dt id="xdapy.io.XmlIO">
-<em class="property">class </em><tt class="descclassname">xdapy.io.</tt><tt class="descname">XmlIO</tt><big>(</big><em>mapper</em>, <em>known_objects=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#XmlIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.XmlIO" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">xdapy.io.</tt><tt class="descname">XmlIO</tt><big>(</big><em>mapper</em>, <em>known_objects=None</em>, <em>add_new_types=False</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#XmlIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.XmlIO" title="Permalink to this definition">¶</a></dt>
 <dd><p class="rubric">Methods</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -235,20 +343,6 @@
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="xdapy.io.XmlIO.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>mapper</em>, <em>known_objects=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#XmlIO.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.XmlIO.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>If known_objects is None (or left empty), it defaults to mapper.registered_objects.
-This is most likely the right thing and supplying other objects might lead to inconsistencies.</p>
-<p>An empty dict means there are no known_objects.</p>
-<p>For debugging reasons, it could be useful, though.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xdapy.io.XmlIO.known_objects">
-<tt class="descname">known_objects</tt><a class="reference internal" href="../_modules/xdapy/io.html#XmlIO.known_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.XmlIO.known_objects" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="xdapy.io.XmlIO.read">
 <tt class="descname">read</tt><big>(</big><em>xml</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#XmlIO.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.XmlIO.read" title="Permalink to this definition">¶</a></dt>
@@ -334,55 +428,17 @@ This is most likely the right thing and supplying other objects might lead to in
 </div>
 
 
-          </div>
-        </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="errors.html"
-                        title="previous chapter">Errors</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/api/io.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="errors.html">Errors</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="errors.html" title="Errors"
-             >previous</a> |</li>
-        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="index.html" >API</a> &raquo;</li> 
-      </ul>
-    </div>
+
     <div class="footer">
         &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.

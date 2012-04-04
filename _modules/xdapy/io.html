@@ -10,8 +10,9 @@
     
     <title>xdapy.io &mdash; xdapy 0.9.0 documentation</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/print.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,38 +26,30 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/theme_extras.js"></script>
     <link rel="top" title="xdapy 0.9.0 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
-      </ul>
-    </div>  
+      <div class="header"><h1 class="heading"><a href="../../index.html">
+          <span>xdapy 0.9.0 documentation</span></a></h1>
+        <h2 class="heading"><span>xdapy.io</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
+      </div>
+      <div class="content">
+        
+        
   <h1>Source code for xdapy.io</h1><div class="highlight"><pre>
 <span class="c"># -*- coding: utf-8 -*-</span>
 
 <span class="sd">&quot;&quot;&quot;\</span>
-<span class="sd">This module wrapes the input and output functionality.</span>
+<span class="sd">This module wraps the input and output functionality.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext&quot;</span>
@@ -69,10 +62,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">types</span> <span class="o">=</span> <span class="n">types</span>
 
 </div></div>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
 <span class="kn">from</span> <span class="nn">xml.etree</span> <span class="kn">import</span> <span class="n">ElementTree</span> <span class="k">as</span> <span class="n">ET</span>
 
 <span class="kn">from</span> <span class="nn">xdapy.structures</span> <span class="kn">import</span> <span class="n">Context</span><span class="p">,</span> <span class="n">Data</span><span class="p">,</span> <span class="n">calculate_polymorphic_name</span>
-<span class="kn">from</span> <span class="nn">xdapy.errors</span> <span class="kn">import</span> <span class="n">AmbiguousObjectError</span><span class="p">,</span> <span class="n">InvalidXMLError</span>
+<span class="kn">from</span> <span class="nn">xdapy.errors</span> <span class="kn">import</span> <span class="n">AmbiguousObjectError</span><span class="p">,</span> <span class="n">InvalidInputError</span>
+<span class="kn">from</span> <span class="nn">xdapy.utils.algorithms</span> <span class="kn">import</span> <span class="n">check_superfluous_keys</span>
 
 
 <div class="viewcode-block" id="BinaryEncoder"><a class="viewcode-back" href="../../api/io.html#xdapy.io.BinaryEncoder">[docs]</a><span class="k">class</span> <span class="nc">BinaryEncoder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -120,14 +117,8 @@
 
 </div>
 <div class="viewcode-block" id="IO"><a class="viewcode-back" href="../../api/io.html#xdapy.io.IO">[docs]</a><span class="k">class</span> <span class="nc">IO</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">pass</span>
-</div>
-<div class="viewcode-block" id="JsonIO"><a class="viewcode-back" href="../../api/io.html#xdapy.io.JsonIO">[docs]</a><span class="k">class</span> <span class="nc">JsonIO</span><span class="p">(</span><span class="n">IO</span><span class="p">):</span>
-    <span class="k">pass</span>
-</div>
-<div class="viewcode-block" id="XmlIO"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO">[docs]</a><span class="k">class</span> <span class="nc">XmlIO</span><span class="p">(</span><span class="n">IO</span><span class="p">):</span>
-<div class="viewcode-block" id="XmlIO.__init__"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapper</span><span class="p">,</span> <span class="n">known_objects</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;If known_objects is None (or left empty), it defaults to mapper.registered_objects.</span>
+<div class="viewcode-block" id="IO.__init__"><a class="viewcode-back" href="../../api/io.html#xdapy.io.IO.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapper</span><span class="p">,</span> <span class="n">known_objects</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">add_new_types</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; If known_objects is None (or left empty), it defaults to mapper.registered_entities.</span>
 <span class="sd">        This is most likely the right thing and supplying other objects might lead to inconsistencies.</span>
 
 <span class="sd">        An empty dict means there are no known_objects.</span>
@@ -135,6 +126,10 @@
 <span class="sd">        For debugging reasons, it could be useful, though.&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span> <span class="o">=</span> <span class="n">mapper</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_new_types</span> <span class="o">=</span> <span class="n">add_new_types</span>
+
+        <span class="c">#: If true, we’ll ignore KeyErrors?</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_unknown_attributes</span> <span class="o">=</span> <span class="bp">False</span>
 
         <span class="k">if</span> <span class="n">known_objects</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_known_objects</span> <span class="o">=</span> <span class="p">{}</span>
@@ -144,11 +139,209 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_known_objects</span> <span class="o">=</span> <span class="bp">None</span>
 </div>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="XmlIO.known_objects"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.known_objects">[docs]</a>    <span class="k">def</span> <span class="nf">known_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IO.known_objects"><a class="viewcode-back" href="../../api/io.html#xdapy.io.IO.known_objects">[docs]</a>    <span class="k">def</span> <span class="nf">known_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_known_objects</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">dict</span><span class="p">((</span><span class="n">obj</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">registered_objects</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">((</span><span class="n">obj</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">registered_entities</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_known_objects</span>
+</div></div>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<div class="viewcode-block" id="JsonIO"><a class="viewcode-back" href="../../api/io.html#xdapy.io.JsonIO">[docs]</a><span class="k">class</span> <span class="nc">JsonIO</span><span class="p">(</span><span class="n">IO</span><span class="p">):</span>
+<div class="viewcode-block" id="JsonIO.read_string"><a class="viewcode-back" href="../../api/io.html#xdapy.io.JsonIO.read_string">[docs]</a>    <span class="k">def</span> <span class="nf">read_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jsonstr</span><span class="p">):</span>
+        <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">jsonstr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
 </div>
+<div class="viewcode-block" id="JsonIO.read_file"><a class="viewcode-back" href="../../api/io.html#xdapy.io.JsonIO.read_file">[docs]</a>    <span class="k">def</span> <span class="nf">read_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fileobj</span><span class="p">):</span>
+        <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fileobj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="JsonIO.read_json"><a class="viewcode-back" href="../../api/io.html#xdapy.io.JsonIO.read_json">[docs]</a>    <span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_data</span><span class="p">):</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="n">json_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;types&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">objects</span> <span class="o">=</span> <span class="n">json_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;objects&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">relations</span> <span class="o">=</span> <span class="n">json_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;relations&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+
+        <span class="c"># begin a new transaction</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">auto_session</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_types</span><span class="p">(</span><span class="n">types</span><span class="p">)</span>
+
+            <span class="n">db_objects</span><span class="p">,</span> <span class="n">mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_objects</span><span class="p">(</span><span class="n">objects</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_relations</span><span class="p">(</span><span class="n">relations</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">db_objects</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">db_objects</span>
+</div>
+<div class="viewcode-block" id="JsonIO.write_string"><a class="viewcode-back" href="../../api/io.html#xdapy.io.JsonIO.write_string">[docs]</a>    <span class="k">def</span> <span class="nf">write_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objs</span><span class="p">):</span>
+        <span class="n">json_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_json</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span>
+        <span class="n">json_string</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">json_string</span>
+</div>
+<div class="viewcode-block" id="JsonIO.write_file"><a class="viewcode-back" href="../../api/io.html#xdapy.io.JsonIO.write_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objs</span><span class="p">,</span> <span class="n">fileobj</span><span class="p">):</span>
+        <span class="n">json_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_json</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">fileobj</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="JsonIO.write_json"><a class="viewcode-back" href="../../api/io.html#xdapy.io.JsonIO.write_json">[docs]</a>    <span class="k">def</span> <span class="nf">write_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objs</span><span class="p">):</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">__original_class_name__</span><span class="p">,</span> <span class="s">&quot;parameters&quot;</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">declared_params</span><span class="p">}</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">registered_entities</span><span class="p">]</span>
+
+        <span class="n">relations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">visited_objs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">unvisited_objs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="n">unvisited_objs</span><span class="p">:</span>
+
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">unvisited_objs</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">visited_objs</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">parent</span><span class="p">:</span>
+                <span class="n">relation</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s">&quot;relation&quot;</span><span class="p">:</span> <span class="s">&quot;child&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;from&quot;</span><span class="p">:</span> <span class="s">&quot;uuid:&quot;</span> <span class="o">+</span> <span class="n">obj</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span>
+                    <span class="s">&quot;to&quot;</span><span class="p">:</span> <span class="s">&quot;uuid:&quot;</span> <span class="o">+</span> <span class="n">obj</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">uuid</span>
+                <span class="p">}</span>
+                <span class="n">relations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">relation</span><span class="p">)</span>
+                <span class="n">unvisited_objs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="n">unvisited_objs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">connection</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">connections</span><span class="p">:</span>
+                <span class="n">relation</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s">&quot;relation&quot;</span><span class="p">:</span> <span class="s">&quot;context&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="n">connection</span><span class="o">.</span><span class="n">connection_type</span><span class="p">,</span>
+                    <span class="s">&quot;from&quot;</span><span class="p">:</span> <span class="s">&quot;uuid:&quot;</span> <span class="o">+</span> <span class="n">obj</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span>
+                    <span class="s">&quot;to&quot;</span><span class="p">:</span> <span class="s">&quot;uuid:&quot;</span> <span class="o">+</span> <span class="n">connection</span><span class="o">.</span><span class="n">connected</span><span class="o">.</span><span class="n">uuid</span>
+                <span class="p">}</span>
+                <span class="n">relations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">relation</span><span class="p">)</span>
+                <span class="n">unvisited_objs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">connected</span><span class="p">)</span>
+
+            <span class="n">visited_objs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+        <span class="n">objects</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">visited_objs</span><span class="p">:</span>
+            <span class="n">json_obj</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                <span class="s">&quot;parameters&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">json_params</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">json_obj</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s">&quot;types&quot;</span><span class="p">:</span> <span class="n">types</span><span class="p">,</span>
+            <span class="s">&quot;objects&quot;</span><span class="p">:</span> <span class="n">objects</span><span class="p">,</span>
+            <span class="s">&quot;relations&quot;</span><span class="p">:</span> <span class="n">relations</span>
+        <span class="p">}</span>
+
+</div>
+<div class="viewcode-block" id="JsonIO._iter_types"><a class="viewcode-back" href="../../api/io.html#xdapy.io.JsonIO._iter_types">[docs]</a>    <span class="k">def</span> <span class="nf">_iter_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">types</span><span class="p">):</span>
+        <span class="n">valid_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;type&quot;</span><span class="p">,</span> <span class="s">&quot;parameters&quot;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">types</span><span class="p">:</span>
+            <span class="n">unknown_keys</span> <span class="o">=</span> <span class="n">check_superfluous_keys</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">valid_keys</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">unknown_keys</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidInputError</span><span class="p">(</span><span class="s">&quot;Unknown keys in type definition: {0}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unknown_keys</span><span class="p">))</span>
+
+            <span class="k">yield</span> <span class="p">{</span>
+                <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">),</span>
+                <span class="s">&quot;parameters&quot;</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;parameters&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span> <span class="c"># defaults to emtpy dict</span>
+            <span class="p">}</span>
+</div>
+<div class="viewcode-block" id="JsonIO._iter_objects"><a class="viewcode-back" href="../../api/io.html#xdapy.io.JsonIO._iter_objects">[docs]</a>    <span class="k">def</span> <span class="nf">_iter_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objects</span><span class="p">):</span>
+        <span class="n">valid_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;id&quot;</span><span class="p">,</span> <span class="s">&quot;uuid&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">,</span> <span class="s">&quot;parameters&quot;</span><span class="p">,</span> <span class="s">&quot;children&quot;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
+            <span class="n">unknown_keys</span> <span class="o">=</span> <span class="n">check_superfluous_keys</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">valid_keys</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">unknown_keys</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidInputError</span><span class="p">(</span><span class="s">&quot;Unknown keys in object: {0}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unknown_keys</span><span class="p">))</span>
+
+            <span class="k">yield</span> <span class="p">{</span>
+                <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;id&quot;</span><span class="p">),</span>
+                <span class="s">&quot;uuid&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;uuid&quot;</span><span class="p">),</span>
+                <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">),</span>
+                <span class="s">&quot;params&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;parameters&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{},</span>
+                <span class="s">&quot;children&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;children&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+            <span class="p">}</span>
+</div>
+<div class="viewcode-block" id="JsonIO._iter_relations"><a class="viewcode-back" href="../../api/io.html#xdapy.io.JsonIO._iter_relations">[docs]</a>    <span class="k">def</span> <span class="nf">_iter_relations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relations</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">relations</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">rel</span>
+
+</div>
+<div class="viewcode-block" id="JsonIO.add_types"><a class="viewcode-back" href="../../api/io.html#xdapy.io.JsonIO.add_types">[docs]</a>    <span class="k">def</span> <span class="nf">add_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">types</span><span class="p">):</span>
+        <span class="k">for</span> <span class="nb">type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iter_types</span><span class="p">(</span><span class="n">types</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">is_registered</span><span class="p">(</span><span class="nb">type</span><span class="p">[</span><span class="s">&quot;type&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="p">[</span><span class="s">&quot;parameters&quot;</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_new_types</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">InvalidInputError</span><span class="p">(</span><span class="s">&quot;Type {0} not present in mapper.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Adding type </span><span class="si">%r</span><span class="s">.&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">[</span><span class="s">&quot;type&quot;</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">register_type</span><span class="p">(</span><span class="nb">type</span><span class="p">[</span><span class="s">&quot;type&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="p">[</span><span class="s">&quot;parameters&quot;</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="JsonIO.add_objects"><a class="viewcode-back" href="../../api/io.html#xdapy.io.JsonIO.add_objects">[docs]</a>    <span class="k">def</span> <span class="nf">add_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objects</span><span class="p">):</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">db_objects</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iter_objects</span><span class="p">(</span><span class="n">objects</span><span class="p">):</span>
+            <span class="n">entity_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s">&quot;type&quot;</span><span class="p">],</span> <span class="n">_uuid</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s">&quot;uuid&quot;</span><span class="p">])</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">[</span><span class="s">&quot;params&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">entity_obj</span><span class="o">.</span><span class="n">str_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+                <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_unknown_attributes</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Unknown key for {0}: {1}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s">&quot;type&quot;</span><span class="p">],</span> <span class="n">err</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span>
+
+            <span class="k">if</span> <span class="n">obj</span><span class="p">[</span><span class="s">&quot;id&quot;</span><span class="p">]:</span>
+                <span class="n">mapping</span><span class="p">[</span><span class="s">&quot;id:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s">&quot;id&quot;</span><span class="p">])]</span> <span class="o">=</span> <span class="n">entity_obj</span>
+
+            <span class="k">if</span> <span class="n">obj</span><span class="p">[</span><span class="s">&quot;uuid&quot;</span><span class="p">]:</span>
+                <span class="n">mapping</span><span class="p">[</span><span class="s">&quot;uuid:&quot;</span> <span class="o">+</span> <span class="n">obj</span><span class="p">[</span><span class="s">&quot;uuid&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">entity_obj</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">entity_obj</span><span class="p">)</span>
+
+            <span class="c"># handle potential children</span>
+            <span class="k">if</span> <span class="n">obj</span><span class="p">[</span><span class="s">&quot;children&quot;</span><span class="p">]:</span>
+                <span class="n">child_objs</span><span class="p">,</span> <span class="n">child_mappings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_objects</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s">&quot;children&quot;</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">child_objs</span><span class="p">:</span>
+                    <span class="n">child</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">entity_obj</span>
+
+                <span class="c"># be on the save side and save once more</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">entity_obj</span><span class="p">)</span>
+
+                <span class="n">db_objects</span> <span class="o">+=</span> <span class="n">child_objs</span>
+                <span class="n">mapping</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">child_mappings</span><span class="p">)</span>
+
+            <span class="n">db_objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entity_obj</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">db_objects</span><span class="p">,</span> <span class="n">mapping</span>
+</div>
+<div class="viewcode-block" id="JsonIO.add_relations"><a class="viewcode-back" href="../../api/io.html#xdapy.io.JsonIO.add_relations">[docs]</a>    <span class="k">def</span> <span class="nf">add_relations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relations</span><span class="p">,</span> <span class="n">mapping</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">relations</span><span class="p">:</span>
+            <span class="n">rel_type</span> <span class="o">=</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;relation&quot;</span><span class="p">)</span>
+            <span class="n">rel_name</span> <span class="o">=</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">)</span>
+            <span class="n">rel_from</span> <span class="o">=</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;from&quot;</span><span class="p">)</span>
+            <span class="n">rel_to</span> <span class="o">=</span> <span class="n">rel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;to&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">rel_type</span> <span class="o">==</span> <span class="s">&quot;parent&quot;</span><span class="p">:</span>
+                <span class="c"># rel_from is parent of rel_to</span>
+                <span class="k">if</span> <span class="n">mapping</span><span class="p">[</span><span class="n">rel_to</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">InvalidInputError</span><span class="p">(</span><span class="s">&quot;Multiple parents defined for object {0} ({1}).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">rel_to</span><span class="p">],</span> <span class="n">rel_to</span><span class="p">))</span>
+                <span class="n">mapping</span><span class="p">[</span><span class="n">rel_to</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">mapping</span><span class="p">[</span><span class="n">rel_from</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">rel_type</span> <span class="o">==</span> <span class="s">&quot;child&quot;</span><span class="p">:</span>
+                <span class="c"># rel_from is child of rel_to</span>
+                <span class="k">if</span> <span class="n">mapping</span><span class="p">[</span><span class="n">rel_from</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">InvalidInputError</span><span class="p">(</span><span class="s">&quot;Multiple parents defined for object {0} ({1}).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">rel_from</span><span class="p">],</span> <span class="n">rel_from</span><span class="p">))</span>
+                <span class="n">mapping</span><span class="p">[</span><span class="n">rel_from</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">mapping</span><span class="p">[</span><span class="n">rel_to</span><span class="p">]</span>
+
+            <span class="k">elif</span> <span class="n">rel_type</span> <span class="o">==</span> <span class="s">&quot;context&quot;</span><span class="p">:</span>
+                <span class="n">mapping</span><span class="p">[</span><span class="n">rel_from</span><span class="p">]</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">rel_name</span><span class="p">,</span> <span class="n">mapping</span><span class="p">[</span><span class="n">rel_to</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidInputError</span><span class="p">(</span><span class="s">&quot;Unknown relation type: {0}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rel_type</span><span class="p">))</span>
+
+
+</div></div>
+<div class="viewcode-block" id="XmlIO"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO">[docs]</a><span class="k">class</span> <span class="nc">XmlIO</span><span class="p">(</span><span class="n">IO</span><span class="p">):</span>
 <div class="viewcode-block" id="XmlIO.read"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml</span><span class="p">):</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">xml</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
@@ -160,7 +353,7 @@
 </div>
 <div class="viewcode-block" id="XmlIO.filter"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.filter">[docs]</a>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">root</span><span class="o">.</span><span class="n">tag</span> <span class="o">!=</span> <span class="s">&quot;xdapy&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidXMLError</span><span class="p">(</span><span class="s">&quot;Tag {0} does not belong here&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">InvalidInputError</span><span class="p">(</span><span class="s">&quot;Tag {0} does not belong here&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">root</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&quot;types&quot;</span><span class="p">:</span>
@@ -188,7 +381,7 @@
         <span class="n">not_found</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">entity</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&quot;entity&quot;</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">InvalidXMLError</span><span class="p">(</span><span class="s">&quot;Tag {0} does not belong here&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">InvalidInputError</span><span class="p">(</span><span class="s">&quot;Tag {0} does not belong here&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="nb">type</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_entity_type</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
 
@@ -205,8 +398,8 @@
         <span class="k">if</span> <span class="n">not_found</span><span class="p">:</span>
             <span class="k">print</span> <span class="s">&quot;&quot;&quot;The following objects were declared in the XML file but never imported:&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">nf</span> <span class="ow">in</span> <span class="n">not_found</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s">&quot;&quot;&quot;class {name}(EntityObject):</span>
-<span class="s">    parameter_types = {types!r}</span>
+            <span class="k">print</span> <span class="s">&quot;&quot;&quot;class {name}(Entity):</span>
+<span class="s">    declared_params = {types!r}</span>
 <span class="s">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">nf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">types</span><span class="o">=</span><span class="n">nf</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">not_found</span><span class="p">:</span>
@@ -254,23 +447,23 @@
             <span class="k">if</span> <span class="n">parent_id</span> <span class="ow">in</span> <span class="n">ref_ids</span><span class="p">:</span>
                 <span class="n">new_entity</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">ref_ids</span><span class="p">[</span><span class="n">parent_id</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">InvalidXMLError</span><span class="p">(</span><span class="s">&quot;Parent {0} undefined for entity {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parent_id</span><span class="p">,</span> <span class="n">new_entity</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">InvalidInputError</span><span class="p">(</span><span class="s">&quot;Parent {0} undefined for entity {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parent_id</span><span class="p">,</span> <span class="n">new_entity</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="s">&quot;id&quot;</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
             <span class="c"># add id attribute to ref_ids</span>
             <span class="nb">id</span> <span class="o">=</span> <span class="s">&quot;id:&quot;</span> <span class="o">+</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;id&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ref_ids</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">InvalidXMLError</span><span class="p">(</span><span class="s">&quot;Ambiguous declaration of {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">InvalidInputError</span><span class="p">(</span><span class="s">&quot;Ambiguous declaration of {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
             <span class="n">ref_ids</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_entity</span>
 
         <span class="k">if</span> <span class="s">&quot;uuid&quot;</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
             <span class="c"># add id attribute to ref_ids</span>
             <span class="nb">id</span> <span class="o">=</span> <span class="s">&quot;uuid:&quot;</span> <span class="o">+</span> <span class="n">entity</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;uuid&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ref_ids</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">InvalidXMLError</span><span class="p">(</span><span class="s">&quot;Ambiguous declaration of {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">InvalidInputError</span><span class="p">(</span><span class="s">&quot;Ambiguous declaration of {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
             <span class="n">ref_ids</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_entity</span>
 
-        <span class="c"># We need to assiciate the entity with a session. Otherwise, we cannot add data.</span>
+        <span class="c"># We need to associate the entity with a session. Otherwise, we cannot add data.</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">new_entity</span><span class="p">)</span>
 
@@ -282,7 +475,7 @@
             <span class="k">if</span> <span class="n">sub</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&quot;entity&quot;</span><span class="p">:</span>
                 <span class="n">child</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_entity</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">ref_ids</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">parent</span> <span class="ow">and</span> <span class="n">child</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">new_entity</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">InvalidXMLError</span><span class="p">(</span><span class="s">&quot;Trying to mix nesting with explicit parent specification for {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">child</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="n">InvalidInputError</span><span class="p">(</span><span class="s">&quot;Trying to mix nesting with explicit parent specification for {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">child</span><span class="p">))</span>
 
                 <span class="n">new_entity</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">sub</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&quot;data&quot;</span><span class="p">:</span>
@@ -296,7 +489,7 @@
         <span class="k">if</span> <span class="s">&quot;value&quot;</span> <span class="ow">in</span> <span class="n">parameter</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;value&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">text</span> <span class="ow">and</span> <span class="n">parameter</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="n">InvalidXMLError</span><span class="p">(</span><span class="s">&quot;Value and text given for parameter {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parameter</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">InvalidInputError</span><span class="p">(</span><span class="s">&quot;Value and text given for parameter {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parameter</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">text</span>
             <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -348,7 +541,7 @@
 </div>
 <div class="viewcode-block" id="XmlIO.write_types"><a class="viewcode-back" href="../../api/io.html#xdapy.io.XmlIO.write_types">[docs]</a>    <span class="k">def</span> <span class="nf">write_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
         <span class="n">obj_entity</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s">&quot;entity&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="nb">type</span> <span class="ow">in</span> <span class="nb">object</span><span class="o">.</span><span class="n">parameter_types</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="nb">type</span> <span class="ow">in</span> <span class="nb">object</span><span class="o">.</span><span class="n">declared_params</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
             <span class="n">parameter</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s">&quot;parameter&quot;</span><span class="p">)</span>
             <span class="n">parameter</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
             <span class="n">parameter</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span>
@@ -385,44 +578,15 @@
         <span class="k">return</span> <span class="n">entity</span>
 </pre></div></div></div>
 
-          </div>
-        </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
+      <div class="bottomnav">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li> 
-      </ul>
-    </div>
+
     <div class="footer">
         &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.

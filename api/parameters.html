@@ -10,8 +10,9 @@
     
     <title>Parameters &mdash; xdapy 0.9.0 documentation</title>
     
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/print.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,37 +26,28 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/theme_extras.js"></script>
     <link rel="top" title="xdapy 0.9.0 documentation" href="../index.html" />
     <link rel="up" title="API" href="index.html" />
     <link rel="prev" title="Operators" href="operators.html" /> 
   </head>
   <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="operators.html" title="Operators"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">API</a> &raquo;</li> 
-      </ul>
-    </div>  
+      <div class="header"><h1 class="heading"><a href="../index.html">
+          <span>xdapy 0.9.0 documentation</span></a></h1>
+        <h2 class="heading"><span>Parameters</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        «&#160;&#160;<a href="operators.html">Operators</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
+      </div>
+      <div class="content">
+        
+        
   <div class="section" id="module-xdapy.parameters">
 <span id="parameters"></span><h1>Parameters<a class="headerlink" href="#module-xdapy.parameters" title="Permalink to this headline">¶</a></h1>
 <p>Provide a centralised typed key–value store.</p>
@@ -120,7 +112,7 @@ The name assigned to a Parameter must be a string.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.Parameter.__table_args__">
-<tt class="descname">__table_args__</tt><em class="property"> = (UniqueConstraint(Column('entity_id', Integer(), ForeignKey('entities.id'), table=&lt;parameters&gt;, nullable=False), Column('name', String(length=40), table=&lt;parameters&gt;)),)</em><a class="headerlink" href="#xdapy.parameters.Parameter.__table_args__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__table_args__</tt><em class="property"> = (UniqueConstraint(Column('entity_id', Integer(), ForeignKey('entities.id'), table=&lt;parameters&gt;, nullable=False), Column('name', String(length=40), table=&lt;parameters&gt;)), {})</em><a class="headerlink" href="#xdapy.parameters.Parameter.__table_args__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -160,6 +152,14 @@ The name assigned to a Parameter must be a string.</p>
 This function is preferred over str(self.value) for exporting values.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="xdapy.parameters.Parameter.value_json">
+<tt class="descname">value_json</tt><a class="reference internal" href="../_modules/xdapy/parameters.html#Parameter.value_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.Parameter.value_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value as a JSON-compatible value.
+This function may be overriden if there is a better fitting representation
+for JSON.</p>
+</dd></dl>
+
 <dl class="staticmethod">
 <dt id="xdapy.parameters.Parameter.create">
 <em class="property">static </em><tt class="descname">create</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#Parameter.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.Parameter.create" title="Permalink to this definition">¶</a></dt>
@@ -168,7 +168,7 @@ This function is preferred over str(self.value) for exporting values.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.Parameter.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109ef72d0; Parameter&gt;</em><a class="headerlink" href="#xdapy.parameters.Parameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10facbf10; Parameter&gt;</em><a class="headerlink" href="#xdapy.parameters.Parameter.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -183,7 +183,7 @@ This function is preferred over str(self.value) for exporting values.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.Parameter._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.Parameter'&gt; at 7ffaac1b4a50&gt;</em><a class="headerlink" href="#xdapy.parameters.Parameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.Parameter'&gt; at 7ff1ebabb860&gt;</em><a class="headerlink" href="#xdapy.parameters.Parameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -301,7 +301,7 @@ a string.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.StringParameter.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109efc190; StringParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.StringParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10fad2e90; StringParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.StringParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -316,7 +316,7 @@ a string.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.StringParameter._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.StringParameter'&gt; at 7ffaac1ccb60&gt;</em><a class="headerlink" href="#xdapy.parameters.StringParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.StringParameter'&gt; at 7ff1ebad3a90&gt;</em><a class="headerlink" href="#xdapy.parameters.StringParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -387,6 +387,11 @@ an integer.</p>
 <em class="property">classmethod </em><tt class="descname">from_string</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#IntegerParameter.from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.IntegerParameter.from_string" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="attribute">
+<dt id="xdapy.parameters.IntegerParameter.value_json">
+<tt class="descname">value_json</tt><a class="reference internal" href="../_modules/xdapy/parameters.html#IntegerParameter.value_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.IntegerParameter.value_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="classmethod">
 <dt id="xdapy.parameters.IntegerParameter.accepts">
 <em class="property">classmethod </em><tt class="descname">accepts</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#IntegerParameter.accepts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.IntegerParameter.accepts" title="Permalink to this definition">¶</a></dt>
@@ -441,7 +446,7 @@ an integer.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.IntegerParameter.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f06250; IntegerParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.IntegerParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10fadde50; IntegerParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.IntegerParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -456,7 +461,7 @@ an integer.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.IntegerParameter._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.IntegerParameter'&gt; at 7ffaac1ddc90&gt;</em><a class="headerlink" href="#xdapy.parameters.IntegerParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.IntegerParameter'&gt; at 7ff1ebae4bc0&gt;</em><a class="headerlink" href="#xdapy.parameters.IntegerParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -527,6 +532,11 @@ a float.</p>
 <em class="property">classmethod </em><tt class="descname">from_string</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#FloatParameter.from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.FloatParameter.from_string" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="attribute">
+<dt id="xdapy.parameters.FloatParameter.value_json">
+<tt class="descname">value_json</tt><a class="reference internal" href="../_modules/xdapy/parameters.html#FloatParameter.value_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.FloatParameter.value_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="classmethod">
 <dt id="xdapy.parameters.FloatParameter.accepts">
 <em class="property">classmethod </em><tt class="descname">accepts</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#FloatParameter.accepts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.FloatParameter.accepts" title="Permalink to this definition">¶</a></dt>
@@ -581,7 +591,7 @@ a float.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.FloatParameter.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f0c9d0; FloatParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.FloatParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10fae8690; FloatParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.FloatParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -596,7 +606,7 @@ a float.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.FloatParameter._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.FloatParameter'&gt; at 7ffaac1ebde0&gt;</em><a class="headerlink" href="#xdapy.parameters.FloatParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.FloatParameter'&gt; at 7ff1ebaf2d10&gt;</em><a class="headerlink" href="#xdapy.parameters.FloatParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -726,7 +736,7 @@ a datetime.date.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.DateParameter.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f17150; DateParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.DateParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10faedd90; DateParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.DateParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -741,7 +751,7 @@ a datetime.date.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.DateParameter._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.DateParameter'&gt; at 7ffaac1f9e20&gt;</em><a class="headerlink" href="#xdapy.parameters.DateParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.DateParameter'&gt; at 7ff1ebb04cf0&gt;</em><a class="headerlink" href="#xdapy.parameters.DateParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -871,7 +881,7 @@ a datetime.time.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.TimeParameter.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f1c910; TimeParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.TimeParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10faf75d0; TimeParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.TimeParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -886,7 +896,7 @@ a datetime.time.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.TimeParameter._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.TimeParameter'&gt; at 7ffaac20cb90&gt;</em><a class="headerlink" href="#xdapy.parameters.TimeParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.TimeParameter'&gt; at 7ff1ebb13a50&gt;</em><a class="headerlink" href="#xdapy.parameters.TimeParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1016,7 +1026,7 @@ a datetime.datetime.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.DateTimeParameter.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f260d0; DateTimeParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10fafccd0; DateTimeParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.DateTimeParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1031,7 +1041,7 @@ a datetime.datetime.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.DateTimeParameter._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.DateTimeParameter'&gt; at 7ffaac21c480&gt;</em><a class="headerlink" href="#xdapy.parameters.DateTimeParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.DateTimeParameter'&gt; at 7ff1ebb23340&gt;</em><a class="headerlink" href="#xdapy.parameters.DateTimeParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1107,6 +1117,11 @@ a boolean.</p>
 <tt class="descname">value_string</tt><a class="reference internal" href="../_modules/xdapy/parameters.html#BooleanParameter.value_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.BooleanParameter.value_string" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="attribute">
+<dt id="xdapy.parameters.BooleanParameter.value_json">
+<tt class="descname">value_json</tt><a class="reference internal" href="../_modules/xdapy/parameters.html#BooleanParameter.value_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.BooleanParameter.value_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="classmethod">
 <dt id="xdapy.parameters.BooleanParameter.accepts">
 <em class="property">classmethod </em><tt class="descname">accepts</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/parameters.html#BooleanParameter.accepts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.parameters.BooleanParameter.accepts" title="Permalink to this definition">¶</a></dt>
@@ -1151,7 +1166,7 @@ a boolean.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.BooleanParameter.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f2a9d0; BooleanParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.BooleanParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10fb07550; BooleanParameter&gt;</em><a class="headerlink" href="#xdapy.parameters.BooleanParameter.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1166,7 +1181,7 @@ a boolean.</p>
 
 <dl class="attribute">
 <dt id="xdapy.parameters.BooleanParameter._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.BooleanParameter'&gt; at 7ffaac22e780&gt;</em><a class="headerlink" href="#xdapy.parameters.BooleanParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.parameters.BooleanParameter'&gt; at 7ff1ebb35480&gt;</em><a class="headerlink" href="#xdapy.parameters.BooleanParameter._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1238,55 +1253,17 @@ a boolean.</p>
 </div>
 
 
-          </div>
-        </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="operators.html"
-                        title="previous chapter">Operators</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/api/parameters.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="operators.html">Operators</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="operators.html" title="Operators"
-             >previous</a> |</li>
-        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="index.html" >API</a> &raquo;</li> 
-      </ul>
-    </div>
+
     <div class="footer">
         &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.

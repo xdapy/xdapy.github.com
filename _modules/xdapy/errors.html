@@ -10,8 +10,9 @@
     
     <title>xdapy.errors &mdash; xdapy 0.9.0 documentation</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/print.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,33 +26,25 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/theme_extras.js"></script>
     <link rel="top" title="xdapy 0.9.0 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
-      </ul>
-    </div>  
+      <div class="header"><h1 class="heading"><a href="../../index.html">
+          <span>xdapy 0.9.0 documentation</span></a></h1>
+        <h2 class="heading"><span>xdapy.errors</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
+      </div>
+      <div class="content">
+        
+        
   <h1>Source code for xdapy.errors</h1><div class="highlight"><pre>
 <span class="c"># -*- coding: utf-8 -*-</span>
 
@@ -107,10 +100,6 @@
     <span class="sd">&quot;&quot;&quot;Raised whenever something is fatal with the data.&quot;&quot;&quot;</span>
     <span class="k">pass</span>
 </div>
-<div class="viewcode-block" id="InvalidXMLError"><a class="viewcode-back" href="../../api/errors.html#xdapy.errors.InvalidXMLError">[docs]</a><span class="k">class</span> <span class="nc">InvalidXMLError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Raised when XML is malformed.&quot;&quot;&quot;</span>
-    <span class="k">pass</span>
-</div>
 <div class="viewcode-block" id="ConfigurationError"><a class="viewcode-back" href="../../api/errors.html#xdapy.errors.ConfigurationError">[docs]</a><span class="k">class</span> <span class="nc">ConfigurationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when there is something wrong with the configuration.&quot;&quot;&quot;</span>
     <span class="k">pass</span>
@@ -118,51 +107,30 @@
 <div class="viewcode-block" id="FilterError"><a class="viewcode-back" href="../../api/errors.html#xdapy.errors.FilterError">[docs]</a><span class="k">class</span> <span class="nc">FilterError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Something is wrong with the filter.&quot;&quot;&quot;</span>
     <span class="k">pass</span>
-
 </div>
 <div class="viewcode-block" id="SearchError"><a class="viewcode-back" href="../../api/errors.html#xdapy.errors.SearchError">[docs]</a><span class="k">class</span> <span class="nc">SearchError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when a search is not well defined or malformed.&quot;&quot;&quot;</span>
     <span class="k">pass</span>
-</pre></div></div>
-
-          </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
+<div class="viewcode-block" id="InvalidInputError"><a class="viewcode-back" href="../../api/errors.html#xdapy.errors.InvalidInputError">[docs]</a><span class="k">class</span> <span class="nc">InvalidInputError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Raised when the import data is malformed. &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="DatabaseError"><a class="viewcode-back" href="../../api/errors.html#xdapy.errors.DatabaseError">[docs]</a><span class="k">class</span> <span class="nc">DatabaseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Raised when the database does not allow to connect.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+</pre></div>
+
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li> 
-      </ul>
-    </div>
+      <div class="bottomnav">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
+      </div>
+
     <div class="footer">
         &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.

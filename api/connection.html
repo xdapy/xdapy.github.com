@@ -10,8 +10,9 @@
     
     <title>Connection &mdash; xdapy 0.9.0 documentation</title>
     
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/print.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,95 +26,35 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/theme_extras.js"></script>
     <link rel="top" title="xdapy 0.9.0 documentation" href="../index.html" />
     <link rel="up" title="API" href="index.html" />
     <link rel="prev" title="Init" href="init.html" /> 
   </head>
   <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="init.html" title="Init"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">API</a> &raquo;</li> 
-      </ul>
-    </div>  
+      <div class="header"><h1 class="heading"><a href="../index.html">
+          <span>xdapy 0.9.0 documentation</span></a></h1>
+        <h2 class="heading"><span>Connection</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        «&#160;&#160;<a href="init.html">Init</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
+      </div>
+      <div class="content">
+        
+        
   <div class="section" id="module-xdapy.connection">
 <span id="connection"></span><h1>Connection<a class="headerlink" href="#module-xdapy.connection" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="#xdapy.connection.Connection" title="xdapy.connection.Connection"><tt class="xref py py-obj docutils literal"><span class="pre">Connection</span></tt></a> module is used to establish a connection to the database and
 takes care of creating the database tables.</p>
 <dl class="class">
-<dt id="xdapy.connection.AutoSession">
-<em class="property">class </em><tt class="descclassname">xdapy.connection.</tt><tt class="descname">AutoSession</tt><big>(</big><em>session</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#AutoSession"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.AutoSession" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides an automatically committing session.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>session: Session</strong> :</p>
-<blockquote class="last">
-<div><p>The <tt class="xref py py-obj docutils literal"><span class="pre">Session</span></tt> object which is wrapped by this <a class="reference internal" href="#xdapy.connection.AutoSession" title="xdapy.connection.AutoSession"><tt class="xref py py-obj docutils literal"><span class="pre">AutoSession</span></tt></a>.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="xdapy.connection.AutoSession.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>session</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#AutoSession.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.AutoSession.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="xdapy.connection.AutoSession.__enter__">
-<tt class="descname">__enter__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#AutoSession.__enter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.AutoSession.__enter__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <tt class="xref py py-obj docutils literal"><span class="pre">self.session.begin()</span></tt> and returns the session object.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="xdapy.connection.AutoSession.__exit__">
-<tt class="descname">__exit__</tt><big>(</big><em>e_type</em>, <em>e_val</em>, <em>e_tb</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#AutoSession.__exit__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.AutoSession.__exit__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks for success and commits the session.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xdapy.connection.AutoSession.__dict__">
-<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x10a93fb08&gt;</em><a class="headerlink" href="#xdapy.connection.AutoSession.__dict__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="xdapy.connection.AutoSession.__module__">
-<tt class="descname">__module__</tt><em class="property"> = 'xdapy.connection'</em><a class="headerlink" href="#xdapy.connection.AutoSession.__module__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="xdapy.connection.AutoSession.__weakref__">
-<tt class="descname">__weakref__</tt><a class="headerlink" href="#xdapy.connection.AutoSession.__weakref__" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of weak references to the object (if defined)</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="xdapy.connection.Connection">
-<em class="property">class </em><tt class="descclassname">xdapy.connection.</tt><tt class="descname">Connection</tt><big>(</big><em>host=None</em>, <em>dialect=None</em>, <em>user=None</em>, <em>password=None</em>, <em>dbname=None</em>, <em>uri=None</em>, <em>echo=False</em>, <em>session_opts=None</em>, <em>engine_opts=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">xdapy.connection.</tt><tt class="descname">Connection</tt><big>(</big><em>host=None</em>, <em>dialect=None</em>, <em>user=None</em>, <em>password=None</em>, <em>dbname=None</em>, <em>uri=None</em>, <em>echo=False</em>, <em>check_empty=False</em>, <em>session_opts=None</em>, <em>engine_opts=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialises a Connection object which holds all parameters to create engines and sessions.</p>
 <p>Additional options for the <tt class="xref py py-obj docutils literal"><span class="pre">sessionmaker</span></tt> or <tt class="xref py py-obj docutils literal"><span class="pre">create_engine</span></tt> functions may be passed as a dict
 in <tt class="xref py py-obj docutils literal"><span class="pre">session_opts</span></tt> and <tt class="xref py py-obj docutils literal"><span class="pre">engine_opts</span></tt>.</p>
@@ -150,6 +91,10 @@ If this field is given, all other fields may be left out.</p>
 <blockquote>
 <div><p>Print all SQL queries to stdout. (Defaults to <tt class="docutils literal"><span class="pre">False</span></tt>.)</p>
 </div></blockquote>
+<p><strong>check_empty: bool</strong> :</p>
+<blockquote>
+<div><p>If true, this the method <a class="reference internal" href="#xdapy.connection.Connection.create_tables" title="xdapy.connection.Connection.create_tables"><tt class="xref py py-obj docutils literal"><span class="pre">create_tables</span></tt></a> raises an <tt class="xref py py-obj docutils literal"><span class="pre">DatabaseError</span></tt> if the database is not empty.</p>
+</div></blockquote>
 <p><strong>session_opts: dict, optional</strong> :</p>
 <blockquote>
 <div><p>Key–value options to pass to the <tt class="xref py py-obj docutils literal"><span class="pre">sessionmaker()</span></tt> function.</p>
@@ -184,34 +129,39 @@ If this field is given, all other fields may be left out.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.connection.Connection.create_tables" title="xdapy.connection.Connection.create_tables"><tt class="xref py py-obj docutils literal"><span class="pre">create_tables</span></tt></a>([overwrite])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.connection.Connection.create_tables" title="xdapy.connection.Connection.create_tables"><tt class="xref py py-obj docutils literal"><span class="pre">create_tables</span></tt></a>([check_empty])</td>
 <td>Creates the xdapy table structure in database.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#xdapy.connection.Connection.default" title="xdapy.connection.Connection.default"><tt class="xref py py-obj docutils literal"><span class="pre">default</span></tt></a>(**kwargs)</td>
 <td>Creates a connection with the default profile.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.connection.Connection.profile" title="xdapy.connection.Connection.profile"><tt class="xref py py-obj docutils literal"><span class="pre">profile</span></tt></a>(profile[,&nbsp;filename])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.connection.Connection.drop_tables" title="xdapy.connection.Connection.drop_tables"><tt class="xref py py-obj docutils literal"><span class="pre">drop_tables</span></tt></a>()</td>
+<td>Drops all xdapy tables.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.connection.Connection.profile" title="xdapy.connection.Connection.profile"><tt class="xref py py-obj docutils literal"><span class="pre">profile</span></tt></a>(profile[,&nbsp;filename])</td>
 <td>Reads the settings from the file <tt class="docutils literal"><span class="pre">~/.xdapy/engine.ini</span></tt> or the path value.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.connection.Connection.test" title="xdapy.connection.Connection.test"><tt class="xref py py-obj docutils literal"><span class="pre">test</span></tt></a>(**kwargs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.connection.Connection.test" title="xdapy.connection.Connection.test"><tt class="xref py py-obj docutils literal"><span class="pre">test</span></tt></a>(**kwargs)</td>
 <td>Creates a connection with the test profile.</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="xdapy.connection.Connection.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>host=None</em>, <em>dialect=None</em>, <em>user=None</em>, <em>password=None</em>, <em>dbname=None</em>, <em>uri=None</em>, <em>echo=False</em>, <em>session_opts=None</em>, <em>engine_opts=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>host=None</em>, <em>dialect=None</em>, <em>user=None</em>, <em>password=None</em>, <em>dbname=None</em>, <em>uri=None</em>, <em>echo=False</em>, <em>check_empty=False</em>, <em>session_opts=None</em>, <em>engine_opts=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.connection.Connection.DEFAULT_CONFIG_PATH">
 <tt class="descname">DEFAULT_CONFIG_PATH</tt><em class="property"> = '~/.xdapy/engine.ini'</em><a class="headerlink" href="#xdapy.connection.Connection.DEFAULT_CONFIG_PATH" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Path of the configuration file.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.connection.Connection.TEST_PROFILE">
 <tt class="descname">TEST_PROFILE</tt><em class="property"> = 'test'</em><a class="headerlink" href="#xdapy.connection.Connection.TEST_PROFILE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Identifier for the test profile.</p>
+</dd></dl>
 
 <dl class="classmethod">
 <dt id="xdapy.connection.Connection.profile">
@@ -226,6 +176,9 @@ your username, password, host and dbname:</p>
 <span class="n">dbname</span> <span class="o">=</span> <span class="n">xdapy</span>
 <span class="p">[</span><span class="n">test</span><span class="p">]</span>
 <span class="n">dbname</span> <span class="o">=</span> <span class="n">xdapy_test</span>
+<span class="n">check_empty</span> <span class="o">=</span> <span class="n">true</span>
+<span class="p">[</span><span class="n">demo</span><span class="p">]</span>
+<span class="n">dbname</span> <span class="o">=</span> <span class="n">xdapy_demo</span>
 </pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -299,14 +252,48 @@ commits when the <tt class="docutils literal"><span class="pre">with</span></tt>
 <tt class="descname">engine</tt><a class="reference internal" href="../_modules/xdapy/connection.html#Connection.engine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection.engine" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="xdapy.connection.Connection._table_names">
+<tt class="descname">_table_names</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection._table_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection._table_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.connection.Connection.create_tables">
+<tt class="descname">create_tables</tt><big>(</big><em>check_empty=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection.create_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection.create_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the xdapy table structure in database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>check_empty: bool, optional</strong> :</p>
+<blockquote class="last">
+<div><p>If true, this method raises an <tt class="xref py py-obj docutils literal"><span class="pre">DatabaseError</span></tt> if the database is not empty.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.connection.Connection.drop_tables">
+<tt class="descname">drop_tables</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection.drop_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection.drop_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drops all xdapy tables.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="xdapy.connection.Connection.__dict__">
-<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x10a93ffd8&gt;</em><a class="headerlink" href="#xdapy.connection.Connection.__dict__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x110404fd8&gt;</em><a class="headerlink" href="#xdapy.connection.Connection.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.connection.Connection.__module__">
 <tt class="descname">__module__</tt><em class="property"> = 'xdapy.connection'</em><a class="headerlink" href="#xdapy.connection.Connection.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.connection.Connection.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -315,78 +302,22 @@ commits when the <tt class="docutils literal"><span class="pre">with</span></tt>
 <dd><p>list of weak references to the object (if defined)</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="xdapy.connection.Connection.create_tables">
-<tt class="descname">create_tables</tt><big>(</big><em>overwrite=False</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection.create_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection.create_tables" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates the xdapy table structure in database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>overwrite: bool, optional</strong> :</p>
-<blockquote class="last">
-<div><p>Drop all tables before creating the structure. (Defaults to <tt class="docutils literal"><span class="pre">False</span></tt>.)</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </dd></dl>
 
 </div>
 
 
-          </div>
-        </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="init.html"
-                        title="previous chapter">Init</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/api/connection.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="init.html">Init</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="init.html" title="Init"
-             >previous</a> |</li>
-        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="index.html" >API</a> &raquo;</li> 
-      </ul>
-    </div>
+
     <div class="footer">
         &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.

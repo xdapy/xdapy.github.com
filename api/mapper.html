@@ -10,8 +10,9 @@
     
     <title>Mapper &mdash; xdapy 0.9.0 documentation</title>
     
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/print.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,33 +26,25 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/theme_extras.js"></script>
     <link rel="top" title="xdapy 0.9.0 documentation" href="../index.html" />
     <link rel="up" title="API" href="index.html" /> 
   </head>
   <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">API</a> &raquo;</li> 
-      </ul>
-    </div>  
+      <div class="header"><h1 class="heading"><a href="../index.html">
+          <span>xdapy 0.9.0 documentation</span></a></h1>
+        <h2 class="heading"><span>Mapper</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
+      </div>
+      <div class="content">
+        
+        
   <div class="section" id="module-xdapy.mapper">
 <span id="mapper"></span><h1>Mapper<a class="headerlink" href="#module-xdapy.mapper" title="Permalink to this headline">¶</a></h1>
 <p>This module provides the code to access a database on an abstract level.</p>
@@ -75,14 +68,14 @@
 <p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="34%" />
-<col width="66%" />
+<col width="35%" />
+<col width="65%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>connection</td>
 <td>The database connection</td>
 </tr>
-<tr class="row-even"><td>registered_objects</td>
+<tr class="row-even"><td>registered_entities</td>
 <td>The objects this mapper cares about</td>
 </tr>
 </tbody>
@@ -94,52 +87,52 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.connect_objects" title="xdapy.mapper.Mapper.connect_objects"><tt class="xref py py-obj docutils literal"><span class="pre">connect_objects</span></tt></a>(parent,&nbsp;child[,&nbsp;force])</td>
-<td>Connect two related objects</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.create" title="xdapy.mapper.Mapper.create"><tt class="xref py py-obj docutils literal"><span class="pre">create</span></tt></a>(type,&nbsp;*args,&nbsp;**kwargs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.create" title="xdapy.mapper.Mapper.create"><tt class="xref py py-obj docutils literal"><span class="pre">create</span></tt></a>(type,&nbsp;*args,&nbsp;**kwargs)</td>
 <td>Returns an instance of the entity named type.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.create_and_save" title="xdapy.mapper.Mapper.create_and_save"><tt class="xref py py-obj docutils literal"><span class="pre">create_and_save</span></tt></a>(type,&nbsp;*args,&nbsp;**kwargs)</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.create_and_save" title="xdapy.mapper.Mapper.create_and_save"><tt class="xref py py-obj docutils literal"><span class="pre">create_and_save</span></tt></a>(type,&nbsp;*args,&nbsp;**kwargs)</td>
 <td>Returns and saves an instance of the entity named type.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.delete" title="xdapy.mapper.Mapper.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>(*args)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.delete" title="xdapy.mapper.Mapper.delete"><tt class="xref py py-obj docutils literal"><span class="pre">delete</span></tt></a>(*args)</td>
 <td>Deletes the objects from the database.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.entity_by_name" title="xdapy.mapper.Mapper.entity_by_name"><tt class="xref py py-obj docutils literal"><span class="pre">entity_by_name</span></tt></a>(name)</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.entity_by_name" title="xdapy.mapper.Mapper.entity_by_name"><tt class="xref py py-obj docutils literal"><span class="pre">entity_by_name</span></tt></a>(name)</td>
 <td>Returns the mapped entity class with the supplied name or the entity class itself.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find" title="xdapy.mapper.Mapper.find"><tt class="xref py py-obj docutils literal"><span class="pre">find</span></tt></a>(entity[,&nbsp;filter,&nbsp;options])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find" title="xdapy.mapper.Mapper.find"><tt class="xref py py-obj docutils literal"><span class="pre">find</span></tt></a>(entity[,&nbsp;filter,&nbsp;options])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_all" title="xdapy.mapper.Mapper.find_all"><tt class="xref py py-obj docutils literal"><span class="pre">find_all</span></tt></a>(entity[,&nbsp;filter,&nbsp;options])</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_all" title="xdapy.mapper.Mapper.find_all"><tt class="xref py py-obj docutils literal"><span class="pre">find_all</span></tt></a>(entity[,&nbsp;filter,&nbsp;options])</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_by_id" title="xdapy.mapper.Mapper.find_by_id"><tt class="xref py py-obj docutils literal"><span class="pre">find_by_id</span></tt></a>(entity,&nbsp;id)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_by_id" title="xdapy.mapper.Mapper.find_by_id"><tt class="xref py py-obj docutils literal"><span class="pre">find_by_id</span></tt></a>(entity,&nbsp;id)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_by_uuid" title="xdapy.mapper.Mapper.find_by_uuid"><tt class="xref py py-obj docutils literal"><span class="pre">find_by_uuid</span></tt></a>(uuid)</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_by_uuid" title="xdapy.mapper.Mapper.find_by_uuid"><tt class="xref py py-obj docutils literal"><span class="pre">find_by_uuid</span></tt></a>(uuid)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_first" title="xdapy.mapper.Mapper.find_first"><tt class="xref py py-obj docutils literal"><span class="pre">find_first</span></tt></a>(entity[,&nbsp;filter,&nbsp;options])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_first" title="xdapy.mapper.Mapper.find_first"><tt class="xref py py-obj docutils literal"><span class="pre">find_first</span></tt></a>(entity[,&nbsp;filter,&nbsp;options])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_related" title="xdapy.mapper.Mapper.find_related"><tt class="xref py py-obj docutils literal"><span class="pre">find_related</span></tt></a>(entity,&nbsp;related)</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_related" title="xdapy.mapper.Mapper.find_related"><tt class="xref py py-obj docutils literal"><span class="pre">find_related</span></tt></a>(entity,&nbsp;related)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_roots" title="xdapy.mapper.Mapper.find_roots"><tt class="xref py py-obj docutils literal"><span class="pre">find_roots</span></tt></a>([entity])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_roots" title="xdapy.mapper.Mapper.find_roots"><tt class="xref py py-obj docutils literal"><span class="pre">find_roots</span></tt></a>([entity])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_with" title="xdapy.mapper.Mapper.find_with"><tt class="xref py py-obj docutils literal"><span class="pre">find_with</span></tt></a>(entity[,&nbsp;filter])</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_with" title="xdapy.mapper.Mapper.find_with"><tt class="xref py py-obj docutils literal"><span class="pre">find_with</span></tt></a>(entity[,&nbsp;filter])</td>
 <td>find_with provides an advanced filtering mode for higher structured queries.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.get_data_matrix" title="xdapy.mapper.Mapper.get_data_matrix"><tt class="xref py py-obj docutils literal"><span class="pre">get_data_matrix</span></tt></a>(conditions,&nbsp;items[,&nbsp;include])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.get_data_matrix" title="xdapy.mapper.Mapper.get_data_matrix"><tt class="xref py py-obj docutils literal"><span class="pre">get_data_matrix</span></tt></a>(conditions,&nbsp;items[,&nbsp;include])</td>
 <td>Finds related items for the entity which satisfies condition</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.is_consistent" title="xdapy.mapper.Mapper.is_consistent"><tt class="xref py py-obj docutils literal"><span class="pre">is_consistent</span></tt></a>(entity_name,&nbsp;parameter_defaults)</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.is_consistent" title="xdapy.mapper.Mapper.is_consistent"><tt class="xref py py-obj docutils literal"><span class="pre">is_consistent</span></tt></a>(entity_name,&nbsp;parameter_defaults)</td>
 <td>Checks if an entity definition would be consistent with the current state</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.is_in_session" title="xdapy.mapper.Mapper.is_in_session"><tt class="xref py py-obj docutils literal"><span class="pre">is_in_session</span></tt></a>(entity)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.is_in_session" title="xdapy.mapper.Mapper.is_in_session"><tt class="xref py py-obj docutils literal"><span class="pre">is_in_session</span></tt></a>(entity)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.is_registered" title="xdapy.mapper.Mapper.is_registered"><tt class="xref py py-obj docutils literal"><span class="pre">is_registered</span></tt></a>(name,&nbsp;declared_params)</td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.param_filter" title="xdapy.mapper.Mapper.param_filter"><tt class="xref py py-obj docutils literal"><span class="pre">param_filter</span></tt></a>(entity,&nbsp;filter[,&nbsp;options])</td>
@@ -148,14 +141,14 @@
 <tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.register" title="xdapy.mapper.Mapper.register"><tt class="xref py py-obj docutils literal"><span class="pre">register</span></tt></a>(*klasses)</td>
 <td>Registers the class and the class’s parameters.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.register_parameter" title="xdapy.mapper.Mapper.register_parameter"><tt class="xref py py-obj docutils literal"><span class="pre">register_parameter</span></tt></a>(*args,&nbsp;**kwargs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.register_type" title="xdapy.mapper.Mapper.register_type"><tt class="xref py py-obj docutils literal"><span class="pre">register_type</span></tt></a>(name,&nbsp;declared_params)</td>
 <td></td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.save" title="xdapy.mapper.Mapper.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(*args)</td>
-<td>Save instances inheriting from <tt class="xref py py-obj docutils literal"><span class="pre">EntityObject</span></tt> into database.</td>
+<td>Save instances inheriting from <tt class="xref py py-obj docutils literal"><span class="pre">Entity</span></tt> into database.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.save_all" title="xdapy.mapper.Mapper.save_all"><tt class="xref py py-obj docutils literal"><span class="pre">save_all</span></tt></a>(*args)</td>
-<td>Save instances inheriting from <tt class="xref py py-obj docutils literal"><span class="pre">EntityObject</span></tt> into database as well as their children.</td>
+<td>Save instances inheriting from <tt class="xref py py-obj docutils literal"><span class="pre">Entity</span></tt> into database as well as their children.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.super_find" title="xdapy.mapper.Mapper.super_find"><tt class="xref py py-obj docutils literal"><span class="pre">super_find</span></tt></a>(entity[,&nbsp;the_filter])</td>
 <td>super_find is able to search for structured data, including sub-queries</td>
@@ -182,7 +175,7 @@
 <dl class="method">
 <dt id="xdapy.mapper.Mapper.save">
 <tt class="descname">save</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="../_modules/xdapy/mapper.html#Mapper.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.mapper.Mapper.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save instances inheriting from <tt class="xref py py-obj docutils literal"><span class="pre">EntityObject</span></tt> into database.</p>
+<dd><p>Save instances inheriting from <tt class="xref py py-obj docutils literal"><span class="pre">Entity</span></tt> into database.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -207,7 +200,7 @@
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>args</td>
-<td>One or more objects derived from <a class="reference internal" href="structures.html#xdapy.structures.EntityObject" title="xdapy.structures.EntityObject"><tt class="xref py py-obj docutils literal"><span class="pre">xdapy.structures.EntityObject</span></tt></a>.</td>
+<td>One or more objects derived from <a class="reference internal" href="structures.html#xdapy.structures.Entity" title="xdapy.structures.Entity"><tt class="xref py py-obj docutils literal"><span class="pre">xdapy.structures.Entity</span></tt></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -216,7 +209,7 @@
 <dl class="method">
 <dt id="xdapy.mapper.Mapper.save_all">
 <tt class="descname">save_all</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="../_modules/xdapy/mapper.html#Mapper.save_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.mapper.Mapper.save_all" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save instances inheriting from <tt class="xref py py-obj docutils literal"><span class="pre">EntityObject</span></tt> into database as well as their children.</p>
+<dd><p>Save instances inheriting from <tt class="xref py py-obj docutils literal"><span class="pre">Entity</span></tt> into database as well as their children.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -241,7 +234,7 @@
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>args</td>
-<td>One or more objects derived from <a class="reference internal" href="structures.html#xdapy.structures.EntityObject" title="xdapy.structures.EntityObject"><tt class="xref py py-obj docutils literal"><span class="pre">xdapy.structures.EntityObject</span></tt></a>.</td>
+<td>One or more objects derived from <a class="reference internal" href="structures.html#xdapy.structures.Entity" title="xdapy.structures.Entity"><tt class="xref py py-obj docutils literal"><span class="pre">xdapy.structures.Entity</span></tt></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -358,40 +351,17 @@ where either one or all sub-items are being checked for a certain property.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="xdapy.mapper.Mapper.connect_objects">
-<tt class="descname">connect_objects</tt><big>(</big><em>parent</em>, <em>child</em>, <em>force=False</em><big>)</big><a class="reference internal" href="../_modules/xdapy/mapper.html#Mapper.connect_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.mapper.Mapper.connect_objects" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connect two related objects</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>parent</strong> : The parent object derived from datamanager.objects.ObjectDict or</p>
-<blockquote>
-<div><p>the integer id describing this object.</p>
-</div></blockquote>
-<p><strong>child</strong> : The child object derived from datamanager.objects.ObjectDict or</p>
-<blockquote>
-<div><p>the integer id describing this object.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first"><strong>RequestObjectError</strong> : If the objects to be connected are not properly</p>
-<blockquote>
-<div><p>saved in the database</p>
-</div></blockquote>
-<p><strong>TODO: Maybe consider to save objects automatically</strong> :</p>
-<p><strong>TODO: Revise session closing</strong> :</p>
-<p class="last"><strong>TODO: Why this method and not parent.children.append(child)?</strong> :</p>
-</td>
-</tr>
-</tbody>
-</table>
+<dt id="xdapy.mapper.Mapper._register_parameter">
+<tt class="descname">_register_parameter</tt><big>(</big><em>entity_name</em>, <em>parameter_name</em>, <em>parameter_type</em><big>)</big><a class="reference internal" href="../_modules/xdapy/mapper.html#Mapper._register_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.mapper.Mapper._register_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a new parameter description for a specific experimental object</p>
+<p>Attribute:
+entity_name &#8211;  The name describing the experimental object.
+parameter_name &#8211;  The name describing the parameter.
+parameter_type &#8211; The type the parameter is required to match</p>
+<p>Raises:
+TypeError &#8211; If the parameters are not correctly specified
+Some SQL error &#8211; If the same entry already exists</p>
 </dd></dl>
-
-<dl class="method">
-<dt id="xdapy.mapper.Mapper.register_parameter">
-<tt class="descname">register_parameter</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/xdapy/mapper.html#Mapper.register_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.mapper.Mapper.register_parameter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="method">
 <dt id="xdapy.mapper.Mapper.is_consistent">
@@ -407,6 +377,16 @@ of the database.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="xdapy.mapper.Mapper.is_registered">
+<tt class="descname">is_registered</tt><big>(</big><em>name</em>, <em>declared_params</em><big>)</big><a class="reference internal" href="../_modules/xdapy/mapper.html#Mapper.is_registered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.mapper.Mapper.is_registered" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.mapper.Mapper.register_type">
+<tt class="descname">register_type</tt><big>(</big><em>name</em>, <em>declared_params</em><big>)</big><a class="reference internal" href="../_modules/xdapy/mapper.html#Mapper.register_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.mapper.Mapper.register_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="xdapy.mapper.Mapper.entity_by_name">
 <tt class="descname">entity_by_name</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/xdapy/mapper.html#Mapper.entity_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.mapper.Mapper.entity_by_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the mapped entity class with the supplied name
@@ -415,7 +395,7 @@ or the entity class itself.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: string or subclass of EntityObject</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: string or subclass of Entity</strong> :</p>
 <blockquote class="last">
 <div><p>The name of the entity object to find.</p>
 </div></blockquote>
@@ -425,9 +405,14 @@ or the entity class itself.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="xdapy.mapper.Mapper.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/mapper.html#Mapper.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.mapper.Mapper.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="xdapy.mapper.Mapper.__dict__">
-<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x10ae60b78&gt;</em><a class="headerlink" href="#xdapy.mapper.Mapper.__dict__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x110acdec0&gt;</em><a class="headerlink" href="#xdapy.mapper.Mapper.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -446,49 +431,15 @@ or the entity class itself.</p>
 </div>
 
 
-          </div>
-        </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/api/mapper.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
+      <div class="bottomnav">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="index.html" >API</a> &raquo;</li> 
-      </ul>
-    </div>
+
     <div class="footer">
         &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.

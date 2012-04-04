@@ -10,8 +10,9 @@
     
     <title>Data &mdash; xdapy 0.9.0 documentation</title>
     
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/print.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,33 +26,25 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/theme_extras.js"></script>
     <link rel="top" title="xdapy 0.9.0 documentation" href="../index.html" />
     <link rel="up" title="API" href="index.html" /> 
   </head>
   <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">API</a> &raquo;</li> 
-      </ul>
-    </div>  
+      <div class="header"><h1 class="heading"><a href="../index.html">
+          <span>xdapy 0.9.0 documentation</span></a></h1>
+        <h2 class="heading"><span>Data</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
+      </div>
+      <div class="content">
+        
+        
   <div class="section" id="module-xdapy.data">
 <span id="data"></span><h1>Data<a class="headerlink" href="#module-xdapy.data" title="Permalink to this headline">¶</a></h1>
 <dl class="data">
@@ -125,7 +118,7 @@ that everything is loaded all at once when accessing the data.</p>
 
 <dl class="attribute">
 <dt id="xdapy.data.DataChunks.__table_args__">
-<tt class="descname">__table_args__</tt><em class="property"> = (UniqueConstraint(Column('data_id', Integer(), ForeignKey('data.id'), table=&lt;data_chunks&gt;, nullable=False), Column('index', Integer(), table=&lt;data_chunks&gt;)),)</em><a class="headerlink" href="#xdapy.data.DataChunks.__table_args__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__table_args__</tt><em class="property"> = (UniqueConstraint(Column('data_id', Integer(), ForeignKey('data.id'), table=&lt;data_chunks&gt;, nullable=False), Column('index', Integer(), table=&lt;data_chunks&gt;)), {})</em><a class="headerlink" href="#xdapy.data.DataChunks.__table_args__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -152,7 +145,7 @@ that everything is loaded all at once when accessing the data.</p>
 
 <dl class="attribute">
 <dt id="xdapy.data.DataChunks.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f3d5d0; DataChunks&gt;</em><a class="headerlink" href="#xdapy.data.DataChunks.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10fb18250; DataChunks&gt;</em><a class="headerlink" href="#xdapy.data.DataChunks.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -167,7 +160,7 @@ that everything is loaded all at once when accessing the data.</p>
 
 <dl class="attribute">
 <dt id="xdapy.data.DataChunks._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.data.DataChunks'&gt; at 7ffaac23eff0&gt;</em><a class="headerlink" href="#xdapy.data.DataChunks._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.data.DataChunks'&gt; at 7ff1ebb45bd0&gt;</em><a class="headerlink" href="#xdapy.data.DataChunks._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -223,7 +216,7 @@ the entities attribute of the Data class.</p>
 
 <dl class="attribute">
 <dt id="xdapy.data.Data.__table_args__">
-<tt class="descname">__table_args__</tt><em class="property"> = (UniqueConstraint(Column('entity_id', Integer(), ForeignKey('entities.id'), table=&lt;data&gt;, nullable=False), Column('key', String(length=40), table=&lt;data&gt;)),)</em><a class="headerlink" href="#xdapy.data.Data.__table_args__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__table_args__</tt><em class="property"> = (UniqueConstraint(Column('entity_id', Integer(), ForeignKey('entities.id'), table=&lt;data&gt;, nullable=False), Column('key', String(length=40), table=&lt;data&gt;)), {})</em><a class="headerlink" href="#xdapy.data.Data.__table_args__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -249,7 +242,7 @@ for example, any mapped columns or relationships.</p>
 
 <dl class="attribute">
 <dt id="xdapy.data.Data.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x109f40d90; Data&gt;</em><a class="headerlink" href="#xdapy.data.Data.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10fb1da10; Data&gt;</em><a class="headerlink" href="#xdapy.data.Data.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -264,7 +257,7 @@ for example, any mapped columns or relationships.</p>
 
 <dl class="attribute">
 <dt id="xdapy.data.Data._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.data.Data'&gt; at 7ffaac250fc0&gt;</em><a class="headerlink" href="#xdapy.data.Data._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.data.Data'&gt; at 7ff1ebb57cc0&gt;</em><a class="headerlink" href="#xdapy.data.Data._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -539,7 +532,7 @@ associated with the entity.</p>
 
 <dl class="attribute">
 <dt id="xdapy.data._DataProxy.__dict__">
-<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x10aadcbe8&gt;</em><a class="headerlink" href="#xdapy.data._DataProxy.__dict__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x11064b1d8&gt;</em><a class="headerlink" href="#xdapy.data._DataProxy.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -653,12 +646,12 @@ raise a <tt class="xref py py-obj docutils literal"><span class="pre">KeyError</
 
 <dl class="attribute">
 <dt id="xdapy.data._DataAssoc._abc_cache">
-<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x109f495d0&gt;</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10fb211d0&gt;</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.data._DataAssoc._abc_negative_cache">
-<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x1098a5b90&gt;</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10f46af10&gt;</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -668,7 +661,7 @@ raise a <tt class="xref py py-obj docutils literal"><span class="pre">KeyError</
 
 <dl class="attribute">
 <dt id="xdapy.data._DataAssoc._abc_registry">
-<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x109f49550&gt;</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_registry" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10fb1dd90&gt;</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -704,49 +697,15 @@ raise a <tt class="xref py py-obj docutils literal"><span class="pre">KeyError</
 </div>
 
 
-          </div>
-        </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/api/data.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
+      <div class="bottomnav">
+      
+        <p>
+        <a class="uplink" href="../index.html">Contents</a>
+        </p>
+
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../index.html">xdapy 0.9.0 documentation</a> &raquo;</li>
-          <li><a href="index.html" >API</a> &raquo;</li> 
-      </ul>
-    </div>
+
     <div class="footer">
         &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
