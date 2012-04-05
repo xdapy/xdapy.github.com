@@ -324,12 +324,27 @@
 <div class="viewcode-block" id="_InheritedParams"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._InheritedParams">[docs]</a><span class="k">class</span> <span class="nc">_InheritedParams</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Immutable association dict for inherited parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="_InheritedParams.__init__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._InheritedParams.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owning</span><span class="p">):</span>
+<div class="viewcode-block" id="_InheritedParams.__init__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._InheritedParams.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owning</span><span class="p">,</span> <span class="n">unique_keys_only</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">owning</span> <span class="o">=</span> <span class="n">owning</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unique_keys_only</span> <span class="o">=</span> <span class="n">unique_keys_only</span>
+</div>
+<div class="viewcode-block" id="_InheritedParams._unique_declared_keys"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._InheritedParams._unique_declared_keys">[docs]</a>    <span class="k">def</span> <span class="nf">_unique_declared_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Ancestor merge of all keys in declared_params which are unique.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">to_traverse</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="o">.</span><span class="n">ancestors</span><span class="p">()</span>
+
+        <span class="n">key_count</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">to_traverse</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">declared_params</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">key_count</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">key_count</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">key_count</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="_InheritedParams._find_parent_with_key"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._InheritedParams._find_parent_with_key">[docs]</a>    <span class="k">def</span> <span class="nf">_find_parent_with_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="n">to_traverse</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="o">.</span><span class="n">ancestors</span><span class="p">()</span>
 
+        <span class="c"># We return the first parent entity with a fitting key</span>
         <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">to_traverse</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">entity</span>
@@ -341,6 +356,8 @@
         <span class="n">entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_parent_with_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">entity</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&quot;Key </span><span class="si">%r</span><span class="s"> not found in </span><span class="si">%r</span><span class="s"> or parent entities.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_keys_only</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unique_declared_keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&quot;Key </span><span class="si">%r</span><span class="s"> is not uniquely identified in </span><span class="si">%r</span><span class="s">&#39;s ancestor&#39;s declared_params dict.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">entity</span><span class="o">.</span><span class="n">params</span>
 </div>
 <div class="viewcode-block" id="_InheritedParams.__getitem__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._InheritedParams.__getitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
@@ -348,9 +365,14 @@
 </div>
 <div class="viewcode-block" id="_InheritedParams.__iter__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._InheritedParams.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">to_traverse</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="o">.</span><span class="n">ancestors</span><span class="p">()</span>
+
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">to_traverse</span><span class="p">:</span>
             <span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_keys_only</span><span class="p">:</span>
+            <span class="c"># only keep those which are also unique in declared_params</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unique_declared_keys</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
 </div>
@@ -434,9 +456,23 @@
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Entity.inherited_params"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.inherited_params">[docs]</a>    <span class="k">def</span> <span class="nf">inherited_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return a dict-like object with all parent and ancestor params.</span>
+
+<span class="sd">        Child params have precedence over parent params.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_inherited_params&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_inherited_params</span> <span class="o">=</span> <span class="n">_InheritedParams</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inherited_params</span> <span class="o">=</span> <span class="n">_InheritedParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_keys_only</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inherited_params</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Entity.unique_params"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.unique_params">[docs]</a>    <span class="k">def</span> <span class="nf">unique_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return a dict-like object with all unique parent and ancestor params.</span>
+
+<span class="sd">        A key name which is defined more than once is ignored.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_unique_params&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unique_params</span> <span class="o">=</span> <span class="n">_InheritedParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_keys_only</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unique_params</span>
 </div>
 <div class="viewcode-block" id="Entity._set_items_from_arguments"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity._set_items_from_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_set_items_from_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Insert function arguments as items&quot;&quot;&quot;</span>
