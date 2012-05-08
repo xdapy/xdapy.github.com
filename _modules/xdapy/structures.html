@@ -135,10 +135,6 @@
     <span class="n">children</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s">&quot;BaseEntity&quot;</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="n">backref</span><span class="p">(</span><span class="s">&quot;parent&quot;</span><span class="p">,</span> <span class="n">remote_side</span><span class="o">=</span><span class="p">[</span><span class="nb">id</span><span class="p">]),</span>
             <span class="n">doc</span><span class="o">=</span><span class="s">&quot;The children of this Entity. Note that adding a child (obviously) changes the child&#39;s parent.&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="BaseEntity.belongs_to"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.belongs_to">[docs]</a>    <span class="k">def</span> <span class="nf">belongs_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Can be used as an alternative for self.parent = parent.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
-</div>
 <div class="viewcode-block" id="BaseEntity.ancestors"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.ancestors">[docs]</a>    <span class="k">def</span> <span class="nf">ancestors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a list of all parent and grand-parent entities.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -196,7 +192,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__data_assoc</span> <span class="o">=</span> <span class="n">_DataAssoc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data_assoc</span>
 </div>
-<div class="viewcode-block" id="BaseEntity.connect"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_type</span><span class="p">,</span> <span class="n">connection_object</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseEntity.connect_object"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.connect_object">[docs]</a>    <span class="k">def</span> <span class="nf">connect_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_type</span><span class="p">,</span> <span class="n">connection_object</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Connect this entity with `connection_object` via the `connection_type`.</span>
 
 <span class="sd">        Parameters</span>
@@ -204,10 +200,10 @@
 <span class="sd">        connection_type: string</span>
 <span class="sd">            The type of the connection.</span>
 <span class="sd">        connection_object: Entity</span>
-<span class="sd">            The object to connect to.</span>
+<span class="sd">            The object to connect_object to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">connection_object</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">connected</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InsertionError</span><span class="p">(</span><span class="s">&quot;{0} already has a connection to {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_object</span><span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">connection_type</span><span class="p">,</span> <span class="n">connection_object</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">c</span><span class="o">.</span><span class="n">connection_type</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">connected</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">InsertionError</span><span class="p">(</span><span class="s">&quot;{0} already has a &#39;{1}&#39; connection to {2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_type</span><span class="p">,</span> <span class="n">connection_object</span><span class="p">))</span>
 
         <span class="c"># Create a new context object.</span>
         <span class="c"># The back reference is automatically appended through setting the back reference</span>
@@ -535,10 +531,19 @@
     <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">Entity</span><span class="p">,),</span> <span class="p">{</span><span class="s">&#39;declared_params&#39;</span><span class="p">:</span> <span class="n">declared_params</span><span class="p">})</span>
 </div>
 <div class="viewcode-block" id="calculate_polymorphic_name"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.calculate_polymorphic_name">[docs]</a><span class="k">def</span> <span class="nf">calculate_polymorphic_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">declared_params</span><span class="p">):</span>
-    <span class="k">if</span> <span class="s">&quot;_&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">EntityDefinitionError</span><span class="p">(</span><span class="s">&quot;Entity class must not contain an underscore&quot;</span><span class="p">)</span>
+    <span class="n">split_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">EntityDefinitionError</span><span class="p">(</span><span class="s">&quot;Entity class must not contain more than one underscore.&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="c"># Try, whether the second part is a correct hash.</span>
+        <span class="n">the_hash</span> <span class="o">=</span> <span class="n">hash_dict</span><span class="p">(</span><span class="n">declared_params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">split_name</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">the_hash</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EntityDefinitionError</span><span class="p">(</span><span class="s">&quot;Entity name has incorrect hash after underscore.&quot;</span><span class="p">)</span>
 
-    <span class="c"># create hash from sorted declared_params</span>
+    <span class="c"># No underscore. Good!</span>
+    <span class="c"># Create hash from sorted declared_params</span>
     <span class="n">the_hash</span> <span class="o">=</span> <span class="n">hash_dict</span><span class="p">(</span><span class="n">declared_params</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&quot;_&quot;</span> <span class="o">+</span> <span class="n">the_hash</span>

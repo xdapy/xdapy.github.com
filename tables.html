@@ -52,6 +52,84 @@
         
   <div class="section" id="database-format">
 <h1>Database Format<a class="headerlink" href="#database-format" title="Permalink to this headline">¶</a></h1>
+<p>PostgreSQL database dump:</p>
+<div class="highlight-sql"><div class="highlight"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">contexts</span> <span class="p">(</span>
+    <span class="n">entity_id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">connected_id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">connection_type</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="k">data</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">entity_id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="k">key</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">40</span><span class="p">),</span>
+    <span class="n">mimetype</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">data_chunks</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">data_id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="k">index</span> <span class="nb">integer</span><span class="p">,</span>
+    <span class="k">data</span> <span class="n">bytea</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="k">length</span> <span class="nb">integer</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">entities</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="k">type</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">60</span><span class="p">),</span>
+    <span class="n">uuid</span> <span class="n">uuid</span><span class="p">,</span>
+    <span class="n">parent_id</span> <span class="nb">integer</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">parameter_declarations</span> <span class="p">(</span>
+    <span class="n">entity_name</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">parameter_name</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">parameter_type</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="k">parameters</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">entity_id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">name</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">40</span><span class="p">),</span>
+    <span class="k">type</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">parameters_boolean</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">value</span> <span class="nb">boolean</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">parameters_date</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">value</span> <span class="nb">date</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">parameters_datetime</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">value</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">parameters_float</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">value</span> <span class="n">double</span> <span class="k">precision</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">parameters_integer</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">value</span> <span class="nb">integer</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">parameters_string</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">value</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">parameters_time</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">value</span> <span class="n">time</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span>
+<span class="p">);</span>
+</pre></div>
+</div>
 </div>
 
 
