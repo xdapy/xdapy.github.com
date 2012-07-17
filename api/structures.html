@@ -50,6 +50,11 @@
 <p>Contains the classes which are used to store the Entity meta data.</p>
 <p><strong>TODO</strong> Figure out what to do with global variable base
 <strong>TODO</strong> Make Data truncation an error</p>
+<dl class="function">
+<dt id="xdapy.structures.calculate_polymorphic_name">
+<tt class="descclassname">xdapy.structures.</tt><tt class="descname">calculate_polymorphic_name</tt><big>(</big><em>name</em>, <em>declared_params</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#calculate_polymorphic_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.calculate_polymorphic_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="class">
 <dt id="xdapy.structures.BaseEntity">
 <em class="property">class </em><tt class="descclassname">xdapy.structures.</tt><tt class="descname">BaseEntity</tt><big>(</big><em>type</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity" title="Permalink to this definition">¶</a></dt>
@@ -67,19 +72,10 @@ parents attributes.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures.BaseEntity.ancestors" title="xdapy.structures.BaseEntity.ancestors"><tt class="xref py py-obj docutils literal"><span class="pre">ancestors</span></tt></a>()</td>
-<td>Returns a list of all parent and grand-parent entities.</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures.BaseEntity.gen_unique_id" title="xdapy.structures.BaseEntity.gen_unique_id"><tt class="xref py py-obj docutils literal"><span class="pre">gen_unique_id</span></tt></a>()</td>
+<td>This method can be overridden in a subclass to automatically provide a default value for the <a class="reference internal" href="#xdapy.structures.BaseEntity.unique_id" title="xdapy.structures.BaseEntity.unique_id"><tt class="xref py py-obj docutils literal"><span class="pre">unique_id</span></tt></a> field.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.structures.BaseEntity.connect_object" title="xdapy.structures.BaseEntity.connect_object"><tt class="xref py py-obj docutils literal"><span class="pre">connect_object</span></tt></a>(connection_type,&nbsp;...)</td>
-<td>Connect this entity with <tt class="xref py py-obj docutils literal"><span class="pre">connection_object</span></tt> via the <tt class="xref py py-obj docutils literal"><span class="pre">connection_type</span></tt>.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures.BaseEntity.siblings" title="xdapy.structures.BaseEntity.siblings"><tt class="xref py py-obj docutils literal"><span class="pre">siblings</span></tt></a>()</td>
-<td>Returns a list of all children and siblings.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.structures.BaseEntity.to_json" title="xdapy.structures.BaseEntity.to_json"><tt class="xref py py-obj docutils literal"><span class="pre">to_json</span></tt></a>([full])</td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures.BaseEntity.validate_name" title="xdapy.structures.BaseEntity.validate_name"><tt class="xref py py-obj docutils literal"><span class="pre">validate_name</span></tt></a>(key,&nbsp;e_name)</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.structures.BaseEntity.validate_name" title="xdapy.structures.BaseEntity.validate_name"><tt class="xref py py-obj docutils literal"><span class="pre">validate_name</span></tt></a>(key,&nbsp;e_name)</td>
 <td></td>
 </tr>
 </tbody>
@@ -99,27 +95,33 @@ a hash uniquely identifying the stored parameters.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="xdapy.structures.BaseEntity._uuid">
-<tt class="descname">_uuid</tt><a class="headerlink" href="#xdapy.structures.BaseEntity._uuid" title="Permalink to this definition">¶</a></dt>
-<dd><p>The database-backed uuid column.</p>
+<dt id="xdapy.structures.BaseEntity._unique_id">
+<tt class="descname">_unique_id</tt><a class="headerlink" href="#xdapy.structures.BaseEntity._unique_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The database-backed unique_id column.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="xdapy.structures.BaseEntity.uuid">
-<tt class="descname">uuid</tt><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity.uuid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity.uuid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Getter property for the database-backed <a class="reference internal" href="#xdapy.structures.BaseEntity._uuid" title="xdapy.structures.BaseEntity._uuid"><tt class="xref py py-obj docutils literal"><span class="pre">_uuid</span></tt></a> field.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>uuid: string</strong> :</p>
-<blockquote class="last">
-<div><p>The auto-generated UUID of the <a class="reference internal" href="#xdapy.structures.BaseEntity" title="xdapy.structures.BaseEntity"><tt class="xref py py-obj docutils literal"><span class="pre">BaseEntity</span></tt></a>.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+<dt id="xdapy.structures.BaseEntity.parent_id">
+<tt class="descname">parent_id</tt><a class="headerlink" href="#xdapy.structures.BaseEntity.parent_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The database-backed parent_id field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures.BaseEntity.children">
+<tt class="descname">children</tt><a class="headerlink" href="#xdapy.structures.BaseEntity.children" title="Permalink to this definition">¶</a></dt>
+<dd><p>The children of this Entity. Note that adding a child (obviously) changes the child&#8217;s parent.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures.BaseEntity.__tablename__">
+<tt class="descname">__tablename__</tt><em class="property"> = 'entities'</em><a class="headerlink" href="#xdapy.structures.BaseEntity.__tablename__" title="Permalink to this definition">¶</a></dt>
+<dd><p>The db table name.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures.BaseEntity.__mapper_args__">
+<tt class="descname">__mapper_args__</tt><em class="property"> = {'polymorphic_on': Column('type', String(length=60), table=&lt;entities&gt;)}</em><a class="headerlink" href="#xdapy.structures.BaseEntity.__mapper_args__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subclasses of <a class="reference internal" href="#xdapy.structures.BaseEntity" title="xdapy.structures.BaseEntity"><tt class="xref py py-obj docutils literal"><span class="pre">BaseEntity</span></tt></a> should differ in their <a class="reference internal" href="#xdapy.structures.BaseEntity._type" title="xdapy.structures.BaseEntity._type"><tt class="xref py py-obj docutils literal"><span class="pre">_type</span></tt></a> column.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -141,86 +143,17 @@ a hash uniquely identifying the stored parameters.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="xdapy.structures.BaseEntity.parent_id">
-<tt class="descname">parent_id</tt><a class="headerlink" href="#xdapy.structures.BaseEntity.parent_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>The database-backed parent_id field.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xdapy.structures.BaseEntity.children">
-<tt class="descname">children</tt><a class="headerlink" href="#xdapy.structures.BaseEntity.children" title="Permalink to this definition">¶</a></dt>
-<dd><p>The children of this Entity. Note that adding a child (obviously) changes the child&#8217;s parent.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="xdapy.structures.BaseEntity.ancestors">
-<tt class="descname">ancestors</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity.ancestors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity.ancestors" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a list of all parent and grand-parent entities.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="xdapy.structures.BaseEntity.siblings">
-<tt class="descname">siblings</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity.siblings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity.siblings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a list of all children and siblings.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xdapy.structures.BaseEntity.__tablename__">
-<tt class="descname">__tablename__</tt><em class="property"> = 'entities'</em><a class="headerlink" href="#xdapy.structures.BaseEntity.__tablename__" title="Permalink to this definition">¶</a></dt>
-<dd><p>The db table name.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xdapy.structures.BaseEntity.__mapper_args__">
-<tt class="descname">__mapper_args__</tt><em class="property"> = {'polymorphic_on': Column('type', String(length=60), table=&lt;entities&gt;)}</em><a class="headerlink" href="#xdapy.structures.BaseEntity.__mapper_args__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Subclasses of <a class="reference internal" href="#xdapy.structures.BaseEntity" title="xdapy.structures.BaseEntity"><tt class="xref py py-obj docutils literal"><span class="pre">BaseEntity</span></tt></a> should differ in their <a class="reference internal" href="#xdapy.structures.BaseEntity._type" title="xdapy.structures.BaseEntity._type"><tt class="xref py py-obj docutils literal"><span class="pre">_type</span></tt></a> column.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xdapy.structures.BaseEntity._params">
-<tt class="descname">_params</tt><a class="headerlink" href="#xdapy.structures.BaseEntity._params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="xdapy.structures.BaseEntity._data">
-<tt class="descname">_data</tt><a class="headerlink" href="#xdapy.structures.BaseEntity._data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="xdapy.structures.BaseEntity.data">
-<tt class="descname">data</tt><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity.data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity.data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Accessor property for associated data. Wraps a <a class="reference internal" href="data.html#xdapy.data._DataAssoc" title="xdapy.data._DataAssoc"><tt class="xref py py-obj docutils literal"><span class="pre">xdapy.data._DataAssoc</span></tt></a> instance.</p>
-<p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">SomeObject</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mapper</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>  <span class="c"># object must be in session before data may be used</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">data</span>
-<span class="go">{}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;data_key&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;random string&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;data_key&quot;</span><span class="p">]</span>
-<span class="go">DataProxy(mimetype=None, chunks=1, size=13)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;data_key&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">()</span>
-<span class="go">&quot;random string&quot;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-<span class="go">[u&quot;data_key&quot;]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="xdapy.structures.BaseEntity.connect_object">
-<tt class="descname">connect_object</tt><big>(</big><em>connection_type</em>, <em>connection_object</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity.connect_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity.connect_object" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connect this entity with <tt class="xref py py-obj docutils literal"><span class="pre">connection_object</span></tt> via the <tt class="xref py py-obj docutils literal"><span class="pre">connection_type</span></tt>.</p>
+<dt id="xdapy.structures.BaseEntity.unique_id">
+<tt class="descname">unique_id</tt><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity.unique_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity.unique_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter property for the database-backed <a class="reference internal" href="#xdapy.structures.BaseEntity._unique_id" title="xdapy.structures.BaseEntity._unique_id"><tt class="xref py py-obj docutils literal"><span class="pre">_unique_id</span></tt></a> field.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>connection_type: string</strong> :</p>
-<blockquote>
-<div><p>The type of the connection.</p>
-</div></blockquote>
-<p><strong>connection_object: Entity</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>unique_id: string</strong> :</p>
 <blockquote class="last">
-<div><p>The object to connect_object to.</p>
+<div><p>The auto-generated unique_id of the <a class="reference internal" href="#xdapy.structures.BaseEntity" title="xdapy.structures.BaseEntity"><tt class="xref py py-obj docutils literal"><span class="pre">BaseEntity</span></tt></a>.
+Defaults to unique_id unless overridden.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -228,29 +161,40 @@ a hash uniquely identifying the stored parameters.</p>
 </table>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="xdapy.structures.BaseEntity.connected">
-<tt class="descname">connected</tt><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity.connected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity.connected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Lists all connected objects.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xdapy.structures.BaseEntity.back_referenced">
-<tt class="descname">back_referenced</tt><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity.back_referenced"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity.back_referenced" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns all objects which have connected to this object.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xdapy.structures.BaseEntity.context">
-<tt class="descname">context</tt><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity.context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity.context" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a dictionary of connection types and connected objects.
-Read-only for now. May become r/w in the future.</p>
+<dl class="method">
+<dt id="xdapy.structures.BaseEntity.gen_unique_id">
+<tt class="descname">gen_unique_id</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity.gen_unique_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity.gen_unique_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method can be overridden in a subclass to automatically
+provide a default value for the <a class="reference internal" href="#xdapy.structures.BaseEntity.unique_id" title="xdapy.structures.BaseEntity.unique_id"><tt class="xref py py-obj docutils literal"><span class="pre">unique_id</span></tt></a> field.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>unique_id: string</strong> :</p>
+<blockquote class="last">
+<div><p>uuid value</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="xdapy.structures.BaseEntity.validate_name">
 <tt class="descname">validate_name</tt><big>(</big><em>key</em>, <em>e_name</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity.validate_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity.validate_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures.BaseEntity._attributes">
+<tt class="descname">_attributes</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity._attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity._attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures.BaseEntity._session">
+<tt class="descname">_session</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity._session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity._session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the session which this object belongs to.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="xdapy.structures.BaseEntity.__init__">
@@ -267,29 +211,13 @@ Read-only for now. May become r/w in the future.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="xdapy.structures.BaseEntity._attributes">
-<tt class="descname">_attributes</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity._attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity._attributes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="xdapy.structures.BaseEntity.to_json">
-<tt class="descname">to_json</tt><big>(</big><em>full=False</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity.to_json" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="xdapy.structures.BaseEntity.__repr__">
 <tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="xdapy.structures.BaseEntity._session">
-<tt class="descname">_session</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity._session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity._session" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the session which this object belongs to.</p>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="xdapy.structures.BaseEntity.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10252b410; BaseEntity&gt;</em><a class="headerlink" href="#xdapy.structures.BaseEntity.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x102c757d0; BaseEntity&gt;</em><a class="headerlink" href="#xdapy.structures.BaseEntity.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -299,20 +227,32 @@ Read-only for now. May become r/w in the future.</p>
 
 <dl class="attribute">
 <dt id="xdapy.structures.BaseEntity.__table__">
-<tt class="descname">__table__</tt><em class="property"> = Table('entities', MetaData(bind=None), Column('id', Integer(), table=&lt;entities&gt;, primary_key=True, nullable=False), Column('type', String(length=60), table=&lt;entities&gt;), Column('uuid', UUID(), table=&lt;entities&gt;, default=ColumnDefault(&lt;function &lt;lambda&gt; at 0x102526b18&gt;)), Column('parent_id', Integer(), ForeignKey('entities.id'), table=&lt;entities&gt;), schema=None)</em><a class="headerlink" href="#xdapy.structures.BaseEntity.__table__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__table__</tt><em class="property"> = Table('entities', MetaData(bind=None), Column('id', Integer(), table=&lt;entities&gt;, primary_key=True, nullable=False), Column('type', String(length=60), table=&lt;entities&gt;), Column('uniqueid', String(length=60), table=&lt;entities&gt;), Column('parent_id', Integer(), ForeignKey('entities.id'), table=&lt;entities&gt;), schema=None)</em><a class="headerlink" href="#xdapy.structures.BaseEntity.__table__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.structures.BaseEntity._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.BaseEntity'&gt; at 7ff27936b970&gt;</em><a class="headerlink" href="#xdapy.structures.BaseEntity._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.BaseEntity'&gt; at 7fe033a98280&gt;</em><a class="headerlink" href="#xdapy.structures.BaseEntity._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="xdapy.structures._gen_default_unique_id">
+<tt class="descclassname">xdapy.structures.</tt><tt class="descname">_gen_default_unique_id</tt><big>(</big><em>mapper</em>, <em>connection</em>, <em>instance</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_gen_default_unique_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._gen_default_unique_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>This gets called before insertion and looks if a
+value for the _unique_id field has been provided.
+If not, it calls <a class="reference internal" href="#xdapy.structures.BaseEntity.gen_unique_id" title="xdapy.structures.BaseEntity.gen_unique_id"><tt class="xref py py-obj docutils literal"><span class="pre">BaseEntity.gen_unique_id</span></tt></a> (which provides
+a uuid but may have been changed to something else.)</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="xdapy.structures.EntityMeta">
 <em class="property">class </em><tt class="descclassname">xdapy.structures.</tt><tt class="descname">EntityMeta</tt><big>(</big><em>name</em>, <em>bases</em>, <em>attrs</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#EntityMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.EntityMeta" title="Permalink to this definition">¶</a></dt>
-<dd><p class="rubric">Methods</p>
+<dd><p>Metaclass for <a class="reference internal" href="#xdapy.structures.Entity" title="xdapy.structures.Entity"><tt class="xref py py-obj docutils literal"><span class="pre">Entity</span></tt></a>. The purpose of the metaclass is to
+change the internal type name of the <a class="reference internal" href="#xdapy.structures.Entity" title="xdapy.structures.Entity"><tt class="xref py py-obj docutils literal"><span class="pre">Entity</span></tt></a> in order to be used
+as a <tt class="xref py py-obj docutils literal"><span class="pre">polymorphic_identity</span></tt> in SQLAlchemy.</p>
+<p class="rubric">Methods</p>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
@@ -436,12 +376,12 @@ Read-only for now. May become r/w in the future.</p>
 
 <dl class="attribute">
 <dt id="xdapy.structures._InheritedParams._abc_cache">
-<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x102531090&gt;</em><a class="headerlink" href="#xdapy.structures._InheritedParams._abc_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x102c7a2d0&gt;</em><a class="headerlink" href="#xdapy.structures._InheritedParams._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.structures._InheritedParams._abc_negative_cache">
-<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x102d8bc90&gt;</em><a class="headerlink" href="#xdapy.structures._InheritedParams._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x1034d0ad0&gt;</em><a class="headerlink" href="#xdapy.structures._InheritedParams._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -451,7 +391,7 @@ Read-only for now. May become r/w in the future.</p>
 
 <dl class="attribute">
 <dt id="xdapy.structures._InheritedParams._abc_registry">
-<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10252b7d0&gt;</em><a class="headerlink" href="#xdapy.structures._InheritedParams._abc_registry" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x102c7a210&gt;</em><a class="headerlink" href="#xdapy.structures._InheritedParams._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -552,12 +492,12 @@ Read-only for now. May become r/w in the future.</p>
 
 <dl class="attribute">
 <dt id="xdapy.structures._StrParams._abc_cache">
-<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x102531290&gt;</em><a class="headerlink" href="#xdapy.structures._StrParams._abc_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x102c7a4d0&gt;</em><a class="headerlink" href="#xdapy.structures._StrParams._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.structures._StrParams._abc_negative_cache">
-<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x102523410&gt;</em><a class="headerlink" href="#xdapy.structures._StrParams._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x102c6da10&gt;</em><a class="headerlink" href="#xdapy.structures._StrParams._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -567,14 +507,14 @@ Read-only for now. May become r/w in the future.</p>
 
 <dl class="attribute">
 <dt id="xdapy.structures._StrParams._abc_registry">
-<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x1025311d0&gt;</em><a class="headerlink" href="#xdapy.structures._StrParams._abc_registry" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x102c7a410&gt;</em><a class="headerlink" href="#xdapy.structures._StrParams._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="xdapy.structures.Entity">
-<em class="property">class </em><tt class="descclassname">xdapy.structures.</tt><tt class="descname">Entity</tt><big>(</big><em>_uuid=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#Entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.Entity" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">xdapy.structures.</tt><tt class="descname">Entity</tt><big>(</big><em>_unique_id=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#Entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.Entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entity is the base class for all entity object definitions.</p>
 <p class="rubric">Methods</p>
 <table border="1" class="longtable docutils">
@@ -583,25 +523,34 @@ Read-only for now. May become r/w in the future.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">ancestors</span></tt>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures.Entity.ancestors" title="xdapy.structures.Entity.ancestors"><tt class="xref py py-obj docutils literal"><span class="pre">ancestors</span></tt></a>()</td>
 <td>Returns a list of all parent and grand-parent entities.</td>
 </tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">connect_object</span></tt>(connection_type,&nbsp;...)</td>
-<td>Connect this entity with <tt class="xref py py-obj docutils literal"><span class="pre">connection_object</span></tt> via the <tt class="xref py py-obj docutils literal"><span class="pre">connection_type</span></tt>.</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.structures.Entity.attach" title="xdapy.structures.Entity.attach"><tt class="xref py py-obj docutils literal"><span class="pre">attach</span></tt></a>(connection_type,&nbsp;connection_object)</td>
+<td>Attaches an entity to this entity’s context dict.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures.Entity.info" title="xdapy.structures.Entity.info"><tt class="xref py py-obj docutils literal"><span class="pre">info</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures.Entity.attachments" title="xdapy.structures.Entity.attachments"><tt class="xref py py-obj docutils literal"><span class="pre">attachments</span></tt></a>([connection_type])</td>
+<td>Returns all attachments to this entity.</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">gen_unique_id</span></tt>()</td>
+<td>This method can be overridden in a subclass to automatically provide a default value for the <a class="reference internal" href="#xdapy.structures.Entity.unique_id" title="xdapy.structures.Entity.unique_id"><tt class="xref py py-obj docutils literal"><span class="pre">unique_id</span></tt></a> field.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures.Entity.holders" title="xdapy.structures.Entity.holders"><tt class="xref py py-obj docutils literal"><span class="pre">holders</span></tt></a>([connection_type])</td>
+<td>Returns all entities which hold this entity as an attachment.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.structures.Entity.info" title="xdapy.structures.Entity.info"><tt class="xref py py-obj docutils literal"><span class="pre">info</span></tt></a>()</td>
 <td>Prints information about the entity.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.structures.Entity.print_tree" title="xdapy.structures.Entity.print_tree"><tt class="xref py py-obj docutils literal"><span class="pre">print_tree</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures.Entity.print_tree" title="xdapy.structures.Entity.print_tree"><tt class="xref py py-obj docutils literal"><span class="pre">print_tree</span></tt></a>()</td>
 <td>Prints a graphical representation of the entity and its parents and grand-parents.</td>
 </tr>
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">siblings</span></tt>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.structures.Entity.siblings" title="xdapy.structures.Entity.siblings"><tt class="xref py py-obj docutils literal"><span class="pre">siblings</span></tt></a>()</td>
 <td>Returns a list of all children and siblings.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.structures.Entity.to_json" title="xdapy.structures.Entity.to_json"><tt class="xref py py-obj docutils literal"><span class="pre">to_json</span></tt></a>([full])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures.Entity.to_json" title="xdapy.structures.Entity.to_json"><tt class="xref py py-obj docutils literal"><span class="pre">to_json</span></tt></a>([full])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">validate_name</span></tt>(key,&nbsp;e_name)</td>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">validate_name</span></tt>(key,&nbsp;e_name)</td>
 <td></td>
 </tr>
 </tbody>
@@ -630,7 +579,7 @@ Read-only for now. May become r/w in the future.</p>
 
 <dl class="method">
 <dt id="xdapy.structures.Entity.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>_uuid=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#Entity.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.Entity.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>_unique_id=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#Entity.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.Entity.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -639,8 +588,43 @@ Read-only for now. May become r/w in the future.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="xdapy.structures.Entity._uuid">
-<tt class="descname">_uuid</tt><a class="headerlink" href="#xdapy.structures.Entity._uuid" title="Permalink to this definition">¶</a></dt>
+<dt id="xdapy.structures.Entity._unique_id">
+<tt class="descname">_unique_id</tt><a class="headerlink" href="#xdapy.structures.Entity._unique_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures.Entity._params">
+<tt class="descname">_params</tt><a class="headerlink" href="#xdapy.structures.Entity._params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures.Entity._data">
+<tt class="descname">_data</tt><a class="headerlink" href="#xdapy.structures.Entity._data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures.Entity.data">
+<tt class="descname">data</tt><a class="reference internal" href="../_modules/xdapy/structures.html#Entity.data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.Entity.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor property for associated data. Wraps a <a class="reference internal" href="data.html#xdapy.data._DataAssoc" title="xdapy.data._DataAssoc"><tt class="xref py py-obj docutils literal"><span class="pre">xdapy.data._DataAssoc</span></tt></a> instance.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">SomeObject</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mapper</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>  <span class="c"># object must be in session before data may be used</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">data</span>
+<span class="go">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;data_key&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;random string&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;data_key&quot;</span><span class="p">]</span>
+<span class="go">DataProxy(mimetype=None, chunks=1, size=13)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;data_key&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">()</span>
+<span class="go">&quot;random string&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="go">[u&quot;data_key&quot;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures.Entity.to_json">
+<tt class="descname">to_json</tt><big>(</big><em>full=False</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#Entity.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.Entity.to_json" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -675,9 +659,16 @@ Read-only for now. May become r/w in the future.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="xdapy.structures.Entity.to_json">
-<tt class="descname">to_json</tt><big>(</big><em>full=False</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#Entity.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.Entity.to_json" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="xdapy.structures.Entity.ancestors">
+<tt class="descname">ancestors</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#Entity.ancestors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.Entity.ancestors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all parent and grand-parent entities.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures.Entity.siblings">
+<tt class="descname">siblings</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#Entity.siblings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.Entity.siblings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all children and siblings.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="xdapy.structures.Entity.__repr__">
@@ -701,9 +692,100 @@ Read-only for now. May become r/w in the future.</p>
 <dd><p>Prints a graphical representation of the entity and its parents and grand-parents.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="xdapy.structures.Entity.attach">
+<tt class="descname">attach</tt><big>(</big><em>connection_type</em>, <em>connection_object</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#Entity.attach"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.Entity.attach" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attaches an entity to this entity’s context dict.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>connection_type</strong> : string</p>
+<blockquote>
+<div><p>The type of the connection.</p>
+</div></blockquote>
+<p><strong>connection_object</strong> : entity object</p>
+<blockquote class="last">
+<div><p>The entity to attach</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">experiment</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="s">&quot;Observer&quot;</span><span class="p">,</span> <span class="n">obs1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s">&quot;Observer&quot;</span> <span class="ow">in</span> <span class="n">experiment</span><span class="o">.</span><span class="n">context</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs1</span> <span class="ow">in</span> <span class="n">experiment</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s">&quot;Observer&quot;</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures.Entity.attachments">
+<tt class="descname">attachments</tt><big>(</big><em>connection_type=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#Entity.attachments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.Entity.attachments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all attachments to this entity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>connection_type</strong> : string, optional</p>
+<blockquote class="last">
+<div><p>Restricts the output to the specified <tt class="xref py py-obj docutils literal"><span class="pre">connection_type</span></tt></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures.Entity.holders">
+<tt class="descname">holders</tt><big>(</big><em>connection_type=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#Entity.holders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.Entity.holders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all entities which hold this entity as an attachment.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>connection_type</strong> : string, optional</p>
+<blockquote class="last">
+<div><p>Restricts the output to the specified <tt class="xref py py-obj docutils literal"><span class="pre">connection_type</span></tt></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures.Entity.context">
+<tt class="descname">context</tt><a class="reference internal" href="../_modules/xdapy/structures.html#Entity.context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.Entity.context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accesses this <a class="reference internal" href="#xdapy.structures.Entity" title="xdapy.structures.Entity"><tt class="xref py py-obj docutils literal"><span class="pre">Entity</span></tt></a>’s context.</p>
+<p>The representation of this context is structurally identical to
+a dict of sets of Entities with the <tt class="xref py py-obj docutils literal"><span class="pre">connection_type</span></tt> being the key
+of the dict.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">experiment</span><span class="o">.</span><span class="n">context</span> <span class="o">==</span> <span class="p">{</span>
+  <span class="s">&quot;Observer&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="n">observer1</span><span class="p">,</span> <span class="n">observer2</span><span class="p">]),</span>
+  <span class="s">&quot;Supervisor&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="n">supervisor1</span><span class="p">])</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>All normal Python operations for manipulating this data structure should
+work transparently and the underlying data should automatically change.
+This means that the following works as expected:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">experiment</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s">&quot;Observer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">observer3</span><span class="p">)</span>
+<span class="n">experiment</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s">&quot;Observer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">observer1</span><span class="p">)</span>
+
+<span class="n">experiment</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s">&quot;Observer&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="n">observer2</span><span class="p">,</span> <span class="n">observer3</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="xdapy.structures.Entity.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x102531510; Entity&gt;</em><a class="headerlink" href="#xdapy.structures.Entity.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x102c7ab50; Entity&gt;</em><a class="headerlink" href="#xdapy.structures.Entity.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -722,18 +804,8 @@ Read-only for now. May become r/w in the future.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="xdapy.structures.Entity._data">
-<tt class="descname">_data</tt><a class="headerlink" href="#xdapy.structures.Entity._data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="xdapy.structures.Entity._params">
-<tt class="descname">_params</tt><a class="headerlink" href="#xdapy.structures.Entity._params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
 <dt id="xdapy.structures.Entity._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.Entity'&gt; at 7ff279379b00&gt;</em><a class="headerlink" href="#xdapy.structures.Entity._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.Entity'&gt; at 7fe033aa84c0&gt;</em><a class="headerlink" href="#xdapy.structures.Entity._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -760,16 +832,17 @@ Read-only for now. May become r/w in the future.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="xdapy.structures.Entity.uuid">
-<tt class="descname">uuid</tt><a class="headerlink" href="#xdapy.structures.Entity.uuid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Getter property for the database-backed <a class="reference internal" href="#xdapy.structures.Entity._uuid" title="xdapy.structures.Entity._uuid"><tt class="xref py py-obj docutils literal"><span class="pre">_uuid</span></tt></a> field.</p>
+<dt id="xdapy.structures.Entity.unique_id">
+<tt class="descname">unique_id</tt><a class="headerlink" href="#xdapy.structures.Entity.unique_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter property for the database-backed <a class="reference internal" href="#xdapy.structures.Entity._unique_id" title="xdapy.structures.Entity._unique_id"><tt class="xref py py-obj docutils literal"><span class="pre">_unique_id</span></tt></a> field.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>uuid: string</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>unique_id: string</strong> :</p>
 <blockquote class="last">
-<div><p>The auto-generated UUID of the <a class="reference internal" href="#xdapy.structures.BaseEntity" title="xdapy.structures.BaseEntity"><tt class="xref py py-obj docutils literal"><span class="pre">BaseEntity</span></tt></a>.</p>
+<div><p>The auto-generated unique_id of the <a class="reference internal" href="#xdapy.structures.BaseEntity" title="xdapy.structures.BaseEntity"><tt class="xref py py-obj docutils literal"><span class="pre">BaseEntity</span></tt></a>.
+Defaults to unique_id unless overridden.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -795,10 +868,235 @@ to create new <a class="reference internal" href="#xdapy.structures.Entity" titl
 </div>
 </dd></dl>
 
-<dl class="function">
-<dt id="xdapy.structures.calculate_polymorphic_name">
-<tt class="descclassname">xdapy.structures.</tt><tt class="descname">calculate_polymorphic_name</tt><big>(</big><em>name</em>, <em>declared_params</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#calculate_polymorphic_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.calculate_polymorphic_name" title="Permalink to this definition">¶</a></dt>
+<dl class="class">
+<dt id="xdapy.structures._ContextBySetDict">
+<em class="property">class </em><tt class="descclassname">xdapy.structures.</tt><tt class="descname">_ContextBySetDict</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySetDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySetDict" title="Permalink to this definition">¶</a></dt>
+<dd><p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">clear</span></tt>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">get</span></tt>(key[,&nbsp;default])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">items</span></tt>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">iteritems</span></tt>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">iterkeys</span></tt>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">itervalues</span></tt>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures._ContextBySetDict.keys" title="xdapy.structures._ContextBySetDict.keys"><tt class="xref py py-obj docutils literal"><span class="pre">keys</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">pop</span></tt>(key[,&nbsp;default])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">popitem</span></tt>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">setdefault</span></tt>(key[,&nbsp;default])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt>(*args,&nbsp;**kwds)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">values</span></tt>()</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="xdapy.structures._ContextBySetDict.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySetDict.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySetDict.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures._ContextBySetDict.__iter__">
+<tt class="descname">__iter__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySetDict.__iter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySetDict.__iter__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures._ContextBySetDict.keys">
+<tt class="descname">keys</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySetDict.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySetDict.keys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures._ContextBySetDict.__delitem__">
+<tt class="descname">__delitem__</tt><big>(</big><em>connection_type</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySetDict.__delitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySetDict.__delitem__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures._ContextBySetDict.__getitem__">
+<tt class="descname">__getitem__</tt><big>(</big><em>connection_type</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySetDict.__getitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySetDict.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures._ContextBySetDict.__setitem__">
+<tt class="descname">__setitem__</tt><big>(</big><em>connection_type</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySetDict.__setitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySetDict.__setitem__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures._ContextBySetDict.__contains__">
+<tt class="descname">__contains__</tt><big>(</big><em>connection_type</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySetDict.__contains__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySetDict.__contains__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures._ContextBySetDict.__len__">
+<tt class="descname">__len__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySetDict.__len__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySetDict.__len__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures._ContextBySetDict.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySetDict.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySetDict.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures._ContextBySetDict.__abstractmethods__">
+<tt class="descname">__abstractmethods__</tt><em class="property"> = frozenset([])</em><a class="headerlink" href="#xdapy.structures._ContextBySetDict.__abstractmethods__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures._ContextBySetDict.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.structures'</em><a class="headerlink" href="#xdapy.structures._ContextBySetDict.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures._ContextBySetDict._abc_cache">
+<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x102c84510&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySetDict._abc_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures._ContextBySetDict._abc_negative_cache">
+<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x102c7a550&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySetDict._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures._ContextBySetDict._abc_negative_cache_version">
+<tt class="descname">_abc_negative_cache_version</tt><em class="property"> = 26</em><a class="headerlink" href="#xdapy.structures._ContextBySetDict._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures._ContextBySetDict._abc_registry">
+<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x102c845d0&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySetDict._abc_registry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xdapy.structures._ContextBySet">
+<em class="property">class </em><tt class="descclassname">xdapy.structures.</tt><tt class="descname">_ContextBySet</tt><big>(</big><em>parent</em>, <em>connection_type</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySet" title="Permalink to this definition">¶</a></dt>
+<dd><p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures._ContextBySet.add" title="xdapy.structures._ContextBySet.add"><tt class="xref py py-obj docutils literal"><span class="pre">add</span></tt></a>(item)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">clear</span></tt>()</td>
+<td>This is slow (creates N new iterators!) but effective.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures._ContextBySet.discard" title="xdapy.structures._ContextBySet.discard"><tt class="xref py py-obj docutils literal"><span class="pre">discard</span></tt></a>(item)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">isdisjoint</span></tt>(other)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">pop</span></tt>()</td>
+<td>Return the popped value.</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">remove</span></tt>(value)</td>
+<td>Remove an element.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures._ContextBySet.update" title="xdapy.structures._ContextBySet.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a>(items)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="xdapy.structures._ContextBySet.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>parent</em>, <em>connection_type</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySet.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySet.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures._ContextBySet.__iter__">
+<tt class="descname">__iter__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySet.__iter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySet.__iter__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures._ContextBySet.update">
+<tt class="descname">update</tt><big>(</big><em>items</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySet.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySet.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures._ContextBySet.add">
+<tt class="descname">add</tt><big>(</big><em>item</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySet.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySet.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures._ContextBySet.discard">
+<tt class="descname">discard</tt><big>(</big><em>item</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySet.discard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySet.discard" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures._ContextBySet.__contains__">
+<tt class="descname">__contains__</tt><big>(</big><em>item</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySet.__contains__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySet.__contains__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures._ContextBySet.__len__">
+<tt class="descname">__len__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySet.__len__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySet.__len__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.structures._ContextBySet.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#_ContextBySet.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures._ContextBySet.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures._ContextBySet.__abstractmethods__">
+<tt class="descname">__abstractmethods__</tt><em class="property"> = frozenset([])</em><a class="headerlink" href="#xdapy.structures._ContextBySet.__abstractmethods__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures._ContextBySet.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'xdapy.structures'</em><a class="headerlink" href="#xdapy.structures._ContextBySet.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures._ContextBySet._abc_cache">
+<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x102c848d0&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySet._abc_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures._ContextBySet._abc_negative_cache">
+<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x102c84950&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySet._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures._ContextBySet._abc_negative_cache_version">
+<tt class="descname">_abc_negative_cache_version</tt><em class="property"> = 18</em><a class="headerlink" href="#xdapy.structures._ContextBySet._abc_negative_cache_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures._ContextBySet._abc_registry">
+<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x102c84810&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySet._abc_registry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 <dl class="class">
 <dt id="xdapy.structures.Context">
@@ -808,13 +1106,13 @@ must be a string. Each Data is connected to at most one entity through the
 adjacency list &#8216;datalist&#8217;. The corresponding entities can be accessed via
 the entities attribute of the Data class.</p>
 <dl class="attribute">
-<dt id="xdapy.structures.Context.entity_id">
-<tt class="descname">entity_id</tt><a class="headerlink" href="#xdapy.structures.Context.entity_id" title="Permalink to this definition">¶</a></dt>
+<dt id="xdapy.structures.Context.holder_id">
+<tt class="descname">holder_id</tt><a class="headerlink" href="#xdapy.structures.Context.holder_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="xdapy.structures.Context.connected_id">
-<tt class="descname">connected_id</tt><a class="headerlink" href="#xdapy.structures.Context.connected_id" title="Permalink to this definition">¶</a></dt>
+<dt id="xdapy.structures.Context.attachment_id">
+<tt class="descname">attachment_id</tt><a class="headerlink" href="#xdapy.structures.Context.attachment_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -823,23 +1121,13 @@ the entities attribute of the Data class.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="xdapy.structures.Context.back_referenced">
-<tt class="descname">back_referenced</tt><a class="headerlink" href="#xdapy.structures.Context.back_referenced" title="Permalink to this definition">¶</a></dt>
+<dt id="xdapy.structures.Context.holder">
+<tt class="descname">holder</tt><a class="headerlink" href="#xdapy.structures.Context.holder" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="xdapy.structures.Context.connected">
-<tt class="descname">connected</tt><a class="headerlink" href="#xdapy.structures.Context.connected" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="xdapy.structures.Context.from_entity">
-<tt class="descname">from_entity</tt><a class="reference internal" href="../_modules/xdapy/structures.html#Context.from_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.Context.from_entity" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="xdapy.structures.Context.to_entity">
-<tt class="descname">to_entity</tt><a class="reference internal" href="../_modules/xdapy/structures.html#Context.to_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.Context.to_entity" title="Permalink to this definition">¶</a></dt>
+<dt id="xdapy.structures.Context.attachment">
+<tt class="descname">attachment</tt><a class="headerlink" href="#xdapy.structures.Context.attachment" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -849,7 +1137,7 @@ the entities attribute of the Data class.</p>
 
 <dl class="attribute">
 <dt id="xdapy.structures.Context.__table_args__">
-<tt class="descname">__table_args__</tt><em class="property"> = (UniqueConstraint(Column('entity_id', Integer(), ForeignKey('entities.id'), table=&lt;contexts&gt;, primary_key=True, nullable=False), Column('connected_id', Integer(), ForeignKey('entities.id'), table=&lt;contexts&gt;, primary_key=True, nullable=False)), {})</em><a class="headerlink" href="#xdapy.structures.Context.__table_args__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__table_args__</tt><em class="property"> = (UniqueConstraint(Column('entity_id', Integer(), ForeignKey('entities.id'), table=&lt;contexts&gt;, primary_key=True, nullable=False), Column('connected_id', Integer(), ForeignKey('entities.id'), table=&lt;contexts&gt;, primary_key=True, nullable=False), Column('connection_type', String(length=500), table=&lt;contexts&gt;, primary_key=True, nullable=False)), {})</em><a class="headerlink" href="#xdapy.structures.Context.__table_args__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -875,7 +1163,7 @@ for example, any mapped columns or relationships.</p>
 
 <dl class="attribute">
 <dt id="xdapy.structures.Context.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x102540410; Context&gt;</em><a class="headerlink" href="#xdapy.structures.Context.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x102c8a850; Context&gt;</em><a class="headerlink" href="#xdapy.structures.Context.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -885,12 +1173,12 @@ for example, any mapped columns or relationships.</p>
 
 <dl class="attribute">
 <dt id="xdapy.structures.Context.__table__">
-<tt class="descname">__table__</tt><em class="property"> = Table('contexts', MetaData(bind=None), Column('entity_id', Integer(), ForeignKey('entities.id'), table=&lt;contexts&gt;, primary_key=True, nullable=False), Column('connected_id', Integer(), ForeignKey('entities.id'), table=&lt;contexts&gt;, primary_key=True, nullable=False), Column('connection_type', String(length=500), table=&lt;contexts&gt;), schema=None)</em><a class="headerlink" href="#xdapy.structures.Context.__table__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__table__</tt><em class="property"> = Table('contexts', MetaData(bind=None), Column('entity_id', Integer(), ForeignKey('entities.id'), table=&lt;contexts&gt;, primary_key=True, nullable=False), Column('connected_id', Integer(), ForeignKey('entities.id'), table=&lt;contexts&gt;, primary_key=True, nullable=False), Column('connection_type', String(length=500), table=&lt;contexts&gt;, primary_key=True, nullable=False), schema=None)</em><a class="headerlink" href="#xdapy.structures.Context.__table__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.structures.Context._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.Context'&gt; at 7ff27938f360&gt;</em><a class="headerlink" href="#xdapy.structures.Context._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.Context'&gt; at 7fe033abe290&gt;</em><a class="headerlink" href="#xdapy.structures.Context._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -922,7 +1210,7 @@ then this parameter can be added to the list of allowed parameters.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first"><strong>TypeError</strong> :</p>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first"><strong>ValueError</strong> :</p>
 <blockquote class="last">
 <div><p>Raised, if arguments aren&#8217;t strings or type not in list.</p>
 </div></blockquote>
@@ -971,13 +1259,8 @@ then this parameter can be added to the list of allowed parameters.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="xdapy.structures.ParameterDeclaration.__tablename__">
-<tt class="descname">__tablename__</tt><em class="property"> = 'parameter_declarations'</em><a class="headerlink" href="#xdapy.structures.ParameterDeclaration.__tablename__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
 <dt id="xdapy.structures.ParameterDeclaration.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x102543390; ParameterDeclaration&gt;</em><a class="headerlink" href="#xdapy.structures.ParameterDeclaration.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x102c90710; ParameterDeclaration&gt;</em><a class="headerlink" href="#xdapy.structures.ParameterDeclaration.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -991,13 +1274,18 @@ then this parameter can be added to the list of allowed parameters.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="xdapy.structures.ParameterDeclaration.__table_args__">
-<tt class="descname">__table_args__</tt><em class="property"> = (UniqueConstraint(Column('parameter_name', String(length=40), table=&lt;parameter_declarations&gt;, primary_key=True, nullable=False), Column('entity_name', String(length=60), table=&lt;parameter_declarations&gt;, primary_key=True, nullable=False)), {})</em><a class="headerlink" href="#xdapy.structures.ParameterDeclaration.__table_args__" title="Permalink to this definition">¶</a></dt>
+<dt id="xdapy.structures.ParameterDeclaration.__tablename__">
+<tt class="descname">__tablename__</tt><em class="property"> = 'parameter_declarations'</em><a class="headerlink" href="#xdapy.structures.ParameterDeclaration.__tablename__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.structures.ParameterDeclaration._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.ParameterDeclaration'&gt; at 7ff279398fb0&gt;</em><a class="headerlink" href="#xdapy.structures.ParameterDeclaration._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.ParameterDeclaration'&gt; at 7fe033ac8480&gt;</em><a class="headerlink" href="#xdapy.structures.ParameterDeclaration._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures.ParameterDeclaration.__table_args__">
+<tt class="descname">__table_args__</tt><em class="property"> = (UniqueConstraint(Column('parameter_name', String(length=40), table=&lt;parameter_declarations&gt;, primary_key=True, nullable=False), Column('entity_name', String(length=60), table=&lt;parameter_declarations&gt;, primary_key=True, nullable=False)), {})</em><a class="headerlink" href="#xdapy.structures.ParameterDeclaration.__table_args__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1026,7 +1314,7 @@ then this parameter can be added to the list of allowed parameters.</p>
 
     <div class="footer">
         &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

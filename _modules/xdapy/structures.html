@@ -60,20 +60,16 @@
 <span class="n">__authors__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&quot;Hannah Dold&quot; &lt;hannah.dold@mailbox.tu-berlin.de&gt;&#39;</span><span class="p">,</span>
                <span class="s">&#39;&quot;Rike-Benjamin Schuppner&quot; &lt;rikebs@debilski.de&gt;&#39;</span><span class="p">]</span>
 
-<span class="kn">import</span> <span class="nn">uuid</span> <span class="kn">as</span> <span class="nn">py_uuid</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Column</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">Integer</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Column</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">event</span>
 <span class="kn">from</span> <span class="nn">sqlalchemy.schema</span> <span class="kn">import</span> <span class="n">UniqueConstraint</span>
 <span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">relationship</span><span class="p">,</span> <span class="n">backref</span><span class="p">,</span> <span class="n">validates</span>
 <span class="kn">from</span> <span class="nn">sqlalchemy.orm.session</span> <span class="kn">import</span> <span class="n">Session</span>
 <span class="kn">from</span> <span class="nn">sqlalchemy.ext.associationproxy</span> <span class="kn">import</span> <span class="n">association_proxy</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy.orm.collections</span> <span class="kn">import</span> <span class="n">column_mapped_collection</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm.collections</span> <span class="kn">import</span> <span class="n">column_mapped_collection</span><span class="p">,</span> <span class="n">MappedCollection</span>
 <span class="kn">from</span> <span class="nn">sqlalchemy.ext.declarative</span> <span class="kn">import</span> <span class="n">DeclarativeMeta</span><span class="p">,</span> <span class="n">synonym_for</span>
-
-<span class="c"># So we really want to support only Postgresql?</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">UUID</span>
 
 <span class="kn">from</span> <span class="nn">xdapy</span> <span class="kn">import</span> <span class="n">Base</span>
 <span class="kn">from</span> <span class="nn">xdapy.parameters</span> <span class="kn">import</span> <span class="n">Parameter</span><span class="p">,</span> <span class="n">parameter_ids</span><span class="p">,</span> <span class="n">parameter_for_type</span>
@@ -82,6 +78,25 @@
 <span class="kn">from</span> <span class="nn">xdapy.utils.algorithms</span> <span class="kn">import</span> <span class="n">gen_uuid</span><span class="p">,</span> <span class="n">hash_dict</span>
 
 
+<div class="viewcode-block" id="calculate_polymorphic_name"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.calculate_polymorphic_name">[docs]</a><span class="k">def</span> <span class="nf">calculate_polymorphic_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">declared_params</span><span class="p">):</span>
+    <span class="n">split_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">EntityDefinitionError</span><span class="p">(</span><span class="s">&quot;Entity class must not contain more than one underscore.&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="c"># Try, whether the second part is a correct hash.</span>
+        <span class="n">the_hash</span> <span class="o">=</span> <span class="n">hash_dict</span><span class="p">(</span><span class="n">declared_params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">split_name</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">the_hash</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EntityDefinitionError</span><span class="p">(</span><span class="s">&quot;Entity name has incorrect hash after underscore.&quot;</span><span class="p">)</span>
+
+    <span class="c"># No underscore. Good!</span>
+    <span class="c"># Create hash from sorted declared_params</span>
+    <span class="n">the_hash</span> <span class="o">=</span> <span class="n">hash_dict</span><span class="p">(</span><span class="n">declared_params</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&quot;_&quot;</span> <span class="o">+</span> <span class="n">the_hash</span>
+
+</div>
 <div class="viewcode-block" id="BaseEntity"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity">[docs]</a><span class="k">class</span> <span class="nc">BaseEntity</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The class `BaseEntity` is mapped on the table &#39;entities&#39;. The name column</span>
@@ -101,22 +116,20 @@
     <span class="c">#: a hash uniquely identifying the stored parameters.</span>
     <span class="n">_type</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">60</span><span class="p">))</span>
 
-    <span class="c">#: The database-backed uuid column.</span>
-    <span class="n">_uuid</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;uuid&#39;</span><span class="p">,</span> <span class="n">UUID</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="n">gen_uuid</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="c">#: The database-backed unique_id column.</span>
+    <span class="n">_unique_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;uniqueid&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">60</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-    <span class="nd">@synonym_for</span><span class="p">(</span><span class="s">&quot;_uuid&quot;</span><span class="p">)</span>
-    <span class="nd">@property</span>
-<div class="viewcode-block" id="BaseEntity.uuid"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.uuid">[docs]</a>    <span class="k">def</span> <span class="nf">uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Getter property for the database-backed `_uuid` field.</span>
+    <span class="c"># has one parent</span>
+    <span class="n">parent_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;parent_id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;entities.id&#39;</span><span class="p">),</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s">&quot;The database-backed parent_id field.&quot;</span><span class="p">)</span>
+    <span class="n">children</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s">&quot;BaseEntity&quot;</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="n">backref</span><span class="p">(</span><span class="s">&quot;parent&quot;</span><span class="p">,</span> <span class="n">remote_side</span><span class="o">=</span><span class="p">[</span><span class="nb">id</span><span class="p">]),</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s">&quot;The children of this Entity. Note that adding a child (obviously) changes the child&#39;s parent.&quot;</span><span class="p">)</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        uuid: string</span>
-<span class="sd">            The auto-generated UUID of the `BaseEntity`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uuid</span>
-</div>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;entities&#39;</span> <span class="c">#: The db table name.</span>
+
+    <span class="c">#: Subclasses of `BaseEntity` should differ in their `_type` column.</span>
+    <span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;polymorphic_on&#39;</span><span class="p">:</span> <span class="n">_type</span><span class="p">}</span>
+
     <span class="nd">@property</span>
 <div class="viewcode-block" id="BaseEntity.type"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.type">[docs]</a>    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -128,144 +141,41 @@
 <span class="sd">            The type of the `Entity`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="c"># has one parent</span></div>
-    <span class="n">parent_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;parent_id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;entities.id&#39;</span><span class="p">),</span>
-            <span class="n">doc</span><span class="o">=</span><span class="s">&quot;The database-backed parent_id field.&quot;</span><span class="p">)</span>
-    <span class="n">children</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s">&quot;BaseEntity&quot;</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="n">backref</span><span class="p">(</span><span class="s">&quot;parent&quot;</span><span class="p">,</span> <span class="n">remote_side</span><span class="o">=</span><span class="p">[</span><span class="nb">id</span><span class="p">]),</span>
-            <span class="n">doc</span><span class="o">=</span><span class="s">&quot;The children of this Entity. Note that adding a child (obviously) changes the child&#39;s parent.&quot;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="BaseEntity.ancestors"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.ancestors">[docs]</a>    <span class="k">def</span> <span class="nf">ancestors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a list of all parent and grand-parent entities.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span>
-        <span class="n">parents</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">while</span> <span class="n">node</span><span class="o">.</span><span class="n">parent</span><span class="p">:</span>
-            <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">parent</span>
-            <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">parents</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">DataInconsistencyError</span><span class="p">(</span><span class="s">&quot;Circular reference&quot;</span><span class="p">)</span>
-            <span class="n">parents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">parents</span>
 </div>
-<div class="viewcode-block" id="BaseEntity.siblings"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.siblings">[docs]</a>    <span class="k">def</span> <span class="nf">siblings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a list of all children and siblings.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">children</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="n">children</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
-            <span class="n">children</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">siblings</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">children</span>
-</div>
-    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;entities&#39;</span> <span class="c">#: The db table name.</span>
-
-    <span class="c">#: Subclasses of `BaseEntity` should differ in their `_type` column.</span>
-    <span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;polymorphic_on&#39;</span><span class="p">:</span> <span class="n">_type</span><span class="p">}</span>
-
-    <span class="n">_params</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">Parameter</span><span class="p">,</span>
-            <span class="n">collection_class</span><span class="o">=</span><span class="n">column_mapped_collection</span><span class="p">(</span><span class="n">Parameter</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="c"># FIXME ???</span>
-            <span class="n">cascade</span><span class="o">=</span><span class="s">&quot;save-update, merge, delete&quot;</span><span class="p">)</span>
-
-    <span class="c"># one to many BaseEntity-&gt;Data</span>
-    <span class="n">_data</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">Data</span><span class="p">,</span>
-            <span class="n">collection_class</span><span class="o">=</span><span class="n">column_mapped_collection</span><span class="p">(</span><span class="n">Data</span><span class="o">.</span><span class="n">key</span><span class="p">),</span>
-            <span class="n">cascade</span><span class="o">=</span><span class="s">&quot;save-update, merge, delete&quot;</span><span class="p">)</span>
-
+    <span class="nd">@synonym_for</span><span class="p">(</span><span class="s">&quot;_unique_id&quot;</span><span class="p">)</span>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="BaseEntity.data"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.data">[docs]</a>    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Accessor property for associated data. Wraps a `xdapy.data._DataAssoc` instance.</span>
+<div class="viewcode-block" id="BaseEntity.unique_id"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.unique_id">[docs]</a>    <span class="k">def</span> <span class="nf">unique_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Getter property for the database-backed `_unique_id` field.</span>
 
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; obj = SomeObject()</span>
-<span class="sd">        &gt;&gt;&gt; mapper.save(obj)  # object must be in session before data may be used</span>
-<span class="sd">        &gt;&gt;&gt; obj.data</span>
-<span class="sd">        {}</span>
-<span class="sd">        &gt;&gt;&gt; obj.data[&quot;data_key&quot;].put(&quot;random string&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; obj.data[&quot;data_key&quot;]</span>
-<span class="sd">        DataProxy(mimetype=None, chunks=1, size=13)</span>
-<span class="sd">        &gt;&gt;&gt; obj.data[&quot;data_key&quot;].get_string()</span>
-<span class="sd">        &quot;random string&quot;</span>
-<span class="sd">        &gt;&gt;&gt; obj.data.keys()</span>
-<span class="sd">        [u&quot;data_key&quot;]</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        unique_id: string</span>
+<span class="sd">            The auto-generated unique_id of the `BaseEntity`.</span>
+<span class="sd">            Defaults to unique_id unless overridden.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;__data_assoc&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__data_assoc</span> <span class="o">=</span> <span class="n">_DataAssoc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data_assoc</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unique_id</span>
 </div>
-<div class="viewcode-block" id="BaseEntity.connect_object"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.connect_object">[docs]</a>    <span class="k">def</span> <span class="nf">connect_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_type</span><span class="p">,</span> <span class="n">connection_object</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Connect this entity with `connection_object` via the `connection_type`.</span>
+<div class="viewcode-block" id="BaseEntity.gen_unique_id"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.gen_unique_id">[docs]</a>    <span class="k">def</span> <span class="nf">gen_unique_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method can be overridden in a subclass to automatically</span>
+<span class="sd">        provide a default value for the `unique_id` field.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        connection_type: string</span>
-<span class="sd">            The type of the connection.</span>
-<span class="sd">        connection_object: Entity</span>
-<span class="sd">            The object to connect_object to.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        unique_id: string</span>
+<span class="sd">            uuid value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">connection_type</span><span class="p">,</span> <span class="n">connection_object</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">c</span><span class="o">.</span><span class="n">connection_type</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">connected</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="n">InsertionError</span><span class="p">(</span><span class="s">&quot;{0} already has a &#39;{1}&#39; connection to {2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_type</span><span class="p">,</span> <span class="n">connection_object</span><span class="p">))</span>
-
-        <span class="c"># Create a new context object.</span>
-        <span class="c"># The back reference is automatically appended through setting the back reference</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="n">back_referenced</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">connected</span><span class="o">=</span><span class="n">connection_object</span><span class="p">,</span> <span class="n">connection_type</span><span class="o">=</span><span class="n">connection_type</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">context</span>
-</div>
-    <span class="nd">@property</span>
-<div class="viewcode-block" id="BaseEntity.connected"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.connected">[docs]</a>    <span class="k">def</span> <span class="nf">connected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Lists all connected objects.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">connected</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">]</span>
-</div>
-    <span class="nd">@property</span>
-<div class="viewcode-block" id="BaseEntity.back_referenced"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.back_referenced">[docs]</a>    <span class="k">def</span> <span class="nf">back_referenced</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns all objects which have connected to this object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">back_referenced</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">back_references</span><span class="p">]</span>
-</div>
-    <span class="nd">@property</span>
-<div class="viewcode-block" id="BaseEntity.context"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.context">[docs]</a>    <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a dictionary of connection types and connected objects.</span>
-<span class="sd">        Read-only for now. May become r/w in the future.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">grouped</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">context_obj</span><span class="p">:</span> <span class="n">context_obj</span><span class="o">.</span><span class="n">connection_type</span><span class="p">)</span>
-        <span class="n">ctx</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">connection_type</span><span class="p">,</span> <span class="n">connections</span> <span class="ow">in</span> <span class="n">grouped</span><span class="p">:</span>
-            <span class="n">ctx</span><span class="p">[</span><span class="n">connection_type</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">connection</span><span class="o">.</span><span class="n">connected</span> <span class="k">for</span> <span class="n">connection</span> <span class="ow">in</span> <span class="n">connections</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">ctx</span>
+        <span class="k">return</span> <span class="n">gen_uuid</span><span class="p">()</span>
 </div>
     <span class="nd">@validates</span><span class="p">(</span><span class="s">&#39;_type&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BaseEntity.validate_name"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.validate_name">[docs]</a>    <span class="k">def</span> <span class="nf">validate_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">e_name</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Argument must be a string&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Argument must be a string, is: </span><span class="si">%r</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="n">e_name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">e_name</span>
 </div>
-<div class="viewcode-block" id="BaseEntity.__init__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This method should never be called directly.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        Exception</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;BaseEntity.__init__ should not be called directly.&quot;</span><span class="p">)</span>
-</div>
 <div class="viewcode-block" id="BaseEntity._attributes"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity._attributes">[docs]</a>    <span class="k">def</span> <span class="nf">_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s">&#39;uuid&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">}</span>
-</div>
-<div class="viewcode-block" id="BaseEntity.to_json"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="n">json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">full</span><span class="p">:</span>
-            <span class="n">json</span><span class="p">[</span><span class="s">&quot;param&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">str_params</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="n">val</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-                              <span class="s">&#39;mimetype&#39;</span><span class="p">:</span> <span class="n">val</span><span class="o">.</span><span class="n">mimetype</span><span class="p">,</span>
-                              <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
-                              <span class="s">&#39;content-length&#39;</span><span class="p">:</span> <span class="n">val</span><span class="o">.</span><span class="n">size</span><span class="p">()})</span>
-            <span class="n">json</span><span class="p">[</span><span class="s">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
-        <span class="k">return</span> <span class="n">json</span>
-</div>
-<div class="viewcode-block" id="BaseEntity.__repr__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;&lt;BaseEntity(&#39;</span><span class="si">%s</span><span class="s">&#39;,&#39;</span><span class="si">%s</span><span class="s">&#39;,&#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s">&#39;unique_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">}</span>
 </div>
 <div class="viewcode-block" id="BaseEntity._session"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity._session">[docs]</a>    <span class="k">def</span> <span class="nf">_session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns the session which this object belongs to.</span>
@@ -274,8 +184,40 @@
         <span class="k">if</span> <span class="n">session</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">MissingSessionError</span><span class="p">(</span><span class="s">&quot;Entity &#39;</span><span class="si">%r</span><span class="s">&#39; has no associated session.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">session</span>
+</div>
+<div class="viewcode-block" id="BaseEntity.__init__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; This method should never be called directly.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        Exception</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;BaseEntity.__init__ should not be called directly.&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="BaseEntity.__repr__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;{cls}(id={id!s}, unique_id={unique_id!s})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span>
+
 </div></div>
+<span class="nd">@event.listens_for</span><span class="p">(</span><span class="n">BaseEntity</span><span class="p">,</span> <span class="s">&quot;before_insert&quot;</span><span class="p">,</span> <span class="n">propagate</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="viewcode-block" id="_gen_default_unique_id"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._gen_default_unique_id">[docs]</a><span class="k">def</span> <span class="nf">_gen_default_unique_id</span><span class="p">(</span><span class="n">mapper</span><span class="p">,</span> <span class="n">connection</span><span class="p">,</span> <span class="n">instance</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This gets called before insertion and looks if a</span>
+<span class="sd">    value for the _unique_id field has been provided.</span>
+<span class="sd">    If not, it calls `BaseEntity.gen_unique_id` (which provides</span>
+<span class="sd">    a uuid but may have been changed to something else.)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">instance</span><span class="o">.</span><span class="n">_unique_id</span><span class="p">:</span>
+        <span class="n">default_value</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">gen_unique_id</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">default_value</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Empty value </span><span class="si">%r</span><span class="s"> in default_fun for </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">default_value</span><span class="p">,</span> <span class="n">instance</span><span class="p">))</span>
+        <span class="n">instance</span><span class="o">.</span><span class="n">_unique_id</span> <span class="o">=</span> <span class="n">default_value</span>
+
+</div>
 <div class="viewcode-block" id="EntityMeta"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.EntityMeta">[docs]</a><span class="k">class</span> <span class="nc">EntityMeta</span><span class="p">(</span><span class="n">DeclarativeMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Metaclass for `Entity`. The purpose of the metaclass is to</span>
+<span class="sd">    change the internal type name of the `Entity` in order to be used</span>
+<span class="sd">    as a `polymorphic_identity` in SQLAlchemy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="EntityMeta._calculate_polymorphic_name"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.EntityMeta._calculate_polymorphic_name">[docs]</a>    <span class="k">def</span> <span class="nf">_calculate_polymorphic_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="s">&quot;Entity&quot;</span> <span class="ow">in</span> <span class="p">[</span><span class="n">bscls</span><span class="o">.</span><span class="n">__name__</span> <span class="k">for</span> <span class="n">bscls</span> <span class="ow">in</span> <span class="n">bases</span><span class="p">]:</span>
@@ -286,12 +228,10 @@
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;Entity class &#39;</span><span class="si">%s</span><span class="s">&#39; must have &#39;declared_params&#39; attribute.&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">calculate_polymorphic_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">declared_params</span><span class="p">)</span>
-
 </div>
 <div class="viewcode-block" id="EntityMeta.__new__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.EntityMeta.__new__">[docs]</a>    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_calculate_polymorphic_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">DeclarativeMeta</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
-
 </div>
 <div class="viewcode-block" id="EntityMeta.__init__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.EntityMeta.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
         <span class="n">cls</span><span class="o">.</span><span class="n">__original_class_name__</span> <span class="o">=</span> <span class="n">name</span>
@@ -316,6 +256,7 @@
         <span class="n">cls</span><span class="o">.</span><span class="n">__mapper_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;polymorphic_identity&#39;</span><span class="p">:</span> <span class="n">cls</span><span class="o">.</span><span class="n">__name__</span><span class="p">}</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">EntityMeta</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
 </div></div>
 <div class="viewcode-block" id="_InheritedParams"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._InheritedParams">[docs]</a><span class="k">class</span> <span class="nc">_InheritedParams</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Immutable association dict for inherited parameters.</span>
@@ -373,7 +314,7 @@
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="_InheritedParams.__len__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._InheritedParams.__len__">[docs]</a>    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__iter__</span><span class="p">())</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="_InheritedParams.__repr__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._InheritedParams.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iteritems</span><span class="p">())</span><span class="o">.</span><span class="n">__repr__</span><span class="p">()</span>
@@ -415,25 +356,69 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="_StrParams.__delitem__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._StrParams.__delitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="o">.</span><span class="n">param</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="_StrParams.__iter__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._StrParams.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">owning</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+
 </div></div>
 <div class="viewcode-block" id="Entity"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity">[docs]</a><span class="k">class</span> <span class="nc">Entity</span><span class="p">(</span><span class="n">BaseEntity</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Entity is the base class for all entity object definitions.&quot;&quot;&quot;</span>
     <span class="c">#: We specify our special metaclass `xdapy.structures.EntityMeta`.</span>
     <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">EntityMeta</span>
 
-<div class="viewcode-block" id="Entity.__init__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_uuid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Entity.__init__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_unique_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c"># We are here in init because we are a completely new object</span>
         <span class="c"># Hence, the _type (our polymorphic_identity) has not been set yet.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mapper_args__</span><span class="p">[</span><span class="s">&#39;polymorphic_identity&#39;</span><span class="p">]</span> <span class="c"># which should be self.__class__.__name__</span>
 
-        <span class="c"># if we received an _uuid, check that it is valid</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_uuid</span> <span class="o">=</span> <span class="n">_uuid</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">py_uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">_uuid</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unique_id</span> <span class="o">=</span> <span class="n">_unique_id</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_items_from_arguments</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+    <span class="n">_params</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">Parameter</span><span class="p">,</span>
+        <span class="n">collection_class</span><span class="o">=</span><span class="n">column_mapped_collection</span><span class="p">(</span><span class="n">Parameter</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="c"># FIXME ???</span>
+        <span class="n">cascade</span><span class="o">=</span><span class="s">&quot;all, delete-orphan&quot;</span><span class="p">)</span>
+
+    <span class="c"># one to many BaseEntity-&gt;Data</span>
+    <span class="n">_data</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">Data</span><span class="p">,</span>
+        <span class="n">collection_class</span><span class="o">=</span><span class="n">column_mapped_collection</span><span class="p">(</span><span class="n">Data</span><span class="o">.</span><span class="n">key</span><span class="p">),</span>
+        <span class="n">cascade</span><span class="o">=</span><span class="s">&quot;all, delete-orphan&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Entity.data"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.data">[docs]</a>    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Accessor property for associated data. Wraps a `xdapy.data._DataAssoc` instance.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; obj = SomeObject()</span>
+<span class="sd">        &gt;&gt;&gt; mapper.save(obj)  # object must be in session before data may be used</span>
+<span class="sd">        &gt;&gt;&gt; obj.data</span>
+<span class="sd">        {}</span>
+<span class="sd">        &gt;&gt;&gt; obj.data[&quot;data_key&quot;].put(&quot;random string&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; obj.data[&quot;data_key&quot;]</span>
+<span class="sd">        DataProxy(mimetype=None, chunks=1, size=13)</span>
+<span class="sd">        &gt;&gt;&gt; obj.data[&quot;data_key&quot;].get_string()</span>
+<span class="sd">        &quot;random string&quot;</span>
+<span class="sd">        &gt;&gt;&gt; obj.data.keys()</span>
+<span class="sd">        [u&quot;data_key&quot;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;__data_assoc&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__data_assoc</span> <span class="o">=</span> <span class="n">_DataAssoc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data_assoc</span>
+</div>
+<div class="viewcode-block" id="Entity.to_json"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="n">json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">full</span><span class="p">:</span>
+            <span class="n">json</span><span class="p">[</span><span class="s">&quot;param&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">str_params</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="n">val</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                             <span class="s">&#39;mimetype&#39;</span><span class="p">:</span> <span class="n">val</span><span class="o">.</span><span class="n">mimetype</span><span class="p">,</span>
+                             <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
+                             <span class="s">&#39;content-length&#39;</span><span class="p">:</span> <span class="n">val</span><span class="o">.</span><span class="n">size</span><span class="p">()})</span>
+            <span class="n">json</span><span class="p">[</span><span class="s">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="k">return</span> <span class="n">json</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Entity.json_params"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.json_params">[docs]</a>    <span class="k">def</span> <span class="nf">json_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -476,11 +461,29 @@
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
 </div>
-<div class="viewcode-block" id="Entity.to_json"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Entity</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">full</span><span class="p">)</span>
+<div class="viewcode-block" id="Entity.ancestors"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.ancestors">[docs]</a>    <span class="k">def</span> <span class="nf">ancestors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a list of all parent and grand-parent entities.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">parents</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="n">node</span><span class="o">.</span><span class="n">parent</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">parent</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">parents</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">DataInconsistencyError</span><span class="p">(</span><span class="s">&quot;Circular reference&quot;</span><span class="p">)</span>
+            <span class="n">parents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parents</span>
+</div>
+<div class="viewcode-block" id="Entity.siblings"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.siblings">[docs]</a>    <span class="k">def</span> <span class="nf">siblings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a list of all children and siblings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">children</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="n">children</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">siblings</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">children</span>
 </div>
 <div class="viewcode-block" id="Entity.__repr__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;{cls}(id={id!s},uuid={uuid!s})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">uuid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s">&quot;{cls}(id={id!s}, unique_id={unique_id!s})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Entity.__str__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">items</span>  <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">([(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)],</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">iteritems</span><span class="p">())</span>
@@ -497,18 +500,101 @@
 <div class="viewcode-block" id="Entity.print_tree"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.print_tree">[docs]</a>    <span class="k">def</span> <span class="nf">print_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Prints a graphical representation of the entity and its parents and grand-parents.&quot;&quot;&quot;</span>
         <span class="n">parents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ancestors</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parents</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">parents</span><span class="p">):</span>
             <span class="k">print</span> <span class="s">&quot;+-&quot;</span><span class="p">,</span> <span class="n">p</span>
-            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">connections</span><span class="p">:</span>
-                <span class="k">print</span> <span class="s">&quot;|&quot;</span><span class="p">,</span> <span class="s">&quot;+-&quot;</span><span class="p">,</span> <span class="s">&quot;has a&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">connection_type</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">connected</span>
-            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">back_references</span><span class="p">:</span>
-                <span class="k">print</span> <span class="s">&quot;|&quot;</span><span class="p">,</span> <span class="s">&quot;+-&quot;</span><span class="p">,</span> <span class="s">&quot;belongs to&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">back_referenced</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">holds_context</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&quot;|&quot;</span><span class="p">,</span> <span class="s">&quot;+-&quot;</span><span class="p">,</span> <span class="s">&quot;has a&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">connection_type</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">attachment</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">attached_by</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&quot;|&quot;</span><span class="p">,</span> <span class="s">&quot;+-&quot;</span><span class="p">,</span> <span class="s">&quot;belongs to&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">holder</span>
             <span class="k">print</span> <span class="s">&quot;|&quot;</span>
-        <span class="k">print</span> <span class="s">&quot;+-&quot;</span><span class="p">,</span> <span class="bp">self</span>
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s">&quot; &quot;</span><span class="p">,</span> <span class="s">&quot;+-&quot;</span><span class="p">,</span> <span class="s">&quot;has a&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">connection_type</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">connected</span>
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">back_references</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s">&quot; &quot;</span><span class="p">,</span> <span class="s">&quot;+-&quot;</span><span class="p">,</span> <span class="s">&quot;belongs to&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">back_referenced</span>
+        <span class="k">print</span> <span class="s">&quot;x-&quot;</span><span class="p">,</span> <span class="bp">self</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">holds_context</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot; &quot;</span><span class="p">,</span> <span class="s">&quot;+-&quot;</span><span class="p">,</span> <span class="s">&quot;has a&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">connection_type</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">attachment</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attached_by</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot; &quot;</span><span class="p">,</span> <span class="s">&quot;+-&quot;</span><span class="p">,</span> <span class="s">&quot;belongs to&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">holder</span>
+</div>
+<div class="viewcode-block" id="Entity.attach"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.attach">[docs]</a>    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_type</span><span class="p">,</span> <span class="n">connection_object</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Attaches an entity to this entity’s context dict.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; experiment.attach(&quot;Observer&quot;, obs1)</span>
+<span class="sd">        &gt;&gt;&gt; &quot;Observer&quot; in experiment.context</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; obs1 in experiment.context[&quot;Observer&quot;]</span>
+<span class="sd">        True</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        connection_type : string</span>
+<span class="sd">            The type of the connection.</span>
+<span class="sd">        connection_object : entity object</span>
+<span class="sd">            The entity to attach</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">connection_object</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="n">connection_type</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">InsertionError</span><span class="p">(</span><span class="s">&quot;{0} already has a &#39;{1}&#39; connection to {2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_type</span><span class="p">,</span> <span class="n">connection_object</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="n">connection_type</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">connection_object</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Entity.attachments"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.attachments">[docs]</a>    <span class="k">def</span> <span class="nf">attachments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_type</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns all attachments to this entity.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        connection_type : string, optional</span>
+<span class="sd">            Restricts the output to the specified `connection_type`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">connection_type</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="n">connection_type</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Entity.holders"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.holders">[docs]</a>    <span class="k">def</span> <span class="nf">holders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_type</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns all entities which hold this entity as an attachment.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        connection_type : string, optional</span>
+<span class="sd">            Restricts the output to the specified `connection_type`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">connection_type</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">holder</span> <span class="k">for</span> <span class="n">ctx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attached_by</span> <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">connection_type</span><span class="o">==</span><span class="n">connection_type</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">holder</span> <span class="k">for</span> <span class="n">ctx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attached_by</span><span class="p">)</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Accesses this `Entity`’s context.</span>
+
+<span class="sd">        The representation of this context is structurally identical to</span>
+<span class="sd">        a dict of sets of Entities with the `connection_type` being the key</span>
+<span class="sd">        of the dict.</span>
+
+<span class="sd">        For example::</span>
+
+<span class="sd">            experiment.context == {</span>
+<span class="sd">              &quot;Observer&quot;: set([observer1, observer2]),</span>
+<span class="sd">              &quot;Supervisor&quot;: set([supervisor1])</span>
+<span class="sd">            }</span>
+
+<span class="sd">        All normal Python operations for manipulating this data structure should</span>
+<span class="sd">        work transparently and the underlying data should automatically change.</span>
+<span class="sd">        This means that the following works as expected::</span>
+
+<span class="sd">            experiment.context[&quot;Observer&quot;].add(observer3)</span>
+<span class="sd">            experiment.context[&quot;Observer&quot;].remove(observer1)</span>
+
+<span class="sd">            experiment.context[&quot;Observer&quot;] == set([observer2, observer3])</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_ContextBySetDict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@context.setter</span>
+<div class="viewcode-block" id="Entity.context"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.context">[docs]</a>    <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_</span><span class="p">):</span>
+        <span class="n">toremove</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">ctx</span> <span class="k">for</span> <span class="n">ctx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">holds_context</span> <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">connection_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dict_</span><span class="p">])</span>
+        <span class="n">toadd</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">Context</span><span class="p">(</span><span class="n">connection_type</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">attachment</span><span class="o">=</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dict_</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">v</span><span class="p">)])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">holds_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">toadd</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">holds_context</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span><span class="n">toremove</span><span class="p">)</span>
 
 </div></div>
 <div class="viewcode-block" id="create_entity"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.create_entity">[docs]</a><span class="k">def</span> <span class="nf">create_entity</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">declared_params</span><span class="p">):</span>
@@ -530,25 +616,79 @@
         <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">Entity</span><span class="p">,),</span> <span class="p">{</span><span class="s">&#39;declared_params&#39;</span><span class="p">:</span> <span class="n">declared_params</span><span class="p">})</span>
 </div>
-<div class="viewcode-block" id="calculate_polymorphic_name"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.calculate_polymorphic_name">[docs]</a><span class="k">def</span> <span class="nf">calculate_polymorphic_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">declared_params</span><span class="p">):</span>
-    <span class="n">split_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">EntityDefinitionError</span><span class="p">(</span><span class="s">&quot;Entity class must not contain more than one underscore.&quot;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="c"># Try, whether the second part is a correct hash.</span>
-        <span class="n">the_hash</span> <span class="o">=</span> <span class="n">hash_dict</span><span class="p">(</span><span class="n">declared_params</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">split_name</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">the_hash</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">name</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">EntityDefinitionError</span><span class="p">(</span><span class="s">&quot;Entity name has incorrect hash after underscore.&quot;</span><span class="p">)</span>
-
-    <span class="c"># No underscore. Good!</span>
-    <span class="c"># Create hash from sorted declared_params</span>
-    <span class="n">the_hash</span> <span class="o">=</span> <span class="n">hash_dict</span><span class="p">(</span><span class="n">declared_params</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&quot;_&quot;</span> <span class="o">+</span> <span class="n">the_hash</span>
-
+<div class="viewcode-block" id="_ContextBySetDict"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySetDict">[docs]</a><span class="k">class</span> <span class="nc">_ContextBySetDict</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+<div class="viewcode-block" id="_ContextBySetDict.__init__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySetDict.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
 </div>
+<div class="viewcode-block" id="_ContextBySetDict.__iter__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySetDict.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+</div>
+<div class="viewcode-block" id="_ContextBySetDict.keys"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySetDict.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">connection_type</span> <span class="k">for</span> <span class="n">ctx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">holds_context</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="_ContextBySetDict.__delitem__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySetDict.__delitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_type</span><span class="p">):</span>
+        <span class="n">toremove</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">ctx</span> <span class="k">for</span> <span class="n">ctx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">holds_context</span> <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">connection_type</span> <span class="o">==</span> <span class="n">connection_type</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">toremove</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">connection_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">holds_context</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span><span class="n">toremove</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="_ContextBySetDict.__getitem__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySetDict.__getitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_type</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_ContextBySet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">connection_type</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="_ContextBySetDict.__setitem__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySetDict.__setitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_type</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">ctx</span> <span class="k">for</span> <span class="n">ctx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">holds_context</span> <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">connection_type</span> <span class="o">==</span> <span class="n">connection_type</span><span class="p">])</span>
+        <span class="n">toremove</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">ctx</span> <span class="k">for</span> <span class="n">ctx</span> <span class="ow">in</span> <span class="n">current</span> <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">attachment</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value</span><span class="p">])</span>
+        <span class="n">toadd</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">Context</span><span class="p">(</span><span class="n">connection_type</span><span class="o">=</span><span class="n">connection_type</span><span class="p">,</span><span class="n">attachment</span><span class="o">=</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">current</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">holds_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">toadd</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">holds_context</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span><span class="n">toremove</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="_ContextBySetDict.__contains__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySetDict.__contains__">[docs]</a>    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_type</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">ctx</span> <span class="k">for</span> <span class="n">ctx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">holds_context</span> <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">connection_type</span> <span class="o">==</span> <span class="n">connection_type</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="_ContextBySetDict.__len__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySetDict.__len__">[docs]</a>    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+</div>
+<div class="viewcode-block" id="_ContextBySetDict.__repr__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySetDict.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+</div></div>
+<div class="viewcode-block" id="_ContextBySet"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySet">[docs]</a><span class="k">class</span> <span class="nc">_ContextBySet</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">MutableSet</span><span class="p">):</span>
+<div class="viewcode-block" id="_ContextBySet.__init__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySet.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">connection_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection_type</span> <span class="o">=</span> <span class="n">connection_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+</div>
+<div class="viewcode-block" id="_ContextBySet.__iter__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySet.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">([</span><span class="n">ctx</span><span class="o">.</span><span class="n">attachment</span> <span class="k">for</span> <span class="n">ctx</span>
+                     <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">holds_context</span> <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">connection_type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection_type</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="_ContextBySet.update"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySet.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+        <span class="n">curr</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">ctx</span><span class="o">.</span><span class="n">attachment</span> <span class="k">for</span> <span class="n">ctx</span>
+                    <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">holds_context</span> <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">connection_type</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_type</span><span class="p">])</span>
+        <span class="n">toadd</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">items</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">curr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">holds_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">Context</span><span class="p">(</span><span class="n">connection_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_type</span><span class="p">,</span> <span class="n">attachment</span><span class="o">=</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">toadd</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="_ContextBySet.add"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySet.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ctx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">holds_context</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">connection_type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection_type</span> <span class="ow">and</span> <span class="n">ctx</span><span class="o">.</span><span class="n">attachment</span> <span class="ow">is</span> <span class="n">item</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">holds_context</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Context</span><span class="p">(</span><span class="n">connection_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_type</span><span class="p">,</span> <span class="n">attachment</span><span class="o">=</span><span class="n">item</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="_ContextBySet.discard"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySet.discard">[docs]</a>    <span class="k">def</span> <span class="nf">discard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ctx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">holds_context</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">connection_type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection_type</span> <span class="ow">and</span> <span class="n">ctx</span><span class="o">.</span><span class="n">attachment</span> <span class="ow">is</span> <span class="n">item</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">holds_context</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
+                <span class="k">break</span>
+</div>
+<div class="viewcode-block" id="_ContextBySet.__contains__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySet.__contains__">[docs]</a>    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="_ContextBySet.__len__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySet.__len__">[docs]</a>    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="_ContextBySet.__repr__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures._ContextBySet.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+</div></div>
 <div class="viewcode-block" id="Context"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Context">[docs]</a><span class="k">class</span> <span class="nc">Context</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The class `Context` is mapped on the table &#39;data&#39;. The name assigned to Data</span>
@@ -556,36 +696,27 @@
 <span class="sd">    adjacency list &#39;datalist&#39;. The corresponding entities can be accessed via</span>
 <span class="sd">    the entities attribute of the Data class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">entity_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;entity_id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;entities.id&#39;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">connected_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;connected_id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;entities.id&#39;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">holder_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;entity_id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;entities.id&#39;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">attachment_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;connected_id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s">&#39;entities.id&#39;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-    <span class="n">connection_type</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;connection_type&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">500</span><span class="p">))</span>
+    <span class="n">connection_type</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;connection_type&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-    <span class="c"># Each entity can have a context of related entities</span>
-    <span class="n">back_referenced</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">BaseEntity</span><span class="p">,</span>
-        <span class="n">backref</span><span class="o">=</span><span class="n">backref</span><span class="p">(</span><span class="s">&#39;connections&#39;</span><span class="p">,</span> <span class="n">cascade</span><span class="o">=</span><span class="s">&quot;all&quot;</span><span class="p">),</span> <span class="c"># need the cascade to delete context, if entity is deleted</span>
-        <span class="n">primaryjoin</span><span class="o">=</span><span class="n">entity_id</span><span class="o">==</span><span class="n">BaseEntity</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">holder</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">Entity</span><span class="p">,</span>
+        <span class="n">primaryjoin</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Context</span><span class="o">.</span><span class="n">holder_id</span><span class="o">==</span><span class="n">Entity</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">backref</span><span class="o">=</span><span class="n">backref</span><span class="p">(</span><span class="s">&quot;holds_context&quot;</span><span class="p">,</span> <span class="n">collection_class</span><span class="o">=</span><span class="nb">set</span><span class="p">,</span> <span class="n">cascade</span><span class="o">=</span><span class="s">&quot;all, delete-orphan&quot;</span><span class="p">))</span>
 
-    <span class="n">connected</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">BaseEntity</span><span class="p">,</span>
-        <span class="n">backref</span><span class="o">=</span><span class="n">backref</span><span class="p">(</span><span class="s">&#39;back_references&#39;</span><span class="p">,</span> <span class="n">cascade</span><span class="o">=</span><span class="s">&quot;all&quot;</span><span class="p">),</span>
-        <span class="n">primaryjoin</span><span class="o">=</span><span class="n">connected_id</span><span class="o">==</span><span class="n">BaseEntity</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">attachment</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">Entity</span><span class="p">,</span>
+        <span class="n">primaryjoin</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Context</span><span class="o">.</span><span class="n">attachment_id</span><span class="o">==</span><span class="n">Entity</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">backref</span><span class="o">=</span><span class="n">backref</span><span class="p">(</span><span class="s">&quot;attached_by&quot;</span><span class="p">,</span> <span class="n">collection_class</span><span class="o">=</span><span class="nb">set</span><span class="p">,</span> <span class="n">cascade</span><span class="o">=</span><span class="s">&quot;all, delete-orphan&quot;</span><span class="p">))</span>
 
-    <span class="nd">@property</span>
-<div class="viewcode-block" id="Context.from_entity"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Context.from_entity">[docs]</a>    <span class="k">def</span> <span class="nf">from_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">back_referenced</span>
-</div>
-    <span class="nd">@property</span>
-<div class="viewcode-block" id="Context.to_entity"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Context.to_entity">[docs]</a>    <span class="k">def</span> <span class="nf">to_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">connected</span>
-</div>
     <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;contexts&#39;</span>
-    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">(</span><span class="n">UniqueConstraint</span><span class="p">(</span><span class="n">entity_id</span><span class="p">,</span> <span class="n">connected_id</span><span class="p">),</span> <span class="p">{})</span>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">(</span><span class="n">UniqueConstraint</span><span class="p">(</span><span class="n">holder_id</span><span class="p">,</span> <span class="n">attachment_id</span><span class="p">,</span> <span class="n">connection_type</span><span class="p">),</span> <span class="p">{})</span>
 
 <div class="viewcode-block" id="Context.__repr__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Context.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;Context(entity_id={id!s}, connected_id={cid!s}, connection_type={type})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">entity_id</span><span class="p">,</span> <span class="n">cid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">connected_id</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s">&quot;Context(holder_id={id!s}, attachment_id={aid!s}, connection_type={type})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">holder_id</span><span class="p">,</span> <span class="n">aid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attachment_id</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_type</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Context.__str__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Context.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;Context({e} has {t} {c})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">back_referenced</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_type</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">connected</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s">&quot;Context({e} has {t} {a})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">holder</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_type</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attachment</span><span class="p">)</span>
 
 </div></div>
 <div class="viewcode-block" id="ParameterDeclaration"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.ParameterDeclaration">[docs]</a><span class="k">class</span> <span class="nc">ParameterDeclaration</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
@@ -609,7 +740,7 @@
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
-<span class="sd">    TypeError</span>
+<span class="sd">    ValueError</span>
 <span class="sd">        Raised, if arguments aren&#39;t strings or type not in list.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -634,20 +765,17 @@
     <span class="nd">@validates</span><span class="p">(</span><span class="s">&#39;parameter_name&#39;</span><span class="p">,</span> <span class="s">&#39;entity_name&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="ParameterDeclaration.validate_parameter_name"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.ParameterDeclaration.validate_parameter_name">[docs]</a>    <span class="k">def</span> <span class="nf">validate_parameter_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Argument &#39;</span><span class="si">%s</span><span class="s">&#39; must be a string&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Argument &#39;</span><span class="si">%s</span><span class="s">&#39; must be a string&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">name</span>
 </div>
     <span class="nd">@validates</span><span class="p">(</span><span class="s">&#39;parameter_type&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="ParameterDeclaration.validate_parameter_type"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.ParameterDeclaration.validate_parameter_type">[docs]</a>    <span class="k">def</span> <span class="nf">validate_parameter_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">p_type</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p_type</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="ow">or</span> <span class="n">p_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parameter_ids</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">((</span><span class="s">&quot;Argument &#39;parameter_type&#39; must one of the &quot;</span> <span class="o">+</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s">&quot;Argument &#39;parameter_type&#39; must one of the &quot;</span> <span class="o">+</span>
                              <span class="s">&quot;following strings: &quot;</span> <span class="o">+</span>
                              <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parameter_ids</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">p_type</span>
-</div></div>
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="k">pass</span>
-</pre></div>
+</pre></div></div></div>
 
       </div>
       <div class="bottomnav">
@@ -660,7 +788,7 @@
 
     <div class="footer">
         &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

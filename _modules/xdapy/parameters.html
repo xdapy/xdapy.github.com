@@ -83,16 +83,6 @@
     <span class="nb">type</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
             <span class="n">doc</span><span class="o">=</span><span class="s">&quot;The type of the parameter.&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Parameter.typed_class"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.Parameter.typed_class">[docs]</a>    <span class="k">def</span> <span class="nf">typed_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        TODO: This class is unused. Is it needed?</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">parameter_for_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Parameter</span>
-</div>
     <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">&#39;parameters&#39;</span>
     <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">(</span><span class="n">UniqueConstraint</span><span class="p">(</span><span class="n">entity_id</span><span class="p">,</span> <span class="n">name</span><span class="p">),</span> <span class="p">{})</span>
     <span class="c">#: Type is the polymorphic parameter.</span>
@@ -104,7 +94,7 @@
             <span class="n">parameter</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Argument must be unicode or string&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Argument must be unicode or string&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">parameter</span>
 </div>
@@ -115,10 +105,7 @@
 <span class="sd">        ------</span>
 <span class="sd">        Exception</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Parameter.__init__ should not be called directly.&quot;</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="Parameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.Parameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Parameter.__init__ should not be called directly.&quot;</span><span class="p">)</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Parameter.value_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.Parameter.value_string">[docs]</a>    <span class="k">def</span> <span class="nf">value_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -140,6 +127,11 @@
         <span class="sd">&quot;&quot;&quot;Creates a new parameter instance with the correct type.&quot;&quot;&quot;</span>
         <span class="n">cls</span> <span class="o">=</span> <span class="n">find_accepting_class</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Parameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.Parameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">(id=</span><span class="si">%r</span><span class="s">, name=</span><span class="si">%r</span><span class="s">, value=</span><span class="si">%r</span><span class="s">)&quot;</span> <span class="o">%</span>
+                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_string</span><span class="p">))</span>
+
 </div></div>
 <div class="viewcode-block" id="StringParameter"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.StringParameter">[docs]</a><span class="k">class</span> <span class="nc">StringParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -192,9 +184,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-</div>
-<div class="viewcode-block" id="StringParameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.StringParameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;,&#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_string</span><span class="p">)</span>
 
 </div></div>
 <div class="viewcode-block" id="IntegerParameter"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.IntegerParameter">[docs]</a><span class="k">class</span> <span class="nc">IntegerParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
@@ -247,9 +236,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-</div>
-<div class="viewcode-block" id="IntegerParameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.IntegerParameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;,</span><span class="si">%s</span><span class="s">)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_string</span><span class="p">)</span>
 
 </div></div>
 <div class="viewcode-block" id="FloatParameter"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.FloatParameter">[docs]</a><span class="k">class</span> <span class="nc">FloatParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
@@ -269,7 +255,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">StringConversionError</span><span class="p">(</span><span class="s">&quot;Could not convert value &#39;}&#39; to float.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">StringConversionError</span><span class="p">(</span><span class="s">&quot;Could not convert value &#39;{0}&#39; to float.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="FloatParameter.value_json"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.FloatParameter.value_json">[docs]</a>    <span class="k">def</span> <span class="nf">value_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -302,9 +288,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-</div>
-<div class="viewcode-block" id="FloatParameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.FloatParameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;,&#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_string</span><span class="p">)</span>
 
 </div></div>
 <div class="viewcode-block" id="DateParameter"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateParameter">[docs]</a><span class="k">class</span> <span class="nc">DateParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
@@ -321,7 +304,7 @@
 
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="DateParameter.from_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateParameter.from_string">[docs]</a>    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">value</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
@@ -367,9 +350,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-</div>
-<div class="viewcode-block" id="DateParameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateParameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;,&#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_string</span><span class="p">)</span>
 
 </div></div>
 <div class="viewcode-block" id="TimeParameter"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.TimeParameter">[docs]</a><span class="k">class</span> <span class="nc">TimeParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
@@ -426,9 +406,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-</div>
-<div class="viewcode-block" id="TimeParameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.TimeParameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;,&#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_string</span><span class="p">)</span>
 
 </div></div>
 <div class="viewcode-block" id="DateTimeParameter"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateTimeParameter">[docs]</a><span class="k">class</span> <span class="nc">DateTimeParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
@@ -485,9 +462,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-</div>
-<div class="viewcode-block" id="DateTimeParameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateTimeParameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;,&#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_string</span><span class="p">)</span>
 
 </div></div>
 <div class="viewcode-block" id="BooleanParameter"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.BooleanParameter">[docs]</a><span class="k">class</span> <span class="nc">BooleanParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
@@ -553,9 +527,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-</div>
-<div class="viewcode-block" id="BooleanParameter.__repr__"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.BooleanParameter.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">,&#39;</span><span class="si">%s</span><span class="s">&#39;,&#39;</span><span class="si">%s</span><span class="s">&#39;)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_string</span><span class="p">)</span>
+
 
 <span class="c">#: The classes/tables which store the parameters.</span></div></div>
 <span class="n">_parameter_classes</span> <span class="o">=</span> <span class="p">[</span>
@@ -594,10 +566,7 @@
     <span class="k">for</span> <span class="n">pc</span> <span class="ow">in</span> <span class="n">_parameter_classes</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">pc</span><span class="o">.</span><span class="n">accepts</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">pc</span>
-    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Value not accepted by any class&quot;</span><span class="p">)</span>
-</div>
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="k">pass</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Value not accepted by any class&quot;</span><span class="p">)</span></div>
 </pre></div>
 
       </div>
@@ -611,7 +580,7 @@
 
     <div class="footer">
         &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

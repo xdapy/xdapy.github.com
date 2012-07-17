@@ -52,9 +52,33 @@
 <span id="connection"></span><h1>Connection<a class="headerlink" href="#module-xdapy.connection" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="#xdapy.connection.Connection" title="xdapy.connection.Connection"><tt class="xref py py-obj docutils literal"><span class="pre">Connection</span></tt></a> module is used to establish a connection to the database and
 takes care of creating the database tables.</p>
+<dl class="function">
+<dt id="xdapy.connection._check_engine">
+<tt class="descclassname">xdapy.connection.</tt><tt class="descname">_check_engine</tt><big>(</big><em>engine</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#_check_engine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection._check_engine" title="Permalink to this definition">¶</a></dt>
+<dd><p>psycopg2 driver &lt; 2.4.1 has a bug when connected to PostgreSQL 9.0:
+The transmitted data for bytea columns is different which messes up everything.
+In order to fix this, we can:</p>
+<blockquote>
+<div><ul class="simple">
+<li>set the bytea_output parameter to escape in the server</li>
+<li>execute the database command SET bytea_output TO escape;
+in the session before reading binary data</li>
+<li>upgrade the libpq library on the client to at least 9.0</li>
+</ul>
+</div></blockquote>
+<p>[Psycopg2 FAQ](<a class="reference external" href="http://initd.org/psycopg/docs/faq.html">http://initd.org/psycopg/docs/faq.html</a>)</p>
+<p>We choose to fail here to be on the safe side. If necessary, the check
+may be changed to execute the <tt class="xref py py-obj docutils literal"><span class="pre">SET</span> <span class="pre">bytea_output</span> <span class="pre">TO</span> <span class="pre">escape;</span></tt> command.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="xdapy.connection._options_from_config">
+<tt class="descclassname">xdapy.connection.</tt><tt class="descname">_options_from_config</tt><big>(</big><em>filename</em>, <em>section</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#_options_from_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection._options_from_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="class">
 <dt id="xdapy.connection.Connection">
-<em class="property">class </em><tt class="descclassname">xdapy.connection.</tt><tt class="descname">Connection</tt><big>(</big><em>host=None</em>, <em>dialect=None</em>, <em>user=None</em>, <em>password=None</em>, <em>dbname=None</em>, <em>uri=None</em>, <em>echo=False</em>, <em>check_empty=False</em>, <em>session_opts=None</em>, <em>engine_opts=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">xdapy.connection.</tt><tt class="descname">Connection</tt><big>(</big><em>url=None</em>, <em>echo=False</em>, <em>check_empty=False</em>, <em>session_opts=None</em>, <em>engine_opts=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialises a Connection object which holds all parameters to create engines and sessions.</p>
 <p>Additional options for the <tt class="xref py py-obj docutils literal"><span class="pre">sessionmaker</span></tt> or <tt class="xref py py-obj docutils literal"><span class="pre">create_engine</span></tt> functions may be passed as a dict
 in <tt class="xref py py-obj docutils literal"><span class="pre">session_opts</span></tt> and <tt class="xref py py-obj docutils literal"><span class="pre">engine_opts</span></tt>.</p>
@@ -62,30 +86,9 @@ in <tt class="xref py py-obj docutils literal"><span class="pre">session_opts</s
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>host: string, optional</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>url: string</strong> :</p>
 <blockquote>
-<div><p>The host where the database lives. (Defaults to <tt class="docutils literal"><span class="pre">&quot;localhost&quot;</span></tt>.)</p>
-</div></blockquote>
-<p><strong>dialect: string, optional</strong> :</p>
-<blockquote>
-<div><p>The SQL dialect to use. (Defaults to <tt class="docutils literal"><span class="pre">&quot;postgresql&quot;</span></tt>, which is also the only supported option.)</p>
-</div></blockquote>
-<p><strong>user: string, optional</strong> :</p>
-<blockquote>
-<div><p>The database user. (Defaults to <tt class="docutils literal"><span class="pre">&quot;&quot;</span></tt>.)</p>
-</div></blockquote>
-<p><strong>password: string, optional</strong> :</p>
-<blockquote>
-<div><p>The database password. (Defaults to <tt class="docutils literal"><span class="pre">&quot;&quot;</span></tt>.)</p>
-</div></blockquote>
-<p><strong>dbname: string</strong> :</p>
-<blockquote>
-<div><p>The name of the database to use.</p>
-</div></blockquote>
-<p><strong>uri: string, optional</strong> :</p>
-<blockquote>
-<div><p>A URI representation of the database connection of the form <tt class="xref py py-obj docutils literal"><span class="pre">{dialect}://{user}:{password}&#64;{host}/{dbname}</span></tt>.
-If this field is given, all other fields may be left out.</p>
+<div><p>A URL representation of the database connection of the form <tt class="xref py py-obj docutils literal"><span class="pre">{dialect}://{user}:{password}&#64;{host}/{dbname}</span></tt>.</p>
 </div></blockquote>
 <p><strong>echo: bool, optional</strong> :</p>
 <blockquote>
@@ -114,8 +117,8 @@ If this field is given, all other fields may be left out.</p>
 <col width="81%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td>uri</td>
-<td>The constructed database URI.</td>
+<tr class="row-odd"><td>url</td>
+<td>The constructed database URL.</td>
 </tr>
 <tr class="row-even"><td>Session</td>
 <td>The SQLAlchemy session.</td>
@@ -138,23 +141,32 @@ If this field is given, all other fields may be left out.</p>
 <tr class="row-odd"><td><a class="reference internal" href="#xdapy.connection.Connection.drop_tables" title="xdapy.connection.Connection.drop_tables"><tt class="xref py py-obj docutils literal"><span class="pre">drop_tables</span></tt></a>()</td>
 <td>Drops all xdapy tables.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.connection.Connection.profile" title="xdapy.connection.Connection.profile"><tt class="xref py py-obj docutils literal"><span class="pre">profile</span></tt></a>(profile[,&nbsp;filename])</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.connection.Connection.memory" title="xdapy.connection.Connection.memory"><tt class="xref py py-obj docutils literal"><span class="pre">memory</span></tt></a>(**kwargs)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.connection.Connection.profile" title="xdapy.connection.Connection.profile"><tt class="xref py py-obj docutils literal"><span class="pre">profile</span></tt></a>(profile[,&nbsp;filename])</td>
 <td>Reads the settings from the file <tt class="docutils literal"><span class="pre">~/.xdapy/engine.ini</span></tt> or the path value.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.connection.Connection.test" title="xdapy.connection.Connection.test"><tt class="xref py py-obj docutils literal"><span class="pre">test</span></tt></a>(**kwargs)</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.connection.Connection.test" title="xdapy.connection.Connection.test"><tt class="xref py py-obj docutils literal"><span class="pre">test</span></tt></a>(**kwargs)</td>
 <td>Creates a connection with the test profile.</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="xdapy.connection.Connection.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>host=None</em>, <em>dialect=None</em>, <em>user=None</em>, <em>password=None</em>, <em>dbname=None</em>, <em>uri=None</em>, <em>echo=False</em>, <em>check_empty=False</em>, <em>session_opts=None</em>, <em>engine_opts=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>url=None</em>, <em>echo=False</em>, <em>check_empty=False</em>, <em>session_opts=None</em>, <em>engine_opts=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.connection.Connection.DEFAULT_CONFIG_PATH">
 <tt class="descname">DEFAULT_CONFIG_PATH</tt><em class="property"> = '~/.xdapy/engine.ini'</em><a class="headerlink" href="#xdapy.connection.Connection.DEFAULT_CONFIG_PATH" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path of the configuration file.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.connection.Connection.DEFAULT_PROFILE">
+<tt class="descname">DEFAULT_PROFILE</tt><em class="property"> = 'default'</em><a class="headerlink" href="#xdapy.connection.Connection.DEFAULT_PROFILE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identifier for the default profile.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -169,16 +181,30 @@ If this field is given, all other fields may be left out.</p>
 <dd><p>Reads the settings from the file <tt class="docutils literal"><span class="pre">~/.xdapy/engine.ini</span></tt> or the path value.</p>
 <p>Create file <tt class="docutils literal"><span class="pre">~/.xdapy/engine.ini</span></tt> with the following content and replace
 your username, password, host and dbname:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">dialect</span> <span class="o">=</span> <span class="n">postgresql</span>
-<span class="n">user</span> <span class="o">=</span> <span class="n">hannah</span>
-<span class="n">password</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
-<span class="n">host</span> <span class="o">=</span> <span class="n">localhost</span>
-<span class="n">dbname</span> <span class="o">=</span> <span class="n">xdapy</span>
-<span class="p">[</span><span class="n">test</span><span class="p">]</span>
-<span class="n">dbname</span> <span class="o">=</span> <span class="n">xdapy_test</span>
-<span class="n">check_empty</span> <span class="o">=</span> <span class="n">true</span>
-<span class="p">[</span><span class="n">demo</span><span class="p">]</span>
-<span class="n">dbname</span> <span class="o">=</span> <span class="n">xdapy_demo</span>
+<div class="highlight-python"><pre># url syntax: {dialect}://{user}:{password}@{host}/{dbname}
+[default]
+url = postgresql://hannah@localhost/xdapy
+[test]
+# url syntax for sqlite
+url = sqlite:///test.db
+# other parameters
+check_empty = true
+[demo]
+# url syntax for sqlite in-memory db
+url = sqlite://</pre>
+</div>
+<p>The test section may be left blank, in which case a sqlite in-memory database
+will be used.</p>
+<p>Sections <a class="reference internal" href="#xdapy.connection.Connection.default" title="xdapy.connection.Connection.default"><tt class="xref py py-obj docutils literal"><span class="pre">default</span></tt></a> and <a class="reference internal" href="#xdapy.connection.Connection.test" title="xdapy.connection.Connection.test"><tt class="xref py py-obj docutils literal"><span class="pre">test</span></tt></a> are special and may be used as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">xdapy</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">default</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>and</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">xdapy</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Other sections (<tt class="xref py py-obj docutils literal"><span class="pre">demo</span></tt> in the example code) may be used as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">xdapy</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">profile</span><span class="p">(</span><span class="s">&quot;demo&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -217,14 +243,9 @@ your username, password, host and dbname:</p>
 <p>Shortcut for <tt class="docutils literal"><span class="pre">Connection(profile=None,</span> <span class="pre">**kwargs)</span></tt>.</p>
 </dd></dl>
 
-<dl class="staticmethod">
-<dt id="xdapy.connection.Connection._extract_options">
-<em class="property">static </em><tt class="descname">_extract_options</tt><big>(</big><em>config_obj</em>, <em>profile=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection._extract_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection._extract_options" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="classmethod">
-<dt id="xdapy.connection.Connection._check_config_file_sanity">
-<em class="property">classmethod </em><tt class="descname">_check_config_file_sanity</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection._check_config_file_sanity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection._check_config_file_sanity" title="Permalink to this definition">¶</a></dt>
+<dt id="xdapy.connection.Connection.memory">
+<em class="property">classmethod </em><tt class="descname">memory</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection.memory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection.memory" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -250,6 +271,11 @@ commits when the <tt class="docutils literal"><span class="pre">with</span></tt>
 <dl class="attribute">
 <dt id="xdapy.connection.Connection.engine">
 <tt class="descname">engine</tt><a class="reference internal" href="../_modules/xdapy/connection.html#Connection.engine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection.engine" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.connection.Connection.engine_name">
+<tt class="descname">engine_name</tt><a class="reference internal" href="../_modules/xdapy/connection.html#Connection.engine_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection.engine_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -281,19 +307,19 @@ commits when the <tt class="docutils literal"><span class="pre">with</span></tt>
 <dd><p>Drops all xdapy tables.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="xdapy.connection.Connection.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="xdapy.connection.Connection.__dict__">
-<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x102eb92f0&gt;</em><a class="headerlink" href="#xdapy.connection.Connection.__dict__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x10356c0c0&gt;</em><a class="headerlink" href="#xdapy.connection.Connection.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.connection.Connection.__module__">
 <tt class="descname">__module__</tt><em class="property"> = 'xdapy.connection'</em><a class="headerlink" href="#xdapy.connection.Connection.__module__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="xdapy.connection.Connection.__repr__">
-<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/xdapy/connection.html#Connection.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.connection.Connection.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -320,7 +346,7 @@ commits when the <tt class="docutils literal"><span class="pre">with</span></tt>
 
     <div class="footer">
         &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>
