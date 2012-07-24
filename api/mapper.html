@@ -114,44 +114,44 @@
 <tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_by_unique_id" title="xdapy.mapper.Mapper.find_by_unique_id"><tt class="xref py py-obj docutils literal"><span class="pre">find_by_unique_id</span></tt></a>(unique_id)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_first" title="xdapy.mapper.Mapper.find_first"><tt class="xref py py-obj docutils literal"><span class="pre">find_first</span></tt></a>(entity[,&nbsp;filter,&nbsp;options])</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_complex" title="xdapy.mapper.Mapper.find_complex"><tt class="xref py py-obj docutils literal"><span class="pre">find_complex</span></tt></a>(entity[,&nbsp;the_filter])</td>
+<td>find_complex is able to search for structured data, including sub-queries</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_first" title="xdapy.mapper.Mapper.find_first"><tt class="xref py py-obj docutils literal"><span class="pre">find_first</span></tt></a>(entity[,&nbsp;filter,&nbsp;options])</td>
 <td>Convenience method for <tt class="docutils literal"><span class="pre">find(...).first()</span></tt>.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_related" title="xdapy.mapper.Mapper.find_related"><tt class="xref py py-obj docutils literal"><span class="pre">find_related</span></tt></a>(entity,&nbsp;related)</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_related" title="xdapy.mapper.Mapper.find_related"><tt class="xref py py-obj docutils literal"><span class="pre">find_related</span></tt></a>(entity,&nbsp;related)</td>
 <td>Returns all entities of type <tt class="xref py py-obj docutils literal"><span class="pre">entity</span></tt></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_roots" title="xdapy.mapper.Mapper.find_roots"><tt class="xref py py-obj docutils literal"><span class="pre">find_roots</span></tt></a>([entity])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_roots" title="xdapy.mapper.Mapper.find_roots"><tt class="xref py py-obj docutils literal"><span class="pre">find_roots</span></tt></a>([entity])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_with" title="xdapy.mapper.Mapper.find_with"><tt class="xref py py-obj docutils literal"><span class="pre">find_with</span></tt></a>(entity[,&nbsp;filter])</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.find_with" title="xdapy.mapper.Mapper.find_with"><tt class="xref py py-obj docutils literal"><span class="pre">find_with</span></tt></a>(entity[,&nbsp;filter])</td>
 <td>find_with provides an advanced filtering mode for higher structured queries.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.get_data_matrix" title="xdapy.mapper.Mapper.get_data_matrix"><tt class="xref py py-obj docutils literal"><span class="pre">get_data_matrix</span></tt></a>(entity,&nbsp;items[,&nbsp;include])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.get_data_matrix" title="xdapy.mapper.Mapper.get_data_matrix"><tt class="xref py py-obj docutils literal"><span class="pre">get_data_matrix</span></tt></a>(entity,&nbsp;items[,&nbsp;include])</td>
 <td>Finds related items for the entity which satisfies condition</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.is_consistent" title="xdapy.mapper.Mapper.is_consistent"><tt class="xref py py-obj docutils literal"><span class="pre">is_consistent</span></tt></a>(entity_name,&nbsp;parameter_defaults)</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.is_consistent" title="xdapy.mapper.Mapper.is_consistent"><tt class="xref py py-obj docutils literal"><span class="pre">is_consistent</span></tt></a>(entity_name,&nbsp;parameter_defaults)</td>
 <td>Checks if an entity definition would be consistent with the current state</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.is_in_session" title="xdapy.mapper.Mapper.is_in_session"><tt class="xref py py-obj docutils literal"><span class="pre">is_in_session</span></tt></a>(entity)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.is_in_session" title="xdapy.mapper.Mapper.is_in_session"><tt class="xref py py-obj docutils literal"><span class="pre">is_in_session</span></tt></a>(entity)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.is_registered" title="xdapy.mapper.Mapper.is_registered"><tt class="xref py py-obj docutils literal"><span class="pre">is_registered</span></tt></a>(name,&nbsp;declared_params)</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.is_registered" title="xdapy.mapper.Mapper.is_registered"><tt class="xref py py-obj docutils literal"><span class="pre">is_registered</span></tt></a>(name,&nbsp;declared_params)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.param_filter" title="xdapy.mapper.Mapper.param_filter"><tt class="xref py py-obj docutils literal"><span class="pre">param_filter</span></tt></a>(entity,&nbsp;filter[,&nbsp;options])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.param_filter" title="xdapy.mapper.Mapper.param_filter"><tt class="xref py py-obj docutils literal"><span class="pre">param_filter</span></tt></a>(entity,&nbsp;filter[,&nbsp;options])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.register" title="xdapy.mapper.Mapper.register"><tt class="xref py py-obj docutils literal"><span class="pre">register</span></tt></a>(*klasses)</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.register" title="xdapy.mapper.Mapper.register"><tt class="xref py py-obj docutils literal"><span class="pre">register</span></tt></a>(*klasses)</td>
 <td>Registers the class and the class’s parameters.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.register_type" title="xdapy.mapper.Mapper.register_type"><tt class="xref py py-obj docutils literal"><span class="pre">register_type</span></tt></a>(name,&nbsp;declared_params)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.register_type" title="xdapy.mapper.Mapper.register_type"><tt class="xref py py-obj docutils literal"><span class="pre">register_type</span></tt></a>(name,&nbsp;declared_params)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.save" title="xdapy.mapper.Mapper.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(*args)</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.save" title="xdapy.mapper.Mapper.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a>(*args)</td>
 <td>Save instances inheriting from <tt class="xref py py-obj docutils literal"><span class="pre">Entity</span></tt> (or any other SQLAlchemy structure)</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.mapper.Mapper.super_find" title="xdapy.mapper.Mapper.super_find"><tt class="xref py py-obj docutils literal"><span class="pre">super_find</span></tt></a>(entity[,&nbsp;the_filter])</td>
-<td>super_find is able to search for structured data, including sub-queries</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#xdapy.mapper.Mapper.the_big_picture" title="xdapy.mapper.Mapper.the_big_picture"><tt class="xref py py-obj docutils literal"><span class="pre">the_big_picture</span></tt></a>()</td>
 <td>Tries to print a big picture of all connections.</td>
@@ -406,9 +406,9 @@ parameter <tt class="xref py py-obj docutils literal"><span class="pre">age</spa
 </dd></dl>
 
 <dl class="method">
-<dt id="xdapy.mapper.Mapper.super_find">
-<tt class="descname">super_find</tt><big>(</big><em>entity</em>, <em>the_filter=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/mapper.html#Mapper.super_find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.mapper.Mapper.super_find" title="Permalink to this definition">¶</a></dt>
-<dd><p>super_find is able to search for structured data, including sub-queries
+<dt id="xdapy.mapper.Mapper.find_complex">
+<tt class="descname">find_complex</tt><big>(</big><em>entity</em>, <em>the_filter=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/mapper.html#Mapper.find_complex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.mapper.Mapper.find_complex" title="Permalink to this definition">¶</a></dt>
+<dd><p>find_complex is able to search for structured data, including sub-queries
 where either one or all sub-items are being checked for a certain property.</p>
 </dd></dl>
 
@@ -499,7 +499,7 @@ to the entity instances.</p>
 
 <dl class="attribute">
 <dt id="xdapy.mapper.Mapper.__dict__">
-<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x103c29b78&gt;</em><a class="headerlink" href="#xdapy.mapper.Mapper.__dict__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x107b21088&gt;</em><a class="headerlink" href="#xdapy.mapper.Mapper.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">

@@ -515,9 +515,9 @@
 
         <span class="k">return</span> <span class="n">FindHelper</span><span class="p">((</span><span class="n">entity</span><span class="p">,</span> <span class="nb">filter</span><span class="p">))</span><span class="o">.</span><span class="n">search</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Mapper.super_find"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.super_find">[docs]</a>    <span class="k">def</span> <span class="nf">super_find</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">the_filter</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Mapper.find_complex"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.find_complex">[docs]</a>    <span class="k">def</span> <span class="nf">find_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">the_filter</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        super_find is able to search for structured data, including sub-queries</span>
+<span class="sd">        find_complex is able to search for structured data, including sub-queries</span>
 <span class="sd">        where either one or all sub-items are being checked for a certain property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">proxy</span> <span class="o">=</span> <span class="n">SearchProxy</span><span class="p">((</span><span class="n">entity</span><span class="p">,</span> <span class="n">the_filter</span><span class="p">))</span>
