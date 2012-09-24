@@ -1,0 +1,365 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The data model &mdash; xdapy 0.9.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/print.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.9.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="top" title="xdapy 0.9.0 documentation" href="index.html" />
+    <link rel="next" title="Usage" href="usage.html" />
+    <link rel="prev" title="Installation" href="install.html" /> 
+  </head>
+  <body>
+      <div class="header"><h1 class="heading"><a href="index.html">
+          <span>xdapy 0.9.0 documentation</span></a></h1>
+        <h2 class="heading"><span>The data model</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        «&#160;&#160;<a href="install.html">Installation</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="usage.html">Usage</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="the-data-model">
+<h1>The data model<a class="headerlink" href="#the-data-model" title="Permalink to this headline">¶</a></h1>
+<p>Conceptual idea for using xdapy:</p>
+<ol class="arabic simple">
+<li>save a whole scene not only single events</li>
+<li>separate scene in hierarchical relations</li>
+<li>supplement other informations to be attached to that hierarchy.</li>
+<li>turn into xdapy structures.</li>
+</ol>
+<div class="section" id="zoo-example">
+<h2>Zoo example<a class="headerlink" href="#zoo-example" title="Permalink to this headline">¶</a></h2>
+<p>To illustrate the idea with an example from outside experimental science, think of a zoo.
+This zoo has animals from two continents, Africa and Australia, and four species.
+For the animals of each continent a house was build. The African building contains lions and giraffes.
+The Australian house koala bears and kangaroos. Maria, the zoo manager employs two zookeepers, Susann and Stefan.
+To keep track of the animal a zoo database is created.
+Susann and Stefan can use the database for example to estimate the amount of food they need to order or
+to keep track of the animals&#8217; health records.</p>
+<p>1)
+To save all the information about the zoo, we first determine the properties of the zoo, for example its opening hours, its animals and .
+These properties cluster into logical groups which we isolate and label with a name.
+Here, the clusters could be called: zoo for very general informations,
+buildings for the two animal houses, species for a species&#8217; general properties, animal for the distinct properties of one specific animal and person for the information about the people working at the zoo.
+This is a possible list of clusters for the zoo example with their label and properties.</p>
+<div class="section" id="zoo">
+<h3>zoo<a class="headerlink" href="#zoo" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">opening hours</th>
+<th class="head">city</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>9.00h-18.00h</td>
+<td>Berlin</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="house">
+<h3>house<a class="headerlink" href="#house" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="42%" />
+<col width="15%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">continent</th>
+<th class="head">temperature</th>
+<th class="head">area</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Africa</td>
+<td>28 degree C</td>
+<td>2 ha</td>
+</tr>
+<tr class="row-odd"><td>Australia</td>
+<td>25 degree C</td>
+<td>1 ha</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="species">
+<h3>species<a class="headerlink" href="#species" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="22%" />
+<col width="24%" />
+<col width="27%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">type</th>
+<th class="head">diet</th>
+<th class="head">foot demand</th>
+<th class="head">water demand</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Lion</td>
+<td>carnivore</td>
+<td>4 kg</td>
+<td>1 l</td>
+</tr>
+<tr class="row-odd"><td>Giraffe</td>
+<td>vegetarian</td>
+<td>2 kg</td>
+<td>3 l</td>
+</tr>
+<tr class="row-even"><td>Kangaroos</td>
+<td>vegetarian</td>
+<td>1 kg</td>
+<td>0.8 l</td>
+</tr>
+<tr class="row-odd"><td>Koala bear</td>
+<td>vegetarian</td>
+<td>0.5 kg</td>
+<td>0.5 l</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="animal">
+<h3>animal<a class="headerlink" href="#animal" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="20%" />
+<col width="21%" />
+<col width="20%" />
+<col width="20%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">weight</th>
+<th class="head">birthday</th>
+<th class="head">birthplace</th>
+<th class="head">gender</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Zumba</td>
+<td>1000 kg</td>
+<td>12.03.1995</td>
+<td>Serengeti</td>
+<td>male</td>
+</tr>
+<tr class="row-odd"><td>Kula</td>
+<td>50 kg</td>
+<td>06.07.2008</td>
+<td>Ayers Rock</td>
+<td>female</td>
+</tr>
+<tr class="row-even"><td>Muri</td>
+<td>200 kg</td>
+<td>01.03.2012</td>
+<td>Berlin</td>
+<td>female</td>
+</tr>
+<tr class="row-odd"><td>Jumper</td>
+<td>180 kg</td>
+<td>25.12.2003</td>
+<td>London</td>
+<td>male</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="person">
+<h3>person<a class="headerlink" href="#person" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="24%" />
+<col width="26%" />
+<col width="26%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">job</th>
+<th class="head">birthyear</th>
+<th class="head">gender</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Susann</td>
+<td>zookeeper</td>
+<td>1983</td>
+<td>female</td>
+</tr>
+<tr class="row-odd"><td>Stefan</td>
+<td>zookeeper</td>
+<td>1976</td>
+<td>male</td>
+</tr>
+<tr class="row-even"><td>Maria</td>
+<td>manager</td>
+<td>1973</td>
+<td>female</td>
+</tr>
+</tbody>
+</table>
+<p>2)
+Next we determine a hierarchical order of the clusters.</p>
+<div class="figure">
+<img alt="_images/hierZoo.png" src="_images/hierZoo.png" />
+</div>
+<p>3)
+The hierarchy is missing the persons that work at the zoo.
+Stefan is responsible for the lions and koala bears and Susann for giraffes and kangaroos.
+The zookeepers can not simply be incorporated into the hierarchy.
+Wherever we were to put them in the hierarchy, they would occur repeatedly.
+That is why we attach them to the hierarchy at the level they would occur.
+As our zookeepers are responsible for several species, the manager is responsible for the whole zoo.</p>
+<blockquote>
+<div><div class="figure">
+<img alt="_images/fullhierZoo.png" src="_images/fullhierZoo.png" />
+</div>
+</div></blockquote>
+<p>The tree of objects that follows from above hierarchy looks like this:</p>
+<div class="figure">
+<img alt="_images/exampleZoo.png" src="_images/exampleZoo.png" />
+</div>
+<p>4)
+After having isolated the critical clusters and properties, we would have to turn them into structures that Xdapy understands.
+How this is done is explained in the section on Xdapy&#8217;s <a class="reference internal" href="usage.html#usage"><em>Usage</em></a>.
+There we will be more concrete and provide Python code and technical remarks.
+The code examples do not use the zoo data model, but a very simplified data model for experimental data.
+The following example explains the logic of the experimental data model.</p>
+</div>
+</div>
+<div class="section" id="science-example">
+<span id="example2"></span><h2>Science example<a class="headerlink" href="#science-example" title="Permalink to this headline">¶</a></h2>
+<p>How can all the data about an experiment including
+annotations be structured? To approach this
+question we will inspect a typical visual psychophysics experiment.
+An observer sits in front of the monitor
+and holds a response box in her hands. A stimulus is presented
+on the screen and depending on the task, the observer
+presses a button. A computer controls stimulus presentation
+as well as response registration. This scene is part of a larger
+context. The observer participates in a full experiment which
+probably requires that the person observes several sessions
+likely at different days. During a session the observer sees
+many stimuli and a single repetition of stimulus presentation
+with response is called a trial. For its subsequent analysis, all
+information present in the scene should be stored as annotations
+in addition to the data. Temporal, material, or logical
+units—such as the observer, the equipment, the experimental
+design, a specific session, or a single trial—implicitly divide
+annotations and data into clusters. The objects emerge out
+of these clusters. Moreover, most experiments have an inherent,
+hierarchical structure. A trial, for example, belongs to a
+session within an experiment.</p>
+<div class="figure">
+<img alt="_images/hierExp.png" src="_images/hierExp.png" />
+</div>
+<p>At some point, we may want to add annotations related to, say, the observer of a certain experiment.
+Maybe his or her age and some other attributes. An observer might participate in several experiments and most likely
+several observers participate in an experiment. If we want to keep the structure unambiguous, we can not simply insert
+an observer object into the hierarchy. It needs to stay outside the experimental hierarchy and is simply attached to
+an object in the hierarchy. The same strategy is used for the stimuli.</p>
+<div class="figure">
+<img alt="_images/fullhierExp.png" src="_images/fullhierExp.png" />
+</div>
+<p>The most general annotations that could be added at the highest level with the experiment could embrace:</p>
+<div class="section" id="experiment">
+<h3>Experiment<a class="headerlink" href="#experiment" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="19%" />
+<col width="31%" />
+<col width="28%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">project</th>
+<th class="head">author</th>
+<th class="head">date</th>
+<th class="head">identifier</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>visual</td>
+<td>John Jo</td>
+<td>12.12.2012</td>
+<td>5005</td>
+</tr>
+<tr class="row-odd"><td>auditory</td>
+<td>Max Yes</td>
+<td>04.05.2010</td>
+<td>1001</td>
+</tr>
+</tbody>
+</table>
+<p>The next section explains:</p>
+<ul class="simple">
+<li>how the objects in the hierarchy are represented as Xdapy structures.</li>
+<li>how the two different types of connections - in the hierarchy or the attachments - are created.</li>
+<li>how objects are stored or loaded.</li>
+<li>how a search in the database is performed.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="install.html">Installation</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="usage.html">Usage</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2012, Hannah Dold, Rike-Benjamin Schuppner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
