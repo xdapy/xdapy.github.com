@@ -75,7 +75,7 @@ parents attributes.</p>
 <tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures.BaseEntity.gen_unique_id" title="xdapy.structures.BaseEntity.gen_unique_id"><tt class="xref py py-obj docutils literal"><span class="pre">gen_unique_id</span></tt></a>()</td>
 <td>This method can be overridden in a subclass to automatically provide a default value for the <a class="reference internal" href="#xdapy.structures.BaseEntity.unique_id" title="xdapy.structures.BaseEntity.unique_id"><tt class="xref py py-obj docutils literal"><span class="pre">unique_id</span></tt></a> field.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.structures.BaseEntity.validate_name" title="xdapy.structures.BaseEntity.validate_name"><tt class="xref py py-obj docutils literal"><span class="pre">validate_name</span></tt></a>(key,&nbsp;e_name)</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.structures.BaseEntity.validate_type" title="xdapy.structures.BaseEntity.validate_type"><tt class="xref py py-obj docutils literal"><span class="pre">validate_type</span></tt></a>(key,&nbsp;e_type)</td>
 <td></td>
 </tr>
 </tbody>
@@ -181,8 +181,8 @@ provide a default value for the <a class="reference internal" href="#xdapy.struc
 </dd></dl>
 
 <dl class="method">
-<dt id="xdapy.structures.BaseEntity.validate_name">
-<tt class="descname">validate_name</tt><big>(</big><em>key</em>, <em>e_name</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity.validate_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity.validate_name" title="Permalink to this definition">¶</a></dt>
+<dt id="xdapy.structures.BaseEntity.validate_type">
+<tt class="descname">validate_type</tt><big>(</big><em>key</em>, <em>e_type</em><big>)</big><a class="reference internal" href="../_modules/xdapy/structures.html#BaseEntity.validate_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.structures.BaseEntity.validate_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -217,7 +217,7 @@ provide a default value for the <a class="reference internal" href="#xdapy.struc
 
 <dl class="attribute">
 <dt id="xdapy.structures.BaseEntity.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10ec3d7d0; BaseEntity&gt;</em><a class="headerlink" href="#xdapy.structures.BaseEntity.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x2067b50; BaseEntity&gt;</em><a class="headerlink" href="#xdapy.structures.BaseEntity.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -232,7 +232,12 @@ provide a default value for the <a class="reference internal" href="#xdapy.struc
 
 <dl class="attribute">
 <dt id="xdapy.structures.BaseEntity._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.BaseEntity'&gt; at 7feb4b898280&gt;</em><a class="headerlink" href="#xdapy.structures.BaseEntity._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.BaseEntity'&gt; at 20b09b0&gt;</em><a class="headerlink" href="#xdapy.structures.BaseEntity._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures.BaseEntity.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#xdapy.structures.BaseEntity.parent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -376,12 +381,12 @@ as a <tt class="xref py py-obj docutils literal"><span class="pre">polymorphic_i
 
 <dl class="attribute">
 <dt id="xdapy.structures._InheritedParams._abc_cache">
-<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10ec432d0&gt;</em><a class="headerlink" href="#xdapy.structures._InheritedParams._abc_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x2079650&gt;</em><a class="headerlink" href="#xdapy.structures._InheritedParams._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.structures._InheritedParams._abc_negative_cache">
-<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10f498ad0&gt;</em><a class="headerlink" href="#xdapy.structures._InheritedParams._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x29b1550&gt;</em><a class="headerlink" href="#xdapy.structures._InheritedParams._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -391,7 +396,7 @@ as a <tt class="xref py py-obj docutils literal"><span class="pre">polymorphic_i
 
 <dl class="attribute">
 <dt id="xdapy.structures._InheritedParams._abc_registry">
-<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10ec43210&gt;</em><a class="headerlink" href="#xdapy.structures._InheritedParams._abc_registry" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x2079350&gt;</em><a class="headerlink" href="#xdapy.structures._InheritedParams._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -492,12 +497,12 @@ as a <tt class="xref py py-obj docutils literal"><span class="pre">polymorphic_i
 
 <dl class="attribute">
 <dt id="xdapy.structures._StrParams._abc_cache">
-<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10ec434d0&gt;</em><a class="headerlink" href="#xdapy.structures._StrParams._abc_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x2079850&gt;</em><a class="headerlink" href="#xdapy.structures._StrParams._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.structures._StrParams._abc_negative_cache">
-<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10ec35a10&gt;</em><a class="headerlink" href="#xdapy.structures._StrParams._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x1fe2a10&gt;</em><a class="headerlink" href="#xdapy.structures._StrParams._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -507,7 +512,7 @@ as a <tt class="xref py py-obj docutils literal"><span class="pre">polymorphic_i
 
 <dl class="attribute">
 <dt id="xdapy.structures._StrParams._abc_registry">
-<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10ec43410&gt;</em><a class="headerlink" href="#xdapy.structures._StrParams._abc_registry" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x2079790&gt;</em><a class="headerlink" href="#xdapy.structures._StrParams._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -550,7 +555,7 @@ as a <tt class="xref py py-obj docutils literal"><span class="pre">polymorphic_i
 <tr class="row-odd"><td><a class="reference internal" href="#xdapy.structures.Entity.to_json" title="xdapy.structures.Entity.to_json"><tt class="xref py py-obj docutils literal"><span class="pre">to_json</span></tt></a>([full])</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">validate_name</span></tt>(key,&nbsp;e_name)</td>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">validate_type</span></tt>(key,&nbsp;e_type)</td>
 <td></td>
 </tr>
 </tbody>
@@ -785,7 +790,7 @@ This means that the following works as expected:</p>
 
 <dl class="attribute">
 <dt id="xdapy.structures.Entity.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10ec43b50; Entity&gt;</em><a class="headerlink" href="#xdapy.structures.Entity.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x2079e50; Entity&gt;</em><a class="headerlink" href="#xdapy.structures.Entity.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -805,7 +810,7 @@ This means that the following works as expected:</p>
 
 <dl class="attribute">
 <dt id="xdapy.structures.Entity._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.Entity'&gt; at 7feb4b8a84c0&gt;</em><a class="headerlink" href="#xdapy.structures.Entity._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.Entity'&gt; at 21002d0&gt;</em><a class="headerlink" href="#xdapy.structures.Entity._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -824,6 +829,11 @@ This means that the following works as expected:</p>
 <tt class="descname">params</tt><a class="headerlink" href="#xdapy.structures.Entity.params" title="Permalink to this definition">¶</a></dt>
 <dd><p>A descriptor that presents a read/write view of an object attribute.</p>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="xdapy.structures.Entity.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#xdapy.structures.Entity.parent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.structures.Entity.parent_id">
@@ -973,12 +983,12 @@ to create new <a class="reference internal" href="#xdapy.structures.Entity" titl
 
 <dl class="attribute">
 <dt id="xdapy.structures._ContextBySetDict._abc_cache">
-<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10ec4c510&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySetDict._abc_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x20827d0&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySetDict._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.structures._ContextBySetDict._abc_negative_cache">
-<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10ec43550&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySetDict._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x20798d0&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySetDict._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -988,7 +998,7 @@ to create new <a class="reference internal" href="#xdapy.structures.Entity" titl
 
 <dl class="attribute">
 <dt id="xdapy.structures._ContextBySetDict._abc_registry">
-<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10ec4c5d0&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySetDict._abc_registry" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x2082850&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySetDict._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1078,12 +1088,12 @@ to create new <a class="reference internal" href="#xdapy.structures.Entity" titl
 
 <dl class="attribute">
 <dt id="xdapy.structures._ContextBySet._abc_cache">
-<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10ec4c8d0&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySet._abc_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x2082a90&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySet._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.structures._ContextBySet._abc_negative_cache">
-<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10ec4c950&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySet._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x2082b10&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySet._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1093,7 +1103,7 @@ to create new <a class="reference internal" href="#xdapy.structures.Entity" titl
 
 <dl class="attribute">
 <dt id="xdapy.structures._ContextBySet._abc_registry">
-<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10ec4c810&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySet._abc_registry" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x20829d0&gt;</em><a class="headerlink" href="#xdapy.structures._ContextBySet._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1163,7 +1173,7 @@ for example, any mapped columns or relationships.</p>
 
 <dl class="attribute">
 <dt id="xdapy.structures.Context.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10ec52850; Context&gt;</em><a class="headerlink" href="#xdapy.structures.Context.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x2088a10; Context&gt;</em><a class="headerlink" href="#xdapy.structures.Context.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1178,7 +1188,7 @@ for example, any mapped columns or relationships.</p>
 
 <dl class="attribute">
 <dt id="xdapy.structures.Context._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.Context'&gt; at 7feb4b8be290&gt;</em><a class="headerlink" href="#xdapy.structures.Context._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.Context'&gt; at 2116d40&gt;</em><a class="headerlink" href="#xdapy.structures.Context._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1260,7 +1270,7 @@ then this parameter can be added to the list of allowed parameters.</p>
 
 <dl class="attribute">
 <dt id="xdapy.structures.ParameterDeclaration.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10ec58710; ParameterDeclaration&gt;</em><a class="headerlink" href="#xdapy.structures.ParameterDeclaration.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x208c990; ParameterDeclaration&gt;</em><a class="headerlink" href="#xdapy.structures.ParameterDeclaration.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1280,7 +1290,7 @@ then this parameter can be added to the list of allowed parameters.</p>
 
 <dl class="attribute">
 <dt id="xdapy.structures.ParameterDeclaration._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.ParameterDeclaration'&gt; at 7feb4b8c8480&gt;</em><a class="headerlink" href="#xdapy.structures.ParameterDeclaration._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.structures.ParameterDeclaration'&gt; at 2122ea0&gt;</em><a class="headerlink" href="#xdapy.structures.ParameterDeclaration._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">

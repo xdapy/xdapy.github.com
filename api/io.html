@@ -102,7 +102,7 @@
 
 <dl class="attribute">
 <dt id="xdapy.io.BinaryEncoder.__dict__">
-<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x10f9e71d8&gt;</em><a class="headerlink" href="#xdapy.io.BinaryEncoder.__dict__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__dict__</tt><em class="property"> = dict_proxy({'__module__': 'xdapy.io', 'decode': &lt;function decode at 0x2a73e60&gt;, '__dict__': &lt;attribute '__dict__' of 'BinaryEncoder' objects&gt;, 'encode': &lt;function encode at 0x2a73de8&gt;, '__weakref__': &lt;attribute '__weakref__' of 'BinaryEncoder' objects&gt;, '__doc__': None, '__init__': &lt;function __init__ at 0x2a73d70&gt;})</em><a class="headerlink" href="#xdapy.io.BinaryEncoder.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -164,7 +164,7 @@ This is most likely the right thing and supplying other objects might lead to in
 
 <dl class="attribute">
 <dt id="xdapy.io.IO.__dict__">
-<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x10f9e7050&gt;</em><a class="headerlink" href="#xdapy.io.IO.__dict__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__dict__</tt><em class="property"> = dict_proxy({'known_objects': &lt;property object at 0x241b050&gt;, '__module__': 'xdapy.io', '__dict__': &lt;attribute '__dict__' of 'IO' objects&gt;, '__weakref__': &lt;attribute '__weakref__' of 'IO' objects&gt;, '__doc__': None, '__init__': &lt;function __init__ at 0x2a74140&gt;})</em><a class="headerlink" href="#xdapy.io.IO.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -190,7 +190,7 @@ This is most likely the right thing and supplying other objects might lead to in
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.io.JsonIO.add_objects" title="xdapy.io.JsonIO.add_objects"><tt class="xref py py-obj docutils literal"><span class="pre">add_objects</span></tt></a>(objects)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.io.JsonIO.add_objects" title="xdapy.io.JsonIO.add_objects"><tt class="xref py py-obj docutils literal"><span class="pre">add_objects</span></tt></a>(objects[,&nbsp;data_folder])</td>
 <td></td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#xdapy.io.JsonIO.add_relations" title="xdapy.io.JsonIO.add_relations"><tt class="xref py py-obj docutils literal"><span class="pre">add_relations</span></tt></a>(relations,&nbsp;mapping)</td>
@@ -199,22 +199,25 @@ This is most likely the right thing and supplying other objects might lead to in
 <tr class="row-odd"><td><a class="reference internal" href="#xdapy.io.JsonIO.add_types" title="xdapy.io.JsonIO.add_types"><tt class="xref py py-obj docutils literal"><span class="pre">add_types</span></tt></a>(types)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.io.JsonIO.read_file" title="xdapy.io.JsonIO.read_file"><tt class="xref py py-obj docutils literal"><span class="pre">read_file</span></tt></a>(fileobj)</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.io.JsonIO.read_file" title="xdapy.io.JsonIO.read_file"><tt class="xref py py-obj docutils literal"><span class="pre">read_file</span></tt></a>(file_name[,&nbsp;data_folder])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.io.JsonIO.read_json" title="xdapy.io.JsonIO.read_json"><tt class="xref py py-obj docutils literal"><span class="pre">read_json</span></tt></a>(json_data)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.io.JsonIO.read_json" title="xdapy.io.JsonIO.read_json"><tt class="xref py py-obj docutils literal"><span class="pre">read_json</span></tt></a>(json_data[,&nbsp;data_folder])</td>
 <td></td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#xdapy.io.JsonIO.read_string" title="xdapy.io.JsonIO.read_string"><tt class="xref py py-obj docutils literal"><span class="pre">read_string</span></tt></a>(jsonstr)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.io.JsonIO.write_file" title="xdapy.io.JsonIO.write_file"><tt class="xref py py-obj docutils literal"><span class="pre">write_file</span></tt></a>(objs,&nbsp;fileobj)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.io.JsonIO.write_data" title="xdapy.io.JsonIO.write_data"><tt class="xref py py-obj docutils literal"><span class="pre">write_data</span></tt></a>(data_folder,&nbsp;object_ident,&nbsp;key,&nbsp;data)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xdapy.io.JsonIO.write_json" title="xdapy.io.JsonIO.write_json"><tt class="xref py py-obj docutils literal"><span class="pre">write_json</span></tt></a>(objs)</td>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.io.JsonIO.write_file" title="xdapy.io.JsonIO.write_file"><tt class="xref py py-obj docutils literal"><span class="pre">write_file</span></tt></a>(objs,&nbsp;file_name[,&nbsp;data_folder])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xdapy.io.JsonIO.write_string" title="xdapy.io.JsonIO.write_string"><tt class="xref py py-obj docutils literal"><span class="pre">write_string</span></tt></a>(objs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xdapy.io.JsonIO.write_json" title="xdapy.io.JsonIO.write_json"><tt class="xref py py-obj docutils literal"><span class="pre">write_json</span></tt></a>(objs[,&nbsp;data_folder])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xdapy.io.JsonIO.write_string" title="xdapy.io.JsonIO.write_string"><tt class="xref py py-obj docutils literal"><span class="pre">write_string</span></tt></a>(objs)</td>
 <td></td>
 </tr>
 </tbody>
@@ -226,12 +229,12 @@ This is most likely the right thing and supplying other objects might lead to in
 
 <dl class="method">
 <dt id="xdapy.io.JsonIO.read_file">
-<tt class="descname">read_file</tt><big>(</big><em>fileobj</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.read_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.read_file" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">read_file</tt><big>(</big><em>file_name</em>, <em>data_folder=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.read_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.read_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="xdapy.io.JsonIO.read_json">
-<tt class="descname">read_json</tt><big>(</big><em>json_data</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.read_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.read_json" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">read_json</tt><big>(</big><em>json_data</em>, <em>data_folder=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.read_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.read_json" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -241,12 +244,17 @@ This is most likely the right thing and supplying other objects might lead to in
 
 <dl class="method">
 <dt id="xdapy.io.JsonIO.write_file">
-<tt class="descname">write_file</tt><big>(</big><em>objs</em>, <em>fileobj</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.write_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.write_file" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write_file</tt><big>(</big><em>objs</em>, <em>file_name</em>, <em>data_folder=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.write_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.write_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="xdapy.io.JsonIO.write_json">
-<tt class="descname">write_json</tt><big>(</big><em>objs</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.write_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.write_json" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write_json</tt><big>(</big><em>objs</em>, <em>data_folder=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.write_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.write_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="xdapy.io.JsonIO.write_data">
+<tt class="descname">write_data</tt><big>(</big><em>data_folder</em>, <em>object_ident</em>, <em>key</em>, <em>data</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.write_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.write_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -271,7 +279,7 @@ This is most likely the right thing and supplying other objects might lead to in
 
 <dl class="method">
 <dt id="xdapy.io.JsonIO.add_objects">
-<tt class="descname">add_objects</tt><big>(</big><em>objects</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.add_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.add_objects" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">add_objects</tt><big>(</big><em>objects</em>, <em>data_folder=None</em><big>)</big><a class="reference internal" href="../_modules/xdapy/io.html#JsonIO.add_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xdapy.io.JsonIO.add_objects" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

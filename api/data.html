@@ -47,6 +47,7 @@
         
   <div class="section" id="module-xdapy.data">
 <span id="data"></span><h1>Data<a class="headerlink" href="#module-xdapy.data" title="Permalink to this headline">¶</a></h1>
+<p>Classes for binary data storage.</p>
 <dl class="data">
 <dt id="xdapy.data.DATA_CHUNK_SIZE">
 <tt class="descclassname">xdapy.data.</tt><tt class="descname">DATA_CHUNK_SIZE</tt><em class="property"> = 5000000</em><a class="headerlink" href="#xdapy.data.DATA_CHUNK_SIZE" title="Permalink to this definition">¶</a></dt>
@@ -145,7 +146,7 @@ that everything is loaded all at once when accessing the data.</p>
 
 <dl class="attribute">
 <dt id="xdapy.data.DataChunks.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10ec2ab50; DataChunks&gt;</em><a class="headerlink" href="#xdapy.data.DataChunks.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x1fd9e50; DataChunks&gt;</em><a class="headerlink" href="#xdapy.data.DataChunks.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -160,7 +161,7 @@ that everything is loaded all at once when accessing the data.</p>
 
 <dl class="attribute">
 <dt id="xdapy.data.DataChunks._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.data.DataChunks'&gt; at 7feb4b8771f0&gt;</em><a class="headerlink" href="#xdapy.data.DataChunks._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.data.DataChunks'&gt; at 204ae50&gt;</em><a class="headerlink" href="#xdapy.data.DataChunks._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -242,7 +243,7 @@ for example, any mapped columns or relationships.</p>
 
 <dl class="attribute">
 <dt id="xdapy.data.Data.__mapper__">
-<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x10ec352d0; Data&gt;</em><a class="headerlink" href="#xdapy.data.Data.__mapper__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__mapper__</tt><em class="property"> = &lt;Mapper at 0x1fe2690; Data&gt;</em><a class="headerlink" href="#xdapy.data.Data.__mapper__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -257,7 +258,7 @@ for example, any mapped columns or relationships.</p>
 
 <dl class="attribute">
 <dt id="xdapy.data.Data._sa_class_manager">
-<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.data.Data'&gt; at 7feb4b889c80&gt;</em><a class="headerlink" href="#xdapy.data.Data._sa_class_manager" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_sa_class_manager</tt><em class="property"> = &lt;ClassManager of &lt;class 'xdapy.data.Data'&gt; at 205edc0&gt;</em><a class="headerlink" href="#xdapy.data.Data._sa_class_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -532,7 +533,7 @@ associated with the entity.</p>
 
 <dl class="attribute">
 <dt id="xdapy.data._DataProxy.__dict__">
-<tt class="descname">__dict__</tt><em class="property"> = &lt;dictproxy object at 0x10f77dda8&gt;</em><a class="headerlink" href="#xdapy.data._DataProxy.__dict__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__dict__</tt><em class="property"> = dict_proxy({'__module__': 'xdapy.data', '_DataProxy__data': &lt;property object at 0x1fd5ba8&gt;, '__dict__': &lt;attribute '__dict__' of '_DataProxy' objects&gt;, 'get': &lt;function get at 0x1fe0b18&gt;, 'put_string': &lt;function put_string at 0x1fe09b0&gt;, 'put_file': &lt;function put_file at 0x1fe0a28&gt;, 'put': &lt;function put at 0x1fe0938&gt;, '_DataProxy__session': &lt;property object at 0x1fd5b50&gt;, 'chunks': &lt;function chunks at 0x1fe0c80&gt;, '__weakref__': &lt;attribute '__weakref__' of '_DataProxy' objects&gt;, '__init__': &lt;function __init__ at 0x1fe00c8&gt;, 'size': &lt;function size at 0x1fe0c08&gt;, 'mimetype': &lt;property object at 0x1fd5c00&gt;, 'chunk_index': &lt;function chunk_index at 0x1fe07d0&gt;, 'get_or_create_data': &lt;function get_or_create_data at 0x1fe06e0&gt;, 'get_data': &lt;function get_data at 0x1fe0668&gt;, '_chunk_query': &lt;function _chunk_query at 0x1fe0aa0&gt;, 'chunk_ids': &lt;function chunk_ids at 0x1fe0758&gt;, '__repr__': &lt;function __repr__ at 0x1fe0d70&gt;, 'get_string': &lt;function get_string at 0x1fe0b90&gt;, 'clear_data': &lt;function clear_data at 0x1fe08c0&gt;, 'has_data': &lt;function has_data at 0x1fe05f0&gt;, 'check_consistency': &lt;function check_consistency at 0x1fe0cf8&gt;, '__doc__': '\n    The `_DataProxy` class acts as a convenience wrapper to the more low-level `Data` class,\n    thereby hiding details such as the separate data chunks.\n\n    `_DataProxy` provides methods which either accept strings as data or file-like objects,\n    thus making it possible to directly write to the file system. This approach is very\n    advisable for large sets of data, as too large blobs of data will freeze Python\n    or even the database or the system.\n\n    Usually, this class is not instantiated directly but transparently created through\n    the `_DataAssoc` class.\n\n    Parameters\n    ----------\n    assoc: _DataAssoc\n        Back-reference to the calling `_DataAssoc` instance\n    key: String\n        The key by which the data is stored in the database.\n    ', 'delete': &lt;function delete at 0x1fe0848&gt;})</em><a class="headerlink" href="#xdapy.data._DataProxy.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -646,12 +647,12 @@ raise a <tt class="xref py py-obj docutils literal"><span class="pre">KeyError</
 
 <dl class="attribute">
 <dt id="xdapy.data._DataAssoc._abc_cache">
-<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10ec359d0&gt;</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x1fe2d90&gt;</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="xdapy.data._DataAssoc._abc_negative_cache">
-<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10e5a1190&gt;</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_negative_cache</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x2ae1990&gt;</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_negative_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -661,7 +662,7 @@ raise a <tt class="xref py py-obj docutils literal"><span class="pre">KeyError</
 
 <dl class="attribute">
 <dt id="xdapy.data._DataAssoc._abc_registry">
-<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x10ec35990&gt;</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_registry" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_abc_registry</tt><em class="property"> = &lt;_weakrefset.WeakSet object at 0x1fe2d50&gt;</em><a class="headerlink" href="#xdapy.data._DataAssoc._abc_registry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

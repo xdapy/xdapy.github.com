@@ -48,7 +48,7 @@
   <h1>Source code for xdapy.structures</h1><div class="highlight"><pre>
 <span class="c"># -*- coding: utf-8 -*-</span>
 
-<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Contains the classes which are used to store the Entity meta data.</span>
 
 <span class="sd">**TODO** Figure out what to do with global variable base</span>
@@ -169,10 +169,17 @@
         <span class="k">return</span> <span class="n">gen_uuid</span><span class="p">()</span>
 </div>
     <span class="nd">@validates</span><span class="p">(</span><span class="s">&#39;_type&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="BaseEntity.validate_name"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.validate_name">[docs]</a>    <span class="k">def</span> <span class="nf">validate_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">e_name</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Argument must be a string, is: </span><span class="si">%r</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="n">e_name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">e_name</span>
+<div class="viewcode-block" id="BaseEntity.validate_type"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity.validate_type">[docs]</a>    <span class="k">def</span> <span class="nf">validate_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">e_type</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e_type</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">e_type</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">e_type</span><span class="p">,</span> <span class="n">Entity</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">e_type</span><span class="o">.</span><span class="n">__mapper_args__</span><span class="p">[</span><span class="s">&#39;polymorphic_identity&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Argument must be a string or subclass of Entity, is: </span><span class="si">%r</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="n">e_type</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="BaseEntity._attributes"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.BaseEntity._attributes">[docs]</a>    <span class="k">def</span> <span class="nf">_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s">&#39;unique_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">}</span>
@@ -227,6 +234,11 @@
             <span class="n">declared_params</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;declared_params&quot;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;Entity class &#39;</span><span class="si">%s</span><span class="s">&#39; must have &#39;declared_params&#39; attribute.&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">declared_params</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parameter_ids</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unknown parameter identifier &#39;</span><span class="si">%s</span><span class="s">&#39; in &#39;declared_params&#39; attribute.&quot;</span> <span class="o">%</span> <span class="n">val</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">calculate_polymorphic_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">declared_params</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="EntityMeta.__new__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.EntityMeta.__new__">[docs]</a>    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
@@ -244,7 +256,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">parameter_type</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">declared_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> has no key &#39;</span><span class="si">%s</span><span class="s">&#39;.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">__original_class_name__</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> has no parameter with key &#39;</span><span class="si">%s</span><span class="s">&#39;.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">__original_class_name__</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>
 
             <span class="c"># get the correct parameter class</span>
             <span class="n">parameter_class</span> <span class="o">=</span> <span class="n">parameter_for_type</span><span class="p">(</span><span class="n">parameter_type</span><span class="p">)</span>
@@ -370,7 +382,8 @@
 <div class="viewcode-block" id="Entity.__init__"><a class="viewcode-back" href="../../api/structures.html#xdapy.structures.Entity.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_unique_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c"># We are here in init because we are a completely new object</span>
         <span class="c"># Hence, the _type (our polymorphic_identity) has not been set yet.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mapper_args__</span><span class="p">[</span><span class="s">&#39;polymorphic_identity&#39;</span><span class="p">]</span> <span class="c"># which should be self.__class__.__name__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span> <span class="c"># evaluated to self.__mapper_args__[&#39;polymorphic_identity&#39;]</span>
+                                    <span class="c"># which should be self.__class__.__name__</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_unique_id</span> <span class="o">=</span> <span class="n">_unique_id</span>
 

@@ -28,7 +28,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/theme_extras.js"></script>
     <link rel="top" title="xdapy 0.9.0 documentation" href="index.html" />
-    <link rel="next" title="Development information" href="development.html" />
+    <link rel="next" title="Developer information" href="development.html" />
     <link rel="prev" title="I/O formats" href="io_formats.html" /> 
   </head>
   <body>
@@ -43,7 +43,7 @@
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="development.html">Development information</a>&#160;&#160;»
+        <a href="development.html">Developer information</a>&#160;&#160;»
         </p>
 
       </div>
@@ -61,9 +61,80 @@
 <h2>Possible issues<a class="headerlink" href="#possible-issues" title="Permalink to this headline">¶</a></h2>
 <p>Migration is a two-fold process. The first step involves moving the raw data from one database into another, including binary data attachments and properties, possibly updating entities with the same <tt class="xref py py-obj docutils literal"><span class="pre">unique_id</span></tt> (if these are considered identical). The second step includes updating all inter-entity references. This means moving all previous parent–child and entity–entity connections to the new database and finding sensible ways to deal with entities which have been present in both databases.</p>
 </div>
-<div class="section" id="migrating-entities">
-<h2>Migrating Entities<a class="headerlink" href="#migrating-entities" title="Permalink to this headline">¶</a></h2>
 </div>
+<div class="section" id="rebranding-entities">
+<h1>Rebranding Entities<a class="headerlink" href="#rebranding-entities" title="Permalink to this headline">¶</a></h1>
+<p>Another recurring problem can be the re-naming of classes. (Let’s call it <em>rebranding</em>.) While changing the name of an entity in a table would be next to trivial, changing the class itself from inside Python (through several layers of database abstraction) is not possible. This means that all previously generated object instances (in Python) are practically invalid and have to be recreated with the new class abstraction.</p>
+<p>Moreover, the same is true, when we try to add or remove the set of <tt class="xref py py-obj docutils literal"><span class="pre">declared_params</span></tt> for an entity (also because this set of parameters in turn defines the internal <em>name</em> of the entity); all of these actions require some thought and a potential migration process for each and every object.</p>
+<p>Assume we start with the following entity which may be used to store some kind of software releases, say, of xdapy:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Release</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+    <span class="n">declared_params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;string&quot;</span><span class="p">,</span>
+        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;int&quot;</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p>we create a few entity objects and store them:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e0</span> <span class="o">=</span> <span class="n">MyEntity</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;xdapy&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">e1</span> <span class="o">=</span> <span class="n">MyEntity</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;xdapy&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>At some point in the future, we figure out that it would be best to store the version ‘number’ as a string and that we’d also like to add a proper release date to the <tt class="xref py py-obj docutils literal"><span class="pre">Release</span></tt> entity:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">ReleaseRefined</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+    <span class="n">declared_params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;string&quot;</span><span class="p">,</span>
+        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;string&quot;</span><span class="p">,</span>
+        <span class="s">&quot;release_date&quot;</span><span class="p">:</span> <span class="s">&quot;date&quot;</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p>How would we get from one release schema to the other?</p>
+<p>As it turns out, it is a little more complicated to change the entity type than it is to change the value of a parameter. A simple <tt class="docutils literal"><span class="pre">e0._type</span> <span class="pre">=</span> <span class="pre">ReleaseRefined</span></tt> would only change the database representation but not the object itself. (Leading to a few problems with SQLAlchemy.) Also, it would not migrate the version number on already existing objects. (Existing objects would have their old reference to one of the parameter tables fixed. These could only be updated with values of the same type.)</p>
+<p>xdapy provides a helper function (<tt class="xref py py-obj docutils literal"><span class="pre">Mapper.rebrand</span></tt>) which allows us to do the transformation with the help of some intermediate classes and functions:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">ReleaseHelperA</span><span class="p">(</span><span class="n">xdapy</span><span class="o">.</span><span class="n">Entity</span><span class="p">):</span>
+    <span class="n">declared_params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;string&quot;</span><span class="p">,</span>
+        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;integer&quot;</span><span class="p">,</span>
+        <span class="s">&quot;version_string&quot;</span><span class="p">:</span> <span class="s">&quot;string&quot;</span><span class="p">,</span>
+        <span class="s">&quot;release_date&quot;</span><span class="p">:</span> <span class="s">&quot;date&quot;</span>
+    <span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">ReleaseHelperB</span><span class="p">(</span><span class="n">xdapy</span><span class="o">.</span><span class="n">Entity</span><span class="p">):</span>
+    <span class="n">declared_params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;string&quot;</span><span class="p">,</span>
+        <span class="s">&quot;version_string&quot;</span><span class="p">:</span> <span class="s">&quot;string&quot;</span><span class="p">,</span>
+        <span class="s">&quot;release_date&quot;</span><span class="p">:</span> <span class="s">&quot;date&quot;</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p>As a first step, we’ll add a new parameter to our <tt class="xref py py-obj docutils literal"><span class="pre">Release</span></tt> which serves as a temporary storage for our <tt class="xref py py-obj docutils literal"><span class="pre">string</span></tt>’d version number:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">mapper</span><span class="o">.</span><span class="n">rebrand</span><span class="p">(</span><span class="n">Release</span><span class="p">,</span> <span class="n">ReleaseHelperA</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">migrate_version</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We hook in a function <tt class="xref py py-obj docutils literal"><span class="pre">migrate_version</span></tt> to be applied to all migrated entities:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">migrate_version</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="n">params</span><span class="p">[</span><span class="s">&quot;version_string&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s">&quot;version&quot;</span><span class="p">])</span>
+    <span class="k">del</span> <span class="n">params</span><span class="p">[</span><span class="s">&quot;version&quot;</span><span class="p">]</span>
+
+    <span class="n">params</span><span class="p">[</span><span class="s">&quot;release_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">params</span>
+</pre></div>
+</div>
+<p>All we do in this function is take the old version integer, stringify it and set the version_string parameter accordingly. Then we clear the original field. Additionally, we also add a dummy value for the release date.</p>
+<p>As a next step, we are able to migrate into a version which does not contain any reference to an integer version (it is important to have deleted all params[&#8220;version&#8221;] before that):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">mapper</span><span class="o">.</span><span class="n">rebrand</span><span class="p">(</span><span class="n">ReleaseHelperA</span><span class="p">,</span> <span class="n">ReleaseHelperB</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, we can migrate to the refined version of <tt class="xref py py-obj docutils literal"><span class="pre">ReleaseRefined</span></tt> by moving all params from <tt class="xref py py-obj docutils literal"><span class="pre">version_string</span></tt> to <tt class="xref py py-obj docutils literal"><span class="pre">version</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">move_version_string</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="n">params</span><span class="p">[</span><span class="s">&quot;version&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s">&quot;version_string&quot;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">params</span><span class="p">[</span><span class="s">&quot;version_string&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">params</span>
+
+<span class="n">mapper</span><span class="o">.</span><span class="n">rebrand</span><span class="p">(</span><span class="n">ReleaseHelperB</span><span class="p">,</span> <span class="n">ReleaseRefined</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">move_version_string</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In order to be safe from session failure, now would be a good moment to re-initialise and reconnect.</p>
 </div>
 
 
@@ -75,7 +146,7 @@
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="development.html">Development information</a>&#160;&#160;»
+        <a href="development.html">Developer information</a>&#160;&#160;»
         </p>
 
       </div>

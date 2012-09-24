@@ -48,7 +48,7 @@
   <h1>Source code for xdapy.connection</h1><div class="highlight"><pre>
 <span class="c"># -*- coding: utf-8 -*-</span>
 
-<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">The `Connection` module is used to establish a connection to the database and</span>
 <span class="sd">takes care of creating the database tables.</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -225,7 +225,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="p">:</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">DEFAULT_CONFIG_PATH</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">and</span> <span class="n">profile</span> <span class="o">!=</span> <span class="n">cls</span><span class="o">.</span><span class="n">TEST_PROFILE</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span><span class="s">&#39;the engine ini file does not exist. please create file </span><span class="se">\n</span><span class="s">&#39;</span>\
                                      <span class="s">&#39; ~/.xdapy/engine.ini with following content and replace </span><span class="se">\n</span><span class="s">&#39;</span>\
                                      <span class="s">&#39;with your settings: </span><span class="se">\n\n</span><span class="s">&#39;</span>\

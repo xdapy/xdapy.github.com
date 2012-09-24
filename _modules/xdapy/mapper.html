@@ -48,7 +48,7 @@
   <h1>Source code for xdapy.mapper</h1><div class="highlight"><pre>
 <span class="c"># -*- coding: utf-8 -*-</span>
 
-<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This module provides the code to access a database on an abstract level.</span>
 
 <span class="sd">Created on Jun 17, 2009</span>
@@ -67,6 +67,9 @@
 <span class="kn">from</span> <span class="nn">xdapy.find</span> <span class="kn">import</span> <span class="n">SearchProxy</span>
 
 <span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">or_</span><span class="p">,</span> <span class="n">and_</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">TODO: Load: what happens if more attributes given as saved in database</span>
@@ -564,7 +567,7 @@
 </div>
 <div class="viewcode-block" id="Mapper.is_registered"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.is_registered">[docs]</a>    <span class="k">def</span> <span class="nf">is_registered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">declared_params</span><span class="p">):</span>
         <span class="n">polymorphic_name</span> <span class="o">=</span> <span class="n">calculate_polymorphic_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">declared_params</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">polymorphic_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registered_entities</span>
+        <span class="k">return</span> <span class="n">polymorphic_name</span> <span class="ow">in</span> <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">__name__</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registered_entities</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Mapper.register_type"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.register_type">[docs]</a>    <span class="k">def</span> <span class="nf">register_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">declared_params</span><span class="p">):</span>
         <span class="n">new_type</span> <span class="o">=</span> <span class="n">create_entity</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">declared_params</span><span class="o">=</span><span class="n">declared_params</span><span class="p">)</span>
@@ -631,6 +634,45 @@
 
         <span class="n">sorted_roots</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">roots</span><span class="p">,</span> <span class="n">_by_entity_type</span><span class="p">)</span>
         <span class="n">root_groups</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">roots</span><span class="p">,</span> <span class="n">_by_entity_type</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Mapper.rebrand"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.rebrand">[docs]</a>    <span class="k">def</span> <span class="nf">rebrand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_entity_type</span><span class="p">,</span> <span class="n">new_entity_type</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Changes all occurrences from `old_entity_type`</span>
+<span class="sd">        to `new_entity_type`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># check that the entities are compatible:</span>
+        <span class="c"># ie. no parameter changes its type</span>
+        <span class="n">incompatibles</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="n">oldv</span><span class="p">,</span> <span class="n">newv</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">oldv</span> <span class="ow">in</span> <span class="n">old_entity_type</span><span class="o">.</span><span class="n">declared_params</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">newv</span> <span class="ow">in</span> <span class="p">(</span><span class="n">new_entity_type</span><span class="o">.</span><span class="n">declared_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">),)</span>
+            <span class="k">if</span> <span class="n">newv</span> <span class="ow">and</span> <span class="n">oldv</span> <span class="o">!=</span> <span class="n">newv</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">incompatibles</span><span class="p">:</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="n">oldv</span><span class="p">,</span> <span class="n">newv</span><span class="p">))</span> <span class="ow">in</span> <span class="n">incompatibles</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="n">info</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">    Parameter </span><span class="si">%r</span><span class="s"> changed from </span><span class="si">%r</span><span class="s"> to </span><span class="si">%r</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">oldv</span><span class="p">,</span> <span class="n">newv</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Incompatible parameter lists:&quot;</span> <span class="o">+</span> <span class="n">info</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">before</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">old_entity_type</span><span class="p">):</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">before</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="n">objs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">entity_ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_session</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">old_obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">old_entity_type</span><span class="p">):</span>
+                <span class="n">objs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">old_obj</span><span class="p">)</span>
+                <span class="n">entity_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">old_obj</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Changing type of </span><span class="si">%r</span><span class="s"> from </span><span class="si">%r</span><span class="s"> to </span><span class="si">%r</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">old_obj</span><span class="p">,</span> <span class="n">old_obj</span><span class="o">.</span><span class="n">_type</span><span class="p">,</span> <span class="n">new_entity_type</span><span class="p">))</span>
+                <span class="n">old_obj</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="n">new_entity_type</span> <span class="c">#.__mapper_args__[&#39;polymorphic_identity&#39;]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">identity_map</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">expunge</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">after</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">new_entity_type</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">BaseEntity</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">entity_ids</span><span class="p">)):</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">after</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="Mapper.__repr__"><a class="viewcode-back" href="../../api/mapper.html#xdapy.mapper.Mapper.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

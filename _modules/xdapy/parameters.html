@@ -48,7 +48,7 @@
   <h1>Source code for xdapy.parameters</h1><div class="highlight"><pre>
 <span class="c"># -*- coding: utf-8 -*-</span>
 
-<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Provide a centralised typed key–value store.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -310,7 +310,9 @@
             <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">StringConversionError</span><span class="p">(</span><span class="s">&quot;Could not convert value &#39;{0}&#39; to date.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-</div>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">StringConversionError</span><span class="p">(</span><span class="s">&quot;Could not convert value &#39;{0}&#39; to date.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+      </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="DateParameter.value_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateParameter.value_string">[docs]</a>    <span class="k">def</span> <span class="nf">value_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s">&quot;</span><span class="p">)</span>
@@ -372,7 +374,8 @@
             <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s">&quot;%H:%M:%S&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">StringConversionError</span><span class="p">(</span><span class="s">&quot;Could not convert value &#39;{0}&#39; to time.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-</div>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">StringConversionError</span><span class="p">(</span><span class="s">&quot;Could not convert to time.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="TimeParameter.value_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.TimeParameter.value_string">[docs]</a>    <span class="k">def</span> <span class="nf">value_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s">&quot;%H:%M:%S&quot;</span><span class="p">)</span>
@@ -428,7 +431,9 @@
             <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s">T%H:%M:%S&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">StringConversionError</span><span class="p">(</span><span class="s">&quot;Could not convert value &#39;{0}&#39; to datetime.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-</div>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">StringConversionError</span><span class="p">(</span><span class="s">&quot;Could not convert  to datetime.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="DateTimeParameter.value_string"><a class="viewcode-back" href="../../api/parameters.html#xdapy.parameters.DateTimeParameter.value_string">[docs]</a>    <span class="k">def</span> <span class="nf">value_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s">T%H:%M:%S&quot;</span><span class="p">)</span>

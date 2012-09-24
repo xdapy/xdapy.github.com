@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Development information &mdash; xdapy 0.9.0 documentation</title>
+    <title>Developer information &mdash; xdapy 0.9.0 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -33,7 +33,7 @@
   <body>
       <div class="header"><h1 class="heading"><a href="index.html">
           <span>xdapy 0.9.0 documentation</span></a></h1>
-        <h2 class="heading"><span>Development information</span></h2>
+        <h2 class="heading"><span>Developer information</span></h2>
       </div>
       <div class="topnav">
       
@@ -47,10 +47,10 @@
       <div class="content">
         
         
-  <div class="section" id="development-information">
-<h1>Development information<a class="headerlink" href="#development-information" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="building-the-documentation">
-<h2>Building the documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="developer-information">
+<h1>Developer information<a class="headerlink" href="#developer-information" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="publishing-the-documentation">
+<h2>Publishing the documentation<a class="headerlink" href="#publishing-the-documentation" title="Permalink to this headline">¶</a></h2>
 <p>The documentation is built using <a class="reference external" href="http://sphinx.pocoo.org/">Sphinx</a> and published on github. In order to make the publishing process as easy as possible, we have included a shell script <tt class="docutils literal"><span class="pre">./commit-doc-tree.sh</span></tt> which automatically builds the documentation and creates a commit in a dedicated branch containing only the relevant data.</p>
 <p>In order to use the script, we need to add the documentation repository (<a class="reference external" href="https://github.com/xdapy/xdapy.github.com">github.com/xdapy/xdapy.github.com</a>) to our local <em>xdapy</em> repository:</p>
 <div class="highlight-python"><pre>$ git remote add github-docs git@github.com:xdapy/xdapy.github.com.git
@@ -73,6 +73,58 @@ git push github-docs gh-pages:master</pre>
 <div class="highlight-python"><pre>git push github-docs gh-pages:master</pre>
 </div>
 <p>(Or simply <tt class="docutils literal"><span class="pre">git</span> <span class="pre">push</span></tt>, if we set the config option correctly.)</p>
+</div>
+<div class="section" id="commit-markers">
+<h2>Commit Markers<a class="headerlink" href="#commit-markers" title="Permalink to this headline">¶</a></h2>
+<p>Commits should be marked. Declare both functionality and area.</p>
+<div class="section" id="functionality-markers">
+<h3>Functionality Markers<a class="headerlink" href="#functionality-markers" title="Permalink to this headline">¶</a></h3>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name"><tt class="docutils literal"><span class="pre">BF</span></tt> or <tt class="docutils literal"><span class="pre">FIX</span></tt>:</th><td class="field-body">bug fix</td>
+</tr>
+<tr class="field-even field"><th class="field-name"><tt class="docutils literal"><span class="pre">RF</span></tt>:</th><td class="field-body">refactoring</td>
+</tr>
+<tr class="field-odd field"><th class="field-name"><tt class="docutils literal"><span class="pre">NF</span></tt>:</th><td class="field-body">new feature</td>
+</tr>
+<tr class="field-even field"><th class="field-name"><tt class="docutils literal"><span class="pre">ENH</span></tt>:</th><td class="field-body">enhancement of an existing feature/facility</td>
+</tr>
+<tr class="field-odd field"><th class="field-name"><tt class="docutils literal"><span class="pre">BW</span></tt>:</th><td class="field-body">addresses backward-compatibility</td>
+</tr>
+<tr class="field-even field"><th class="field-name"><tt class="docutils literal"><span class="pre">OPT</span></tt>:</th><td class="field-body">optimization</td>
+</tr>
+<tr class="field-odd field"><th class="field-name"><tt class="docutils literal"><span class="pre">BK</span></tt>:</th><td class="field-body">breaks something and/or tests fail</td>
+</tr>
+<tr class="field-even field"><th class="field-name"><tt class="docutils literal"><span class="pre">FO</span></tt>:</th><td class="field-body">code formatting (adding spaces etc.)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name"><tt class="docutils literal"><span class="pre">PL</span></tt>:</th><td class="field-body">making pylint happier</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="code-area-markers">
+<h3>Code Area Markers<a class="headerlink" href="#code-area-markers" title="Permalink to this headline">¶</a></h3>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name"><tt class="docutils literal"><span class="pre">DOC</span></tt>:</th><td class="field-body">documentation</td>
+</tr>
+<tr class="field-even field"><th class="field-name"><tt class="docutils literal"><span class="pre">UT</span></tt>:</th><td class="field-body">unit tests</td>
+</tr>
+<tr class="field-odd field"><th class="field-name"><tt class="docutils literal"><span class="pre">BLD</span></tt>:</th><td class="field-body">build-system, setup.py</td>
+</tr>
+<tr class="field-even field"><th class="field-name"><tt class="docutils literal"><span class="pre">GIT</span></tt>:</th><td class="field-body">repository mods, e.g. .gitconfig .gitattributes</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">DOC/ENH:</span> <span class="pre">add</span> <span class="pre">initial</span> <span class="pre">README.md</span></tt></p>
+</div>
 </div>
 </div>
 
